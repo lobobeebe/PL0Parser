@@ -1,63 +1,72 @@
 
 Program goal =
-  block                            {: return new Program(block); :}
+  block ENDPROGRAM                           {: return new Program(block); :}
   ;
 
-S block =
-    LBRACE blockStmtList RBRACE   {: return new CompoundS(blockStmtList); :}
+  
+  
+Block block =
+	stmt			{: return new Block(new List(), new List(), stmt); :}
+  | constBlock stmt {: return new Block(constBlock, new List(), stmt); :}
+  | varBlock stmt	{: return new Block(new List(), varBlock, stmt); :}
+  | constBlock varBlock stmt {: return new Block(constBlock, varBlock, stmt); :}
   ;
+  
+List constBlock =
+	constDeclList SEMICOLON 			{: return constDeclList; :}
+;  
+  
+List constDeclList =
+    constDecl 							{: return new List().add(constDecl); :}
+  | constDeclList COMMA constDecl		{: return constDeclList.add(constDecl); :}
+;
 
-List blockStmtList =
-    stmt                          {: return new List().add(stmt); :}
-  | blockStmtList SEMICOLON stmt  {: return blockStmtList.add(stmt); :}
-  ;
+ConstDecl constDecl =
+	CONST IDENTIFIER CONSTASSIGN NUMBER {: return new ConstDecl(IDENTIFIER, NUMBER); :}
+;
 
+List varBlock =
+	varDeclList SEMICOLON 				{: return varDeclList; :}
+;
+
+List varDeclList =
+	varDecl 					{: return new List().add(varDecl); :}
+  | varDeclList COMMA varDecl 	{: return varDeclList.add(varDecl); :}
+;
+ 
+VarDecl varDecl =
+	VAR IDENTIFIER			{: return new VarDecl(IDENTIFIER); :}
+;
+ 
 S stmt =
-    IDENTIFIER ASSIGN expression.e   {: return new AssignS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, e); :}
-  | SKIP                             {: return new SkipS(new NumLabel(LabelUtility.nextLabel())); :}
-  | block                            {: return block; :}
-  | IF expression.be THEN block.b ELSE block.c  {: return new IfS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), be), b, c); :}
-  | WHILE expression.be DO block     {: return new WhileS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), be), block); :}
+    IDENTIFIER ASSIGN expression   	{: return new AssignS(IDENTIFIER, expression); :}
+  | CALL IDENTIFIER				   	{: return new CallS(IDENTIFIER); :}
+  | BEGIN stmtList END 			   	{: return new BeginEndS(stmtList); :}
+  | IF condition THEN stmt  	   	{: return new IfS(condition, stmt); :}
+  | WHILE condition DO stmt     	{: return new WhileS(condition, stmt); :}
   ;
    
+List stmtList =
+	stmt						{: return new List().add(stmt); :}
+  | stmtList SEMICOLON stmt		{: return stmtList.add(stmt); :}
+;
 
-Expr primary =
-       IDENTIFIER               {: return new VarRefExpr(IDENTIFIER); :}
-     | NUMBER                   {: return new NumLitExpr(NUMBER); :}
-     | TRUE                     {: return new BoolLitExpr(TRUE); :}
-     | FALSE                    {: return new BoolLitExpr(FALSE); :}
-     | NOT primary.e            {: return new NotExpr(e); :}
-     | LPAREN expression.e RPAREN {: return e; :}
-     ;
-     
-Expr factor =
-     primary.p                 {: return p; :}
-   | factor.l OPMUL primary.r 
-                               {: return new ABinaryExpr(l, new Op_a(OPMUL), r); :}
-   ;
-   
-Expr aexpression =
-     factor.f                  {: return f; :}
-   | aexpression.l OPPLUS factor.r
-                               {: return new ABinaryExpr(l, new Op_a(OPPLUS), r); :}
-   | aexpression.l OPMINUS factor.r
-                               {: return new ABinaryExpr(l, new Op_a(OPMINUS), r); :}
-   ;
-   
-Expr relexp =
-       aexpression
-     | aexpression.l OPRELATIONAL aexpression.r 
-                                {: return new RelExpr(l, new Op_r(OPRELATIONAL), r); :}
-     ;
-
-Expr conj =
-       relexp.re               {: return re; :}
-     | conj.l AND relexp.r 
-                               {: return new LogicExpr(l, new Op_b(AND), r); :}
-     ;
-     
+Expr condition =
+	ODD expression							{: return new OddExpr(expression); :}
+  | expression.l OPRELATIONAL expression.r 	{: return new RelExpr(l, new Op_r(OPRELATIONAL), r); :}
+ 
 Expr expression = 
-       conj.c                  {: return c; :}                         
-     | expression.l OR conj.r 
-                               {: return new LogicExpr(l, new Op_b(OR), r); :}
-     ;
+    term					{: return term; :}
+  | term.l OPPLUS term.r	{: return new ABinaryExpr(l, new Op_a(OPPLUS), r); :}
+  | term.l OPMINUS term.r	{: return new ABinaryExpr(1, new Op_a(OPMINUS), r); :}
+;
+
+Expr term =
+	factor					{: return factor; :}
+  | factor.l OPMUL factor.r {: return new ABinaryExpr(l, new Op_a(OPMUL), r); :}
+
+Expr factor =
+	IDENTIFIER               {: return new VarRefExpr(IDENTIFIER); :}
+  | NUMBER                   {: return new NumLitExpr(NUMBER); :}
+  | LPAREN expression RPAREN {: return expression; :}
+;

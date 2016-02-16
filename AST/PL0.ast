@@ -18,16 +18,16 @@ Op_a : Op;
 
 // Expressions
 abstract Expr;
-IdentRefExpr: Expr ::= <Contents>;
+VarRefExpr: Expr ::= <Contents>;
 NumLitExpr: Expr ::= <Contents>;
 ABinaryExpr: Expr ::= Left:Expr Op:Op_a Right:Expr;
-OddExpr: expr ::= Expr;
+OddExpr: Expr ::= Expr;
 RelExpr: Expr ::= Left:Expr Op:Op_r Right:Expr;
 
 // Statements
 abstract S; 
 CallS: S ::= <Ident>
-CompoundS: S ::= SList:S*;
+BeginEndS: S ::= SList:S*;
 AssignS:S ::= <Ident> Expr;
 IfS:S ::= RelExpr S1:S;
 WhileS:S ::= RelExpr S;
