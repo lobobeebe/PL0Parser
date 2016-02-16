@@ -1,38 +1,33 @@
-Program ::= S;
+Program ::= Block;
 
-//block
-Block ::= [] [] 
+// Block
+Block ::= ConstDecl* VarDecl* S
 
-//declarations
+// Declarations
 Abstract Decl;
 ConstDecl: Decl ::= <Ident> <Num>;
 VarDecl: Decl ::= <Ident>;
 
-//procedure/call
+// Procedure
 Procedure ::= <Ident> Block;
 
-//Operations
+// Operations
 abstract Op ::= <Contents>;
 Op_r : Op;
 Op_a : Op;
 
-//expressions
+// Expressions
 abstract Expr;
 IdentRefExpr: Expr ::= <Contents>;
 NumLitExpr: Expr ::= <Contents>;
 ABinaryExpr: Expr ::= Left:Expr Op:Op_a Right:Expr;
 OddExpr: expr ::= Expr;
 RelExpr: Expr ::= Left:Expr Op:Op_r Right:Expr;
-ConditionExpr: Expr ::= Expr;
 
-// statements
+// Statements
 abstract S; 
-CompoundS: S ::= SList:S* ;
+CallS: S ::= <Ident>
+CompoundS: S ::= SList:S*;
 AssignS:S ::= <Ident> Expr;
-IfS:S ::= RelExpr S1:S S2:S ;
+IfS:S ::= RelExpr S1:S;
 WhileS:S ::= RelExpr S;
-
-//I/O and sanitize statements
-PrintS:S ::= <Ident>;
-ReadS:S ::= <Ident>;
-Sanitize:S ::= <Ident>;
