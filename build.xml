@@ -1,0 +1,125 @@
+<!--
+ Targets for working from terminal window:
+       build (default) - generates java files and compiles them
+       clean           - removes all generated files and class files
+       test            - run junit tests
+ Targets for working from Eclipse:
+       gen             - generates java files
+       genClean        - removes all generated files and their class files
+-->
+<project name="WHILE" default="build" basedir=".">
+
+	<!-- The directory where generated files will be stored -->
+	<property name="package" value="AST" />
+
+	<!-- The directory where tools like javacc, junit, and jastadd are stored. -->
+	<property name="tools" value="tools" />
+
+	<!-- "jflex" is an ant task class for the scanner generator in JFlex.jar -->
+	<taskdef name="jflex" classname="JFlex.anttask.JFlexTask" classpath="tools/JFlex.jar" />
+	<!-- "beaver" is an ant task class for the parser generator in beaver.jar -->
+	<taskdef name="beaver" classname="beaver.comp.run.AntTask" classpath="${tools}/beaver.jar" />
+	<!-- The JastAdd ANT task -->
+	<taskdef classname="org.jastadd.JastAddTask" name="jastadd" classpath="${tools}/jastadd2.jar" />
+
+	<!-- compile sources -->
+	<!-- build: (automatically runs "gen" if needed)
+    - compiles all java files
+    - intended to be used from the command line
+      (in Eclipse you don't need this target since Eclipse compiles
+      java files automatically) -->
+	<target name="build" depends="gen">
+		<javac debug="false" includeantruntime="true"
+		       nowarn="true" srcdir="."
+		       classpath=".:${tools}/beaver.jar:tools/junit.jar" />
+	</target>
+
+	<!-- generate compiler source files and compile sources -->
+	<target name="scanner">
+		<!-- compose the scanner -->
+		<concat destfile="WHILE.flex" binary="true" force="false">
+			<filelist dir=".">
+				<file name="ScannerPrelude.flex" />
+				<file name="ScannerBody.flex" />
+				<file name="ScannerAssert.flex" />
+				<file name="ScannerTaint.flex" />
+				<file name="ScannerEnd.flex" />
+			</filelist>	
+		</concat>
+	</target>
+	<target name="parser">
+		<!-- compose the parser -->
+		<concat destfile="WHILE.parser" binary="true" force="false">
+			<filelist dir=".">
+				<file name="ParserPrelude.parser" />
+				<file name="ParserWHILERules.parser" />
+				<file name="ParserAssertRules.parser" />
+				<file name="ParserTaintRules.parser" />
+			</filelist>
+		</concat>
+	</target>
+	<target name="gen" depends="scanner,parser">
+	    <!-- create a directory for the generated files -->
+	    <mkdir dir="${basedir}/${package}"/>
+	    <!-- run jastadd to generate AST files -->
+	    <jastadd package="${package}" beaver="true" rewrite="true" outdir="${basedir}">
+	      <fileset dir=".">
+	          <include name="CFG.jrag"/>
+	      </fileset>
+	      <fileset dir=".">
+	        <include name="**/*.ast"/>
+	        <include name="**/*.jrag"/>
+	        <exclude name="CFG.jrag"/>
+	        <include name="**/*.jadd"/>
+	      </fileset>
+	    </jastadd>
+	    <!-- generate the scanner -->
+	    <echo message = "Running jflex"/>
+	    <jflex file="WHILE.flex" outdir="AST" nobak="yes"/>
+	    <!-- generate the parser phase 1, translating .parser to .beaver -->
+	    <echo message = "generating beaver input"/>
+	    <java fork="true" dir="${basedir}" classpath="${basedir}:${tools}/proj.jar:${tools}/beaver-rt.jar" classname="Main">
+	      <arg line="WHILE.parser AST/WHILEParser.beaver"/>
+	    </java>
+	    <!-- generate the parser phase 2, translating .beaver to .java -->
+	    <beaver file="AST/WHILEParser.beaver" terminalNames="yes" compress="no" useSwitch="yes"/>
+	  </target>
+
+	<target name="flex">
+		<!-- generate the scanner -->
+		<echo message="Running jflex" />
+		<jflex file="WHILE.flex" outdir="AST" nobak="yes" />
+	</target>
+
+	<!-- clean:
+    - deletes the directory holding generated files
+    - deletes all .class files (recursively) -->
+	<target name="clean">
+		<delete dir="${package}" />
+		<delete>
+			<fileset dir="." includes="**/*.class" />
+		</delete>
+	</target>
+
+	<!-- test: (automatically runs "build" if needed)
+    - runs a set of tests by starting the Java program TestAll
+    - intended to be used from the command line
+      (In Eclipse you don't need this target since you can run testcases
+      directly in Eclipse from a menu command.) -->
+	<target name="test" depends="build">
+		<java classname="testFramework.TestAll" 
+			classpath=".:${tools}/beaver.jar:tools/junit.jar" 
+			fork="true" dir="." />
+	</target>
+
+	<!-- TARGET cleanGen -->
+	<target name="cleanGen">
+	   <delete>
+	   	<fileset dir="." includes="WHILE.flex" />
+	   	<fileset dir="." includes="WHILE.parser" />
+	   </delete>
+	   <!-- Delete the directory containing generated files and their class files -->
+	   <delete dir="${package}"/>
+	</target>
+
+</project>
