@@ -31,7 +31,6 @@ LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
 
 WhiteSpace = {LineTerminator} | [ \t\f]
-Comment = [%] {InputCharacter}* {LineTerminator}?
 IdChar = ([:letter:]|['_])
 Identifier = {IdChar}({IdChar} | [:digit:])*
 

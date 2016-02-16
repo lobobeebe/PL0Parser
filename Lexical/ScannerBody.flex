@@ -1,4 +1,3 @@
-{Comment}     { /* discard token */ }
 {WhiteSpace}  { /* discard token */ }
 
 // Rules
