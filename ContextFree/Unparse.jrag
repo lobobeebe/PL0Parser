@@ -1,0 +1,56 @@
+aspect Unparse {
+
+	syn String Program.unparse();
+	syn String S.unparse();
+	syn String Expr.unparse();
+	syn String Op.unparse();
+	syn String Label.unparse();
+	
+	syn String Program.toString() = unparse();
+	syn String S.toString() = unparse();
+	syn String Expr.toString() = unparse(); 
+	syn String Op.toString() = getContents();
+	syn String Label.toString() = unparse();
+
+	eq Program.unparse() = getS().unparse();
+	eq CompoundS.unparse() { 
+		StringBuffer s = new StringBuffer();
+		s.append("{\n");
+		int len = getNumSList();
+		for (int i = 0; i < len; i++) {
+			s.append(getSList(i).unparse());
+			if (i < len-1) { s.append(";\n"); }	
+		}
+		s.append("\n}");
+		return s.toString();
+	}
+	eq VarRefExpr.unparse() { return getContents();}
+	eq NumLitExpr.unparse() { return getContents();}
+	eq BoolLitExpr.unparse() { return getContents();}
+	eq ABinaryExpr.unparse() { return "(" + getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse() + ")";}
+
+	eq NotExpr.unparse() { return "not " + getExpr().unparse();}
+	eq LogicExpr.unparse() { return "(" + getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse() + ")";}
+	eq RelExpr.unparse() { return "(" + getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse() + ")";}
+
+	eq SkipS.unparse() = "[skip]^" + getLabelAST().unparse();
+	eq AssignS.unparse() {
+		return "[" + getVar() + " := " + getExpr().unparse() + "]" 
+			+ "^" + getLabelAST().unparse();
+	}
+	eq IfS.unparse() {
+	    return "if " + getLabeledExpr().unparse() 
+	           + " then " + getS1().unparse() 
+	           + " else " + getS2().unparse();
+	}
+	eq WhileS.unparse() { return "while "  + getLabeledExpr().unparse() 
+	                         + " do " + getS().unparse(); }
+	
+	eq LabeledExpr.unparse() { 
+		return "[" + getExpr().unparse() + "]^" + getLabelAST().unparse();
+	} 
+	
+	eq Op.unparse() = getContents();
+	
+	eq NumLabel.unparse() = getNum().toString();
+}

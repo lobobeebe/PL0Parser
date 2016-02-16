@@ -1,0 +1,15 @@
+{
+	i := z + 5*5*4/3-4*6+8-k;
+	j := (3+4)*7;
+    {
+    	if i < 0 then { 
+    		x := 1; y := y-x+4*7; skip;
+    		while 3 < z do { z := z+1 }
+    	} else { if q >= 7 and y <= 5 or 3 != 4
+    	         then { skip }
+    	         else { skip; x := x*4-1 }
+    	       };
+    	s := s+403-1
+    };
+    skip    
+}

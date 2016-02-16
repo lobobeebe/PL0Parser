@@ -112,9 +112,13 @@
       (In Eclipse you don't need this target since you can run testcases
       directly in Eclipse from a menu command.) -->
 	<target name="test" depends="build">
-		<java classname="testFramework.TestAll" 
-			classpath=".:${tools}/beaver.jar:tools/junit.jar" 
-			fork="true" dir="." />
+		<mkdir dir="${basedir}/${build}/tests/Data"/>
+		<copy todir="${basedir}/${build}/tests/Data">
+			<fileset dir="${basedir}/Tests/Data"/>
+		</copy>
+		<java classname="tests.TestAll" 
+			classpath="${build}:${tools}/beaver.jar:tools/junit.jar" 
+			fork="true" dir="${build}" />
 	</target>
 
 </project>

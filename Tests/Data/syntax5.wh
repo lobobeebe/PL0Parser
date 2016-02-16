@@ -1,0 +1,5 @@
+{
+	i := 0 - 2;
+    if i < 0 then { x := 1 } else { x := 2/7+4 };
+    while i != 0 or i > 0 do { skip; if i > 0 then { x := 1; skip } else { x := x } }
+}
