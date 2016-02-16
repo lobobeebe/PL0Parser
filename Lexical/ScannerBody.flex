@@ -15,11 +15,6 @@
 "procedure"			{ return sym(Terminals.PROCEDURE); }
 "begin"				{ return sym(Terminals.BEGIN); }
 "end"				{ return sym(Terminals.END); }
-"!"					{ return sym(Terminals.EXCLAMATION); }
-"?"					{ return sym(Terminals.QUESTION); }
-"print"				{ return sym(Terminals.PRINT); }
-"read"				{ return sym(Terminals.READ); }
-"sanitize"			{ return sym(Terminals.SANITIZE); }
 
 // Operators
 ("="|"#"|"<"|"<="|">="|">")   	{ return sym(Terminals.OPRELATIONAL); }
