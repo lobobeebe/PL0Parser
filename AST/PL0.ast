@@ -1,7 +1,7 @@
 Program ::= Block;
 
 // Block
-Block ::= ConstDecl* VarDecl* S
+Block ::= [ConstDecl*] [VarDecl*] S
 
 // Declarations
 Abstract Decl;

@@ -10,7 +10,6 @@
 ","					{ return sym(Terminals.COMMA); }
 ";"                 { return sym(Terminals.SEMICOLON); }
 "if"                { return sym(Terminals.IF); }
-"then"				{ return sym(Terminals.THEN); }
 "while"             { return sym(Terminals.WHILE); }
 "do"				{ return sym(Terminals.DO); }
 "procedure"			{ return sym(Terminals.PROCEDURE); }
