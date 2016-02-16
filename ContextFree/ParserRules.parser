@@ -1,0 +1,63 @@
+
+Program goal =
+  block                            {: return new Program(block); :}
+  ;
+
+S block =
+    LBRACE blockStmtList RBRACE   {: return new CompoundS(blockStmtList); :}
+  ;
+
+List blockStmtList =
+    stmt                          {: return new List().add(stmt); :}
+  | blockStmtList SEMICOLON stmt  {: return blockStmtList.add(stmt); :}
+  ;
+
+S stmt =
+    IDENTIFIER ASSIGN expression.e   {: return new AssignS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, e); :}
+  | SKIP                             {: return new SkipS(new NumLabel(LabelUtility.nextLabel())); :}
+  | block                            {: return block; :}
+  | IF expression.be THEN block.b ELSE block.c  {: return new IfS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), be), b, c); :}
+  | WHILE expression.be DO block     {: return new WhileS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), be), block); :}
+  ;
+   
+
+Expr primary =
+       IDENTIFIER               {: return new VarRefExpr(IDENTIFIER); :}
+     | NUMBER                   {: return new NumLitExpr(NUMBER); :}
+     | TRUE                     {: return new BoolLitExpr(TRUE); :}
+     | FALSE                    {: return new BoolLitExpr(FALSE); :}
+     | NOT primary.e            {: return new NotExpr(e); :}
+     | LPAREN expression.e RPAREN {: return e; :}
+     ;
+     
+Expr factor =
+     primary.p                 {: return p; :}
+   | factor.l OPMUL primary.r 
+                               {: return new ABinaryExpr(l, new Op_a(OPMUL), r); :}
+   ;
+   
+Expr aexpression =
+     factor.f                  {: return f; :}
+   | aexpression.l OPPLUS factor.r
+                               {: return new ABinaryExpr(l, new Op_a(OPPLUS), r); :}
+   | aexpression.l OPMINUS factor.r
+                               {: return new ABinaryExpr(l, new Op_a(OPMINUS), r); :}
+   ;
+   
+Expr relexp =
+       aexpression
+     | aexpression.l OPRELATIONAL aexpression.r 
+                                {: return new RelExpr(l, new Op_r(OPRELATIONAL), r); :}
+     ;
+
+Expr conj =
+       relexp.re               {: return re; :}
+     | conj.l AND relexp.r 
+                               {: return new LogicExpr(l, new Op_b(AND), r); :}
+     ;
+     
+Expr expression = 
+       conj.c                  {: return c; :}                         
+     | expression.l OR conj.r 
+                               {: return new LogicExpr(l, new Op_b(OR), r); :}
+     ;
