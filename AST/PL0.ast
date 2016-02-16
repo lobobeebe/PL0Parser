@@ -3,10 +3,13 @@ Program ::= S;
 //block
 Block ::= [] [] 
 
+//declarations
+Abstract Decl;
+ConstDecl: Decl ::= <Ident> <Num>;
+VarDecl: Decl ::= <Ident>;
 
 //procedure/call
-
-
+Procedure ::= <Ident> Block;
 
 //Operations
 abstract Op ::= <Contents>;
@@ -15,7 +18,7 @@ Op_a : Op;
 
 //expressions
 abstract Expr;
-VarRefExpr: Expr ::= <Contents>;
+IdentRefExpr: Expr ::= <Contents>;
 NumLitExpr: Expr ::= <Contents>;
 ABinaryExpr: Expr ::= Left:Expr Op:Op_a Right:Expr;
 OddExpr: expr ::= Expr;
@@ -25,11 +28,11 @@ ConditionExpr: Expr ::= Expr;
 // statements
 abstract S; 
 CompoundS: S ::= SList:S* ;
-AssignS:S ::= <Var> Expr;
+AssignS:S ::= <Ident> Expr;
 IfS:S ::= RelExpr S1:S S2:S ;
 WhileS:S ::= RelExpr S;
 
 //I/O and sanitize statements
-PrintS:S ::= <Var>;
-ReadS:S ::= <Var>;
-Sanitize:S ::= <Var>;
+PrintS:S ::= <Ident>;
+ReadS:S ::= <Ident>;
+Sanitize:S ::= <Ident>;
