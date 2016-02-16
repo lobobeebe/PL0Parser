@@ -1,4 +1,3 @@
-{Comment}     { /* discard token */ }
 {WhiteSpace}  { /* discard token */ }
 
 // Rules
@@ -20,8 +19,8 @@
 ("="|"#"|"<"|"<="|">="|">")   	{ return sym(Terminals.OPRELATIONAL); }
 "odd"							{ return sym(Terminals.ODD); }
 // split + and - so later could handle unary minus separately...
-"+"                       { return sym(Terminals.OPPLUS); }
-"-"                       { return sym(Terminals.OPMINUS); }
+"+"                             { return sym(Terminals.OPPLUS); }
+"-"                             { return sym(Terminals.OPMINUS); }
 ("*"|"/")                       { return sym(Terminals.OPMUL); }
 
 // Separators
