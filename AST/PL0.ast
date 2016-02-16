@@ -1,29 +1,35 @@
 Program ::= S;
 
+//block
+Block ::= [] [] 
+
+
+//procedure/call
+
+
+
+//Operations
 abstract Op ::= <Contents>;
-Op_b : Op;
 Op_r : Op;
 Op_a : Op;
 
+//expressions
 abstract Expr;
-
 VarRefExpr: Expr ::= <Contents>;
 NumLitExpr: Expr ::= <Contents>;
 ABinaryExpr: Expr ::= Left:Expr Op:Op_a Right:Expr;
-
-BoolLitExpr:Expr ::= <Contents>;
-NotExpr: Expr ::= Expr;
-LogicExpr: Expr ::= Left:Expr Op:Op_b Right:Expr;
+OddExpr: expr ::= Expr;
 RelExpr: Expr ::= Left:Expr Op:Op_r Right:Expr;
-LabeledExpr: Expr ::= LabelAST:Label Expr; 
+ConditionExpr: Expr ::= Expr;
 
 // statements
 abstract S; 
 CompoundS: S ::= SList:S* ;
-AssignS:S ::= LabelAST:Label <Var> Expr;
-SkipS:S ::= LabelAST:Label;
-IfS:S ::= LabeledExpr S1:S S2:S ;
-WhileS:S ::= LabeledExpr S;
+AssignS:S ::= <Var> Expr;
+IfS:S ::= RelExpr S1:S S2:S ;
+WhileS:S ::= RelExpr S;
 
-abstract Label;
-NumLabel:Label ::= <Num>;
+//I/O and sanitize statements
+PrintS:S ::= <Var>;
+ReadS:S ::= <Var>;
+Sanitize:S ::= <Var>;
