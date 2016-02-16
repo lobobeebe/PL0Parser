@@ -7,16 +7,19 @@
        gen             - generates java files
        genClean        - removes all generated files and their class files
 -->
-<project name="WHILE" default="build" basedir=".">
+<project name="PL0" default="build" basedir=".">
 
+	<!-- Create the build directory to separate generated file -->
 	<!-- The directory where generated files will be stored -->
-	<property name="package" value="AST" />
+	<property name="projectName" value="PL0" />
+	<property name="build" value="Build" />
+	<property name="gen" value="AST" />
 
 	<!-- The directory where tools like javacc, junit, and jastadd are stored. -->
-	<property name="tools" value="tools" />
+	<property name="tools" value="Tools" />
 
 	<!-- "jflex" is an ant task class for the scanner generator in JFlex.jar -->
-	<taskdef name="jflex" classname="JFlex.anttask.JFlexTask" classpath="tools/JFlex.jar" />
+	<taskdef name="jflex" classname="JFlex.anttask.JFlexTask" classpath="${tools}/JFlex.jar" />
 	<!-- "beaver" is an ant task class for the parser generator in beaver.jar -->
 	<taskdef name="beaver" classname="beaver.comp.run.AntTask" classpath="${tools}/beaver.jar" />
 	<!-- The JastAdd ANT task -->
@@ -30,43 +33,38 @@
       java files automatically) -->
 	<target name="build" depends="gen">
 		<javac debug="false" includeantruntime="true"
-		       nowarn="true" srcdir="."
+		       nowarn="true" srcdir="." destdir="${build}"
 		       classpath=".:${tools}/beaver.jar:tools/junit.jar" />
 	</target>
 
 	<!-- generate compiler source files and compile sources -->
 	<target name="scanner">
 		<!-- compose the scanner -->
-		<concat destfile="WHILE.flex" binary="true" force="false">
-			<filelist dir=".">
+		<concat destfile="${build}/${projectName}.flex" binary="true" force="false">
+			<filelist dir="${build}">
 				<file name="ScannerPrelude.flex" />
 				<file name="ScannerBody.flex" />
-				<file name="ScannerAssert.flex" />
-				<file name="ScannerTaint.flex" />
 				<file name="ScannerEnd.flex" />
 			</filelist>	
 		</concat>
 	</target>
 	<target name="parser">
 		<!-- compose the parser -->
-		<concat destfile="WHILE.parser" binary="true" force="false">
-			<filelist dir=".">
+		<concat destfile="${build}/${projectName}.parser" binary="true" force="false">
+			<filelist dir="${build}">
 				<file name="ParserPrelude.parser" />
-				<file name="ParserWHILERules.parser" />
-				<file name="ParserAssertRules.parser" />
-				<file name="ParserTaintRules.parser" />
+				<file name="ParserRules.parser" />
 			</filelist>
 		</concat>
 	</target>
-	<target name="gen" depends="scanner,parser">
-	    <!-- create a directory for the generated files -->
-	    <mkdir dir="${basedir}/${package}"/>
+	
+	<target name="gen" depends="mkdir,scanner,parser">
 	    <!-- run jastadd to generate AST files -->
-	    <jastadd package="${package}" beaver="true" rewrite="true" outdir="${basedir}">
-	      <fileset dir=".">
+	    <jastadd package="${gen}" beaver="true" rewrite="true" outdir="${basedir}/${build}">
+	      <fileset dir="${build}">
 	          <include name="CFG.jrag"/>
 	      </fileset>
-	      <fileset dir=".">
+	      <fileset dir="${build}">
 	        <include name="**/*.ast"/>
 	        <include name="**/*.jrag"/>
 	        <exclude name="CFG.jrag"/>
@@ -75,30 +73,37 @@
 	    </jastadd>
 	    <!-- generate the scanner -->
 	    <echo message = "Running jflex"/>
-	    <jflex file="WHILE.flex" outdir="AST" nobak="yes"/>
+	    <jflex file="${build}/${projectName}.flex" outdir="${build}" nobak="yes"/>
 	    <!-- generate the parser phase 1, translating .parser to .beaver -->
 	    <echo message = "generating beaver input"/>
-	    <java fork="true" dir="${basedir}" classpath="${basedir}:${tools}/proj.jar:${tools}/beaver-rt.jar" classname="Main">
-	      <arg line="WHILE.parser AST/WHILEParser.beaver"/>
+	    <java fork="true" dir="${basedir}/${build}" classpath="${basedir}:${tools}/proj.jar:${tools}/beaver-rt.jar" classname="Main">
+	      <arg line="${projectName}.parser ${gen}/${projectName}Parser.beaver"/>
 	    </java>
 	    <!-- generate the parser phase 2, translating .beaver to .java -->
-	    <beaver file="AST/WHILEParser.beaver" terminalNames="yes" compress="no" useSwitch="yes"/>
+	    <beaver file="${build}/${gen}/${projectName}Parser.beaver" terminalNames="yes" compress="no" useSwitch="yes"/>
 	  </target>
+	  
+	<target name="mkdir">
+	    <!-- create a directory for the generated files -->
+	    <mkdir dir="${basedir}/${build}"/>
+		<copy todir="${basedir}/${build}">
+			<fileset dir="${basedir}/AST"/>
+			<fileset dir="${basedir}/ContextFree"/>
+			<fileset dir="${basedir}/Lexical"/>
+		</copy>
+	</target>
 
 	<target name="flex">
 		<!-- generate the scanner -->
 		<echo message="Running jflex" />
-		<jflex file="WHILE.flex" outdir="AST" nobak="yes" />
+		<jflex file="${projectName}.flex" outdir="${build}" nobak="yes" />
 	</target>
 
 	<!-- clean:
     - deletes the directory holding generated files
     - deletes all .class files (recursively) -->
 	<target name="clean">
-		<delete dir="${package}" />
-		<delete>
-			<fileset dir="." includes="**/*.class" />
-		</delete>
+		<delete dir="${build}" />
 	</target>
 
 	<!-- test: (automatically runs "build" if needed)
@@ -110,16 +115,6 @@
 		<java classname="testFramework.TestAll" 
 			classpath=".:${tools}/beaver.jar:tools/junit.jar" 
 			fork="true" dir="." />
-	</target>
-
-	<!-- TARGET cleanGen -->
-	<target name="cleanGen">
-	   <delete>
-	   	<fileset dir="." includes="WHILE.flex" />
-	   	<fileset dir="." includes="WHILE.parser" />
-	   </delete>
-	   <!-- Delete the directory containing generated files and their class files -->
-	   <delete dir="${package}"/>
 	</target>
 
 </project>
