@@ -21,7 +21,7 @@ public class UnparseTests extends PL0TestCase {
 	}
 	
 	/** The number of syntax test files in testsrc. */
-	private static final int NUMTESTS = 8;
+	private static final int NUMTESTS = 6;
 
 	public void testUnparse() {
 		for (int i = 1; i <= NUMTESTS; i++) {

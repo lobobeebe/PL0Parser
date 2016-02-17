@@ -14,5 +14,9 @@ end;
 begin
     x := 2;
     call addition;
-    sum := (sum + 1)
+    sum := (sum + 1);
+    if sum > 40 then begin
+        x := y;
+        sum := (y - 20)
+    end
 end.

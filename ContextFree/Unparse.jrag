@@ -34,6 +34,11 @@ aspect Unparse
 		
 		// Append Constants
 		int length = getNumConstant();
+        if(length > 0)
+        {
+            buffer.append("const ");
+        }
+        
 		for(int i =0; i < length; i++)
 		{
 			buffer.append(getConstant(i).unparse());
@@ -50,6 +55,11 @@ aspect Unparse
 		
 		// Append Vars
 		length = getNumVar();
+        if(length > 0)
+        {
+            buffer.append("var ");
+        }
+        
 		for(int i =0; i < length; i++)
 		{
 			buffer.append(getVar(i).unparse());
@@ -63,24 +73,32 @@ aspect Unparse
 				buffer.append(", ");
 			}
 		}
+        
+		// Append Procedure
+		length = getNumProc();
+        
+		for(int i =0; i < length; i++)
+		{
+			buffer.append(getProc(i).unparse() + " ");
+		}
 		
 		buffer.append(getS().unparse());
 		return buffer.toString();
 	}
 	
 	// Declarations
-	eq ConstDecl.unparse() { return "const " + getVar() + " = " + getNum(); }
-	eq VarDecl.unparse() { return "var " + getVar(); }
+	eq ConstDecl.unparse() { return getVar() + " = " + getNum(); }
+	eq VarDecl.unparse() { return getVar(); }
 	
 	// Procedure
-	eq Procedure.unparse() { return "procedure " + getVar() + getBlock().unparse(); }
+	eq Procedure.unparse() { return "procedure " + getVar() + "; " + getBlock().unparse() + ";"; }
 	
 	// Expressions
 	eq VarRefExpr.unparse() { return getContents(); }
 	eq NumLitExpr.unparse() { return getContents(); }
 	eq ABinaryExpr.unparse() { return "(" + getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse() + ")"; }
 	eq OddExpr.unparse() { return "odd " + getExpr().unparse(); }
-	eq RelExpr.unparse() { return "(" + getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse() + ")"; }
+	eq RelExpr.unparse() { return getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse(); }
 	
 	// Statements
 	eq CallS.unparse() { return "call " + getVar(); }

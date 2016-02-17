@@ -7,16 +7,19 @@ var a, b;
 begin
     a := x;
     b := y;
-    sum := a + b
+    sum := (a + b)
 end;
 
 
 begin
     x := 2;
     call addition;
-    sum := sum + 1
+    sum := (sum + 1);
     if sum > 40 then begin
-        x := y;
-        sum := y - 20
+        while x # 20 do begin
+            x := y;
+            sum := (y - 20)
+        end;
+        sum := 0
     end
 end.

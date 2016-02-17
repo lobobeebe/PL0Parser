@@ -4,11 +4,11 @@
 "."					{ return sym(Terminals.ENDPROGRAM); }
 "const"				{ return sym(Terminals.CONST); }
 "var"				{ return sym(Terminals.VAR); }
-"="					{ return sym(Terminals.CONSTASSIGN); }
 ":="                { return sym(Terminals.ASSIGN); }
 ","					{ return sym(Terminals.COMMA); }
 ";"                 { return sym(Terminals.SEMICOLON); }
 "if"                { return sym(Terminals.IF); }
+"then"              { return sym(Terminals.THEN); }
 "while"             { return sym(Terminals.WHILE); }
 "do"				{ return sym(Terminals.DO); }
 "procedure"			{ return sym(Terminals.PROCEDURE); }
@@ -17,7 +17,8 @@
 "end"				{ return sym(Terminals.END); }
 
 // Operators
-("="|"#"|"<"|"<="|">="|">")   	{ return sym(Terminals.OPRELATIONAL); }
+"="                         { return sym(Terminals.EQUALS); }
+("#"|"<"|"<="|">="|">")   	{ return sym(Terminals.OPRELATIONAL); }
 "odd"							{ return sym(Terminals.ODD); }
 // split + and - so later could handle unary minus separately...
 "+"                             { return sym(Terminals.OPPLUS); }

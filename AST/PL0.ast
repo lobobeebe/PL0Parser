@@ -2,7 +2,7 @@
 Program ::= Block;
 
 // Block
-Block ::= Constant:ConstDecl* Var:VarDecl* Procs:Procedure* S;
+Block ::= Constant:ConstDecl* Var:VarDecl* Proc:Procedure* S;
 
 // Declarations
 abstract Decl;

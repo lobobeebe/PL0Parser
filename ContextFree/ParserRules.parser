@@ -15,7 +15,7 @@ Block block =
 ;
   
 Procedure proc =
-    PROCEDURE IDENTIFIER block SEMICOLON    {: return new Procedure(IDENTIFIER, block); :}
+    PROCEDURE IDENTIFIER SEMICOLON block SEMICOLON   {: return new Procedure(IDENTIFIER, block); :}
 ;
 
 List procList =
@@ -24,7 +24,7 @@ List procList =
 ;
 
 List constBlock =
-	constDeclList SEMICOLON 			{: return constDeclList; :}
+	CONST constDeclList SEMICOLON 			{: return constDeclList; :}
 ;  
   
 List constDeclList =
@@ -33,11 +33,11 @@ List constDeclList =
 ;
 
 ConstDecl constDecl =
-	CONST IDENTIFIER CONSTASSIGN NUMBER {: return new ConstDecl(IDENTIFIER, NUMBER); :}
+	IDENTIFIER EQUALS NUMBER {: return new ConstDecl(IDENTIFIER, NUMBER); :}
 ;
 
 List varBlock =
-	varDeclList SEMICOLON 				{: return varDeclList; :}
+	VAR varDeclList SEMICOLON 				{: return varDeclList; :}
 ;
 
 List varDeclList =
@@ -46,7 +46,7 @@ List varDeclList =
 ;
  
 VarDecl varDecl =
-	VAR IDENTIFIER			{: return new VarDecl(IDENTIFIER); :}
+	IDENTIFIER			{: return new VarDecl(IDENTIFIER); :}
 ;
  
 S stmt =
@@ -65,6 +65,7 @@ List stmtList =
 RelExpr condition =
 	ODD expression							{: return new OddExpr(expression); :}
   | expression.l OPRELATIONAL expression.r 	{: return new RelExpr(l, new Op_r(OPRELATIONAL), r); :}
+  | expression.l EQUALS expression.r {: return new RelExpr(l, new Op_r(EQUALS), r); :}
 ;
 
 Expr expression = 
