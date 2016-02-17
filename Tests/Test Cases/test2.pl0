@@ -1,0 +1,8 @@
+const y = 5, z = 0;
+var x;
+begin
+    if z = 0
+        x := y;
+    x := x + 1;
+        
+end.
