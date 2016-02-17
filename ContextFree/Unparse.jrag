@@ -1,10 +1,13 @@
 aspect Unparse {
-
+	
 	syn String Program.unparse();
+	syn String Block.unparse();
+	syn String Decl.unparse();
+	syn String Procedure.unparse();
+	syn String Op.unparse();
 	syn String S.unparse();
 	syn String Expr.unparse();
-	syn String Op.unparse();
-	syn String Label.unparse();
+	
 	
 	syn String Program.toString() = unparse();
 	syn String S.toString() = unparse();
@@ -13,7 +16,7 @@ aspect Unparse {
 	syn String Label.toString() = unparse();
 
 	eq Program.unparse() = getS().unparse();
-	eq CompoundS.unparse() { 
+	eq BeginEndS.unparse() { 
 		StringBuffer s = new StringBuffer();
 		s.append("{\n");
 		int len = getNumSList();
