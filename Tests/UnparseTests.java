@@ -25,8 +25,8 @@ public class UnparseTests extends PL0TestCase {
 
 	public void testUnparse() {
 		for (int i = 1; i <= NUMTESTS; i++) {
-			compareUnparse("tests/Data/syntax" + i + ".wh", 
-					"tests/Data/syntax" + i + ".wh-prettyprint");
+			compareUnparse("tests/Data/test" + i + ".PL0", 
+					"tests/Data/test" + i + ".PL0");
 		}
 	}
 

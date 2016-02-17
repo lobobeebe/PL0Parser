@@ -27,7 +27,7 @@ aspect Unparse
 	/**
 	 * Define "unparse()"
 	 */
-	eq Program.unparse() { return getBlock().unparse(); }
+	eq Program.unparse() { return getBlock().unparse() + "."; }
 	eq Block.unparse()
 	{
 		StringBuffer buffer = new StringBuffer();
@@ -87,7 +87,7 @@ aspect Unparse
 	eq BeginEndS.unparse()
 	{ 
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("{\n");
+		buffer.append("begin\n");
 		int len = getNumSList();
 		for (int i = 0; i < len; i++)
 		{
@@ -97,10 +97,10 @@ aspect Unparse
 				buffer.append(";\n");
 			}	
 		}
-		buffer.append("\n}");
+		buffer.append("\nend");
 		return buffer.toString();
 	}
-	eq AssignS.unparse() { return "[" + getVar() + " := " + getExpr().unparse() + "]"; }
+	eq AssignS.unparse() { return getVar() + " := " + getExpr().unparse(); }
 	eq IfS.unparse() { return "if " + getCondition().unparse() + " then " + getS().unparse(); }
 	eq WhileS.unparse() { return "while "  + getCondition().unparse() + " do " + getS().unparse(); }
 	eq Op.unparse() = getContents();
