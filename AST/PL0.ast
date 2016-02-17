@@ -5,11 +5,11 @@ Block ::= [ConstDecl*] [VarDecl*] S
 
 // Declarations
 Abstract Decl;
-ConstDecl: Decl ::= <Ident> <Num>;
-VarDecl: Decl ::= <Ident>;
+ConstDecl: Decl ::= <Var> <Num>;
+VarDecl: Decl ::= <Var>;
 
 // Procedure
-Procedure ::= <Ident> Block;
+Procedure ::= <Var> Block;
 
 // Operations
 abstract Op ::= <Contents>;
@@ -26,8 +26,9 @@ RelExpr: Expr ::= Left:Expr Op:Op_r Right:Expr;
 
 // Statements
 abstract S; 
-CallS: S ::= <Ident>
+
+CallS: S ::= <Var>
 BeginEndS: S ::= SList:S*;
-AssignS:S ::= <Ident> Expr;
+AssignS:S ::= <Var> Expr;
 IfS:S ::= RelExpr S1:S;
 WhileS:S ::= RelExpr S;

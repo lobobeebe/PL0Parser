@@ -12,6 +12,7 @@
 "while"             { return sym(Terminals.WHILE); }
 "do"				{ return sym(Terminals.DO); }
 "procedure"			{ return sym(Terminals.PROCEDURE); }
+"call"              { return sym(Terminals.CALL); }
 "begin"				{ return sym(Terminals.BEGIN); }
 "end"				{ return sym(Terminals.END); }
 
