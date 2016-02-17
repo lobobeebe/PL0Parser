@@ -1,10 +1,12 @@
+// Program
 Program ::= Block;
 
 // Block
-Block ::= [ConstDecl*] [VarDecl*] S
+Block ::= Constant:ConstDecl* Var:VarDecl* Procs:Procedure* S;
 
 // Declarations
-Abstract Decl;
+abstract Decl;
+
 ConstDecl: Decl ::= <Var> <Num>;
 VarDecl: Decl ::= <Var>;
 
@@ -13,11 +15,13 @@ Procedure ::= <Var> Block;
 
 // Operations
 abstract Op ::= <Contents>;
+
 Op_r : Op;
 Op_a : Op;
 
 // Expressions
 abstract Expr;
+
 VarRefExpr: Expr ::= <Contents>;
 NumLitExpr: Expr ::= <Contents>;
 ABinaryExpr: Expr ::= Left:Expr Op:Op_a Right:Expr;
@@ -27,8 +31,8 @@ RelExpr: Expr ::= Left:Expr Op:Op_r Right:Expr;
 // Statements
 abstract S; 
 
-CallS: S ::= <Var>
-BeginEndS: S ::= SList:S*;
+CallS:S ::= <Var>;
+BeginEndS:S ::= SList:S*;
 AssignS:S ::= <Var> Expr;
-IfS:S ::= RelExpr S1:S;
-WhileS:S ::= RelExpr S;
+IfS:S ::= Condition:RelExpr S;
+WhileS:S ::= Condition:RelExpr S;

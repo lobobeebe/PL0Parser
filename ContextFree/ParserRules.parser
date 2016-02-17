@@ -3,15 +3,26 @@ Program goal =
   block ENDPROGRAM                           {: return new Program(block); :}
   ;
 
-  
-  
 Block block =
-	stmt			{: return new Block(new List(), new List(), stmt); :}
-  | constBlock stmt {: return new Block(constBlock, new List(), stmt); :}
-  | varBlock stmt	{: return new Block(new List(), varBlock, stmt); :}
-  | constBlock varBlock stmt {: return new Block(constBlock, varBlock, stmt); :}
-  ;
+	stmt			{: return new Block(new List(), new List(), new List(), stmt); :}
+  | procList stmt   {: return new Block(new List(), new List(), procList, stmt); :}
+  | constBlock stmt {: return new Block(constBlock, new List(), new List(), stmt); :}
+  | constBlock procList stmt {: return new Block(constBlock, new List(), procList, stmt); :}
+  | varBlock stmt	{: return new Block(new List(), varBlock, new List(), stmt); :}
+  | varBlock procList stmt	{: return new Block(new List(), varBlock, procList, stmt); :}
+  | constBlock varBlock stmt {: return new Block(constBlock, varBlock, new List(), stmt); :}
+  | constBlock varBlock procList stmt {: return new Block(constBlock, varBlock, procList, stmt); :}
+;
   
+Procedure proc =
+    PROCEDURE IDENTIFIER block SEMICOLON    {: return new Procedure(IDENTIFIER, block); :}
+;
+
+List procList =
+    proc            {: return new List().add(proc); :}
+  | procList proc   {: return procList.add(proc); :}
+;
+
 List constBlock =
 	constDeclList SEMICOLON 			{: return constDeclList; :}
 ;  
@@ -44,26 +55,28 @@ S stmt =
   | BEGIN stmtList END 			   	{: return new BeginEndS(stmtList); :}
   | IF condition THEN stmt  	   	{: return new IfS(condition, stmt); :}
   | WHILE condition DO stmt     	{: return new WhileS(condition, stmt); :}
-  ;
+;
    
 List stmtList =
 	stmt						{: return new List().add(stmt); :}
   | stmtList SEMICOLON stmt		{: return stmtList.add(stmt); :}
 ;
 
-Expr condition =
+RelExpr condition =
 	ODD expression							{: return new OddExpr(expression); :}
   | expression.l OPRELATIONAL expression.r 	{: return new RelExpr(l, new Op_r(OPRELATIONAL), r); :}
- 
+;
+
 Expr expression = 
     term					{: return term; :}
   | term.l OPPLUS term.r	{: return new ABinaryExpr(l, new Op_a(OPPLUS), r); :}
-  | term.l OPMINUS term.r	{: return new ABinaryExpr(1, new Op_a(OPMINUS), r); :}
+  | term.l OPMINUS term.r	{: return new ABinaryExpr(l, new Op_a(OPMINUS), r); :}
 ;
 
 Expr term =
 	factor					{: return factor; :}
   | factor.l OPMUL factor.r {: return new ABinaryExpr(l, new Op_a(OPMUL), r); :}
+;
 
 Expr factor =
 	IDENTIFIER               {: return new VarRefExpr(IDENTIFIER); :}

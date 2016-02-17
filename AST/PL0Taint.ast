@@ -1,4 +1,0 @@
-// I/O and sanitize statements
-PrintS:S ::= <Ident>;
-ReadS:S ::= <Ident>;
-Sanitize:S ::= <Ident>;

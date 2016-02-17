@@ -30,13 +30,6 @@ public class UnparseTests extends PL0TestCase {
 		}
 	}
 
-	public void testPrettyPrint() {
-		for (int i = 1; i <= NUMTESTS; i++) {
-			comparePrettyPrint("tests/Data/syntax" + i + ".wh", 
-					"tests/Data/syntax" + i + ".wh-prettyprint");
-		}
-	}
-
 	/** Read the given file name into the returned string. */
 	public String file2String(String fileName) throws IOException {
 		File f = new File(fileName);
@@ -64,23 +57,6 @@ public class UnparseTests extends PL0TestCase {
 			throw new Error("This should not happen");
 		}
 	}
-	
-	/** Compare the prettyPrint of the sourceFile with the contents of the expectedFile. */
-	protected void comparePrettyPrint(String sourceFile, String expectedFile) {
-		try {
-			Program p = parseFromFile(sourceFile);
-			String prettyp = Squeezer.unixnls(p.prettyPrint());
-			String expectedString = Squeezer.unixnls(file2String(expectedFile));
-			if (!prettyp.equals(expectedString)) {
-				fail("differences between " + sourceFile + "(" + prettyp
-						+ ") and " + expectedFile + "(" + expectedString + ")");
-			}
-		} catch (Throwable t) {
-			fail(t.getMessage());
-			throw new Error("This should not happen");
-		}
-	}
-
 
 	public static junit.framework.Test suite() {
 		return new junit.framework.TestSuite(tests.UnparseTests.class);

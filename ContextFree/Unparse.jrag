@@ -1,5 +1,9 @@
-aspect Unparse {
-	
+aspect Unparse
+{	
+	/**
+	 * "unparse()"
+	 * Unparses the AST node back to code format.
+	 */
 	syn String Program.unparse();
 	syn String Block.unparse();
 	syn String Decl.unparse();
@@ -7,53 +11,97 @@ aspect Unparse {
 	syn String Op.unparse();
 	syn String S.unparse();
 	syn String Expr.unparse();
-	
-	
+		
+	/**
+	 * "toString()"
+	 * Converts the AST node to a string.
+	 */
 	syn String Program.toString() = unparse();
+	syn String Block.toString() = unparse();
+	syn String Decl.toString() = unparse();
+	syn String Procedure.toString() = unparse();
+	syn String Op.toString() = getContents();
 	syn String S.toString() = unparse();
 	syn String Expr.toString() = unparse(); 
-	syn String Op.toString() = getContents();
-	syn String Label.toString() = unparse();
 
-	eq Program.unparse() = getS().unparse();
-	eq BeginEndS.unparse() { 
-		StringBuffer s = new StringBuffer();
-		s.append("{\n");
-		int len = getNumSList();
-		for (int i = 0; i < len; i++) {
-			s.append(getSList(i).unparse());
-			if (i < len-1) { s.append(";\n"); }	
+	/**
+	 * Define "unparse()"
+	 */
+	eq Program.unparse() { return getBlock().unparse(); }
+	eq Block.unparse()
+	{
+		StringBuffer buffer = new StringBuffer();
+		
+		// Append Constants
+		int length = getNumConstant();
+		for(int i =0; i < length; i++)
+		{
+			buffer.append(getConstant(i).unparse());
+			
+			if(i == length - 1)
+			{
+				buffer.append(";\n");
+			}
+			else
+			{
+				buffer.append(", ");
+			}
 		}
-		s.append("\n}");
-		return s.toString();
+		
+		// Append Vars
+		length = getNumVar();
+		for(int i =0; i < length; i++)
+		{
+			buffer.append(getVar(i).unparse());
+			
+			if(i == length - 1)
+			{
+				buffer.append(";\n");
+			}
+			else
+			{
+				buffer.append(", ");
+			}
+		}
+		
+		buffer.append(getS().unparse());
+		return buffer.toString();
 	}
-	eq VarRefExpr.unparse() { return getContents();}
-	eq NumLitExpr.unparse() { return getContents();}
-	eq BoolLitExpr.unparse() { return getContents();}
-	eq ABinaryExpr.unparse() { return "(" + getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse() + ")";}
-
-	eq NotExpr.unparse() { return "not " + getExpr().unparse();}
-	eq LogicExpr.unparse() { return "(" + getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse() + ")";}
-	eq RelExpr.unparse() { return "(" + getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse() + ")";}
-
-	eq SkipS.unparse() = "[skip]^" + getLabelAST().unparse();
-	eq AssignS.unparse() {
-		return "[" + getVar() + " := " + getExpr().unparse() + "]" 
-			+ "^" + getLabelAST().unparse();
-	}
-	eq IfS.unparse() {
-	    return "if " + getLabeledExpr().unparse() 
-	           + " then " + getS1().unparse() 
-	           + " else " + getS2().unparse();
-	}
-	eq WhileS.unparse() { return "while "  + getLabeledExpr().unparse() 
-	                         + " do " + getS().unparse(); }
 	
-	eq LabeledExpr.unparse() { 
-		return "[" + getExpr().unparse() + "]^" + getLabelAST().unparse();
-	} 
+	// Declarations
+	eq ConstDecl.unparse() { return "const " + getVar() + " = " + getNum(); }
+	eq VarDecl.unparse() { return "var " + getVar(); }
 	
+	// Procedure
+	eq Procedure.unparse() { return "procedure " + getVar() + getBlock().unparse(); }
+	
+	// Expressions
+	eq VarRefExpr.unparse() { return getContents(); }
+	eq NumLitExpr.unparse() { return getContents(); }
+	eq ABinaryExpr.unparse() { return "(" + getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse() + ")"; }
+	eq OddExpr.unparse() { return "odd " + getExpr().unparse(); }
+	eq RelExpr.unparse() { return "(" + getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse() + ")"; }
+	
+	// Statements
+	eq CallS.unparse() { return "call " + getVar(); }
+	eq BeginEndS.unparse()
+	{ 
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("{\n");
+		int len = getNumSList();
+		for (int i = 0; i < len; i++)
+		{
+			buffer.append(getSList(i).unparse());
+			if (i < len-1)
+			{
+				buffer.append(";\n");
+			}	
+		}
+		buffer.append("\n}");
+		return buffer.toString();
+	}
+	eq AssignS.unparse() { return "[" + getVar() + " := " + getExpr().unparse() + "]"; }
+	eq IfS.unparse() { return "if " + getCondition().unparse() + " then " + getS().unparse(); }
+	eq WhileS.unparse() { return "while "  + getCondition().unparse() + " do " + getS().unparse(); }
 	eq Op.unparse() = getContents();
-	
-	eq NumLabel.unparse() = getNum().toString();
 }
