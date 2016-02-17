@@ -7,12 +7,12 @@ var a, b;
 begin
     a := x;
     b := y;
-    sum := a + b;
+    sum := (a + b)
 end;
 
 
 begin
     x := 2;
     call addition;
-    sum := sum + 1
+    sum := (sum + 1)
 end.
