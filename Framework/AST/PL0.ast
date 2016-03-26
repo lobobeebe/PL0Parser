@@ -32,7 +32,7 @@ LabeledExpr: Expr ::= LabelAST:Label Expr;
 // Statements
 abstract S; 
 
-CallS:S ::= <Var>;
+CallS:S ::= LabelAST:Label <Var>;
 BeginEndS:S ::= SList:S*;
 AssignS:S ::= LabelAST:Label <Var> Expr;
 IfS:S ::= LabeledExpr S;
