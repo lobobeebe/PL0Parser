@@ -15,7 +15,7 @@
 	<!-- Create the build directory to separate generated file -->
 	<property name="build" value="Build" />
     
-    <!-- Define the tree structure that each module will follow -->
+    <!-- Define the tree structure folders hat each module will follow -->
     <property name="framework" value="Framework" />
 	<property name="aspects" value="Aspects" />
     <property name="ast" value="AST" />
@@ -35,7 +35,7 @@
 	<!-- The JastAdd ANT task -->
 	<taskdef classname="org.jastadd.JastAddTask" name="jastadd" classpath="${tools}/jastadd2.jar" />
     
-    <property name="moduleList" value="Framework,ModuleUnparse"/>
+    <property name="moduleList" value="Framework"/>
     
 	<!-- compile sources -->
 	<!-- build: (automatically runs "gen" if needed)
