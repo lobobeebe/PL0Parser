@@ -123,11 +123,11 @@ aspect Unparse
 	}
 	eq AssignS.unparse() { return "[" + getVar() + " := " + getExpr().unparse() + "]^" + getLabelAST().unparse() ; }
     
-	eq IfS.unparse() { return "if " + getLabeledExpr().unparse() + " then " + getS().unparse(); }
+	eq IfS.unparse() { return "if " + getCondition().unparse() + " then " + getS().unparse(); }
     
-	eq WhileS.unparse() { return "while "  + getLabeledExpr().unparse() + " do " + getS().unparse(); }
+	eq WhileS.unparse() { return "while "  + getCondition().unparse() + " do " + getS().unparse(); }
     
-    eq LabeledExpr.unparse() { return "[" + getCondition.unparse() + "]^" + getLabelAST().unparse(); }
+    eq LabeledExpr.unparse() { return "[" + getExpr().unparse() + "]^" + getLabelAST().unparse(); }
     
 	eq Op.unparse() = getContents();
     
