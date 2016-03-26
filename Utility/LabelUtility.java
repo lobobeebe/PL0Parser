@@ -1,4 +1,4 @@
-package utility;
+package Utility;
 
 /** A utility class for generating unique labels. */
 public class LabelUtility {

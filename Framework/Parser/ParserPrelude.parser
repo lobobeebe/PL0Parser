@@ -1,7 +1,7 @@
 %header {:
  package AST;
  import java.io.*;
- import utility.LabelUtility;
+ import Utility.LabelUtility;
  :};
   
 %embed {:

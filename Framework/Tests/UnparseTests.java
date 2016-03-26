@@ -1,10 +1,10 @@
-package tests;
+package Tests;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import utility.Squeezer;
+import Utility.Squeezer;
 
 import AST.*;
 
@@ -26,8 +26,8 @@ public class UnparseTests extends PL0TestCase {
     /** Compare the source file to the unparsed string of the AST. Matching proves correctness of AST. */
 	public void testUnparse() {
 		for (int i = 1; i <= NUMTESTS; i++) {
-			compareUnparse("tests/Data/test" + i + ".PL0", 
-					"tests/Data/test" + i + ".PL0");
+			compareUnparse("Tests/Data/test" + i + ".PL0", 
+					"Tests/Data/test" + i + ".PL0");
 		}
 	}
 
@@ -60,7 +60,7 @@ public class UnparseTests extends PL0TestCase {
 	}
 
 	public static junit.framework.Test suite() {
-		return new junit.framework.TestSuite(tests.UnparseTests.class);
+		return new junit.framework.TestSuite(Tests.UnparseTests.class);
 	}
 
 	public static void main(String args[]) {

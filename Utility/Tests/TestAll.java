@@ -1,4 +1,4 @@
-package tests;
+package Tests;
 
 import java.io.*;
 import java.lang.reflect.Modifier;

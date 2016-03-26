@@ -1,4 +1,4 @@
-package utility;
+package Utility;
 
 /** A utility class that can squeeze out excess white space in strings, 
  * making them easier to compare. */

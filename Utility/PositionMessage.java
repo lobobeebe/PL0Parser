@@ -1,4 +1,4 @@
-package utility;
+package Utility;
 
 import AST.ASTNode;
 import beaver.Symbol;
