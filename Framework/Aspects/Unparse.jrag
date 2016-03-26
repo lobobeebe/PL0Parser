@@ -11,7 +11,8 @@ aspect Unparse
 	syn String Op.unparse();
 	syn String S.unparse();
 	syn String Expr.unparse();
-		
+    syn String Label.unparse();
+    
 	/**
 	 * "toString()"
 	 * Converts the AST node to a string.
@@ -23,7 +24,9 @@ aspect Unparse
 	syn String Op.toString() = getContents();
 	syn String S.toString() = unparse();
 	syn String Expr.toString() = unparse(); 
-
+    syn String Label.toString() = unparse();
+    
+    
 	/**
 	 * Define "unparse()"
 	 */
@@ -118,8 +121,15 @@ aspect Unparse
 		buffer.append("\nend");
 		return buffer.toString();
 	}
-	eq AssignS.unparse() { return getVar() + " := " + getExpr().unparse(); }
-	eq IfS.unparse() { return "if " + getCondition().unparse() + " then " + getS().unparse(); }
-	eq WhileS.unparse() { return "while "  + getCondition().unparse() + " do " + getS().unparse(); }
+	eq AssignS.unparse() { return "[" + getVar() + " := " + getExpr().unparse() + "]^" + getLabelAST().unparse() ; }
+    
+	eq IfS.unparse() { return "if " + getLabeledExpr().unparse() + " then " + getS().unparse(); }
+    
+	eq WhileS.unparse() { return "while "  + getLabeledExpr().unparse() + " do " + getS().unparse(); }
+    
+    eq LabeledExpr.unparse() { return "[" + getCondition.unparse() + "]^" + getLabelAST().unparse(); }
+    
 	eq Op.unparse() = getContents();
-}
+    
+    eq NumLabel.unparse() = getNum().toString();
+    }
