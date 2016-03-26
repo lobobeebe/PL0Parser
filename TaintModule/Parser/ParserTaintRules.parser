@@ -1,3 +1,6 @@
 S stmt =
+       READ IDENTIFIER             {: return new ReadS(IDENTIFIER); :}
+     | SANITIZE IDENTIFIER	   {: return new SanitizeS(IDENTIFIER); :}
+     | PRINT expression.e          {: return new PrintS(e); :}
      ;
      
