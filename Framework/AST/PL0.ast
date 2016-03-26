@@ -38,3 +38,7 @@ BeginEndS:S ::= SList:S*;
 AssignS:S ::= LabelAST:Label <Var> Expr;
 IfS:S ::= LabeledExpr S;
 WhileS:S ::= LabeledExpr S;
+
+abstract Label;
+NumLabel:Label ::= <Num>;
+
