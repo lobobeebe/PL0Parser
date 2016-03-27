@@ -7,8 +7,8 @@ Block ::= Constant:ConstDecl* Var:VarDecl* Proc:Procedure* S;
 // Declarations
 abstract Decl;
 
-ConstDecl: Decl ::= <Var> <Num>;
-VarDecl: Decl ::= <Var>;
+ConstDecl: Decl ::= LabelAST:Label <Var> <Num>;
+VarDecl: Decl ::= LabelAST:Label <Var>;
 
 // Procedure
 Procedure ::= <Var> Block;

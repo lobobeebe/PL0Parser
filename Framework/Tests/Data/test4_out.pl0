@@ -1,0 +1,22 @@
+const [y = 5]^1, [z = 0]^2;
+var [x]^3, [sum]^4;
+
+[procedure addition]^5;
+[var a, b]^6;
+
+begin
+    [a := x]^7;
+    [b := y]^8;
+    [sum := (a + b)]^9
+end;
+
+
+begin
+    [x := 2]^10;
+    [call addition]^11;
+    [sum := (sum + 1)]^12;
+    if [sum > 40]^13 then begin
+        [x := y]^14;
+        [sum := (y - 20)]^15
+    end
+end.

@@ -1,0 +1,31 @@
+const [y = 5]^1, [z = 0]^2;
+var [x]^3, [sum]^4;
+
+[procedure addition]^5;
+var [a]^6, [b]^7;
+
+begin
+    [a := x]^8;
+    [b := y]^9;
+    [sum := (a + b)]^10
+end;
+
+[procedure hello]^11;
+begin
+    [x := 20]^12;
+    [sum := (sum + x)]^13
+end;
+
+
+begin
+    [x := 2]^14;
+    [call addition]^15;
+    [sum := (sum + 1)]^16;
+    if [sum > 40]^17 then begin
+        while [x # 20]^18 do begin
+            [x := y]^19;
+            [sum := (y - 20)]^20
+        end;
+        [sum := 0]^21
+    end
+end.

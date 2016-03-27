@@ -90,8 +90,8 @@ aspect Unparse
 	}
 	
 	// Declarations
-	eq ConstDecl.unparse() { return getVar() + " = " + getNum(); }
-	eq VarDecl.unparse() { return getVar(); }
+	eq ConstDecl.unparse() { return "[" + getVar() + " = " + getNum() + "]^" + getLabelAST().unparse(); }
+	eq VarDecl.unparse() { return "[" + getVar() + "]^" + getLabelAST().unparse(); }
 	
 	// Procedure
 	eq Procedure.unparse() { return "procedure " + getVar() + "; " + getBlock().unparse() + ";"; }

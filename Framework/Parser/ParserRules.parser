@@ -33,7 +33,7 @@ List constDeclList =
 ;
 
 ConstDecl constDecl =
-	IDENTIFIER EQUALS NUMBER {: return new ConstDecl(IDENTIFIER, NUMBER); :}
+	IDENTIFIER EQUALS NUMBER {: return new ConstDecl(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, NUMBER); :}
 ;
 
 List varBlock =
@@ -46,7 +46,7 @@ List varDeclList =
 ;
  
 VarDecl varDecl =
-	IDENTIFIER			{: return new VarDecl(IDENTIFIER); :}
+	IDENTIFIER			{: return new VarDecl(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
 ;
  
 S stmt =

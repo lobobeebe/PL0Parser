@@ -26,8 +26,8 @@ public class UnparseTests extends PL0TestCase {
     /** Compare the source file to the unparsed string of the AST. Matching proves correctness of AST. */
 	public void testUnparse() {
 		for (int i = 1; i <= NUMTESTS; i++) {
-			compareUnparse("tests/Data/test" + i + ".PL0", 
-					"tests/Data/test" + i + ".PL0");
+			compareUnparse("tests/Data/testin_" + i + ".PL0", 
+					"tests/Data/testout_" + i + ".PL0");
 		}
 	}
 
