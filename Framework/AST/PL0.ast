@@ -7,11 +7,11 @@ Block ::= Constant:ConstDecl* Var:VarDecl* Proc:Procedure* S;
 // Declarations
 abstract Decl;
 
-ConstDecl: Decl ::= <Var> <Num>;
-VarDecl: Decl ::= <Var>;
+ConstDecl: Decl ::= LabelAST:Label <Var> <Num>;
+VarDecl: Decl ::= LabelAST:Label <Var>;
 
 // Procedure
-Procedure ::= <Var> Block;
+Procedure: Decl ::= LabelAST:Label <Var> Block;
 
 // Operations
 abstract Op ::= <Contents>;
@@ -28,11 +28,18 @@ ABinaryExpr: Expr ::= Left:Expr Op:Op_a Right:Expr;
 OddExpr: Expr ::= Expr;
 RelExpr: Expr ::= Left:Expr Op:Op_r Right:Expr;
 
+LabeledExpr: Expr ::= LabelAST:Label Expr; 
+
+
 // Statements
 abstract S; 
 
-CallS:S ::= <Var>;
+CallS:S ::= LabelAST:Label <Var>;
 BeginEndS:S ::= SList:S*;
-AssignS:S ::= <Var> Expr;
-IfS:S ::= Condition:RelExpr S;
-WhileS:S ::= Condition:RelExpr S;
+
+AssignS:S ::= LabelAST:Label <Var> Expr;
+IfS:S ::= Condition:LabeledExpr S;
+WhileS:S ::= Condition:LabeledExpr S;
+
+abstract Label;
+NumLabel:Label ::= <Num>;
