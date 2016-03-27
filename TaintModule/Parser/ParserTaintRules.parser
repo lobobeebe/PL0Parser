@@ -1,0 +1,6 @@
+S stmt =
+       READ IDENTIFIER             {: return new ReadS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
+     | SANITIZE IDENTIFIER	   {: return new SanitizeS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
+     | PRINT expression.e          {: return new PrintS(new NumLabel(LabelUtility.nextLabel()), e); :}
+     ;
+     

@@ -23,6 +23,7 @@
     <property name="scanner" value="Scanner" />
     <property name="tests" value="Tests" />
     <property name="testCases" value="Data" />
+    <property name="utility" value="Utility" />
     
     
 	<!-- The directory where tools like javacc, junit, and jastadd are stored. -->
@@ -35,7 +36,7 @@
 	<!-- The JastAdd ANT task -->
 	<taskdef classname="org.jastadd.JastAddTask" name="jastadd" classpath="${tools}/jastadd2.jar" />
     
-    <property name="moduleList" value="Framework"/>
+    <property name="moduleList" value="Framework,TaintModule"/>
     
 	<!-- compile sources -->
 	<!-- build: (automatically runs "gen" if needed)
@@ -44,10 +45,18 @@
       (in Eclipse you don't need this target since Eclipse compiles
       java files automatically) -->
 	<target name="build" depends="gen">
-		<javac debug="false" includeantruntime="true"
-		       nowarn="true" srcdir="." destdir="${build}"
-		       classpath=".:${tools}/beaver.jar:tools/junit.jar">
+		<javac 
+            debug="false"
+            includeantruntime="true"
+            nowarn="true"
+            destdir="${build}"
+            classpath=".:${tools}/beaver.jar:tools/junit.jar">
             <src path="${build}"/>
+            <src path="${utility}"/>
+            <src>
+                <multirootfileset basedirs="${moduleList}" type="dir">
+                </multirootfileset>
+            </src>
         </javac>
             
 	</target>
@@ -80,18 +89,18 @@
 	
 	<target name="gen" depends="genTreeStructure,scanner,parser">  
         <!-- JastAddTask does not support multirootfileset so copy ast and jrags into build folder first -->
-		<copy todir="${basedir}/${build}/${ast}">
+		<copy todir="${basedir}/${build}">
             <multirootfileset basedirs="${moduleList}">
-                <include name="**/${ast}/*.ast"/>
-                <include name="**/${aspects}/*.jrag"/>
+                <include name="${ast}/*.ast"/>
+                <include name="${aspects}/*.jrag"/>
             </multirootfileset>
 		</copy>
         <!-- run jastadd to generate AST files -->
         
 	    <jastadd package="${ast}" beaver="true" rewrite="true" outdir="${basedir}/${build}">
             <fileset dir="${basedir}/${build}">
-                <include name="**/${ast}/*.ast"/>
-                <include name="**/${aspects}/*.jrag"/>
+                <include name="${ast}/*.ast"/>
+                <include name="${aspects}/*.jrag"/>
             </fileset>
 	    </jastadd>
 	    <!-- generate the scanner -->
@@ -129,7 +138,7 @@
         <mkdir dir="${basedir}/${build}/${tests}/${testCases}"/>
 		<copy todir="${basedir}/${build}">
             <multirootfileset basedirs="${moduleList}">
-                <include name="**/${testCases}/*.pl0"/>
+                <include name="${tests}/${testCases}/*.pl0"/>
             </multirootfileset>
 		</copy>
         <!-- Run tests -->
