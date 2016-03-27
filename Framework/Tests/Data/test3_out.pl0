@@ -1,7 +1,7 @@
 const [y = 5]^1, [z = 0]^2;
 var [x]^3, [sum]^4;
 
-procedure addition;
+[procedure addition]^10;
 var [a]^5, [b]^6;
 
 begin
@@ -12,7 +12,7 @@ end;
 
 
 begin
-    [x := 2]^10;
-    [call addition]^11;
-    [sum := (sum + 1)]^12
+    [x := 2]^11;
+    [call addition]^12;
+    [sum := (sum + 1)]^13
 end.

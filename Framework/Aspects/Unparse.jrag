@@ -94,7 +94,7 @@ aspect Unparse
 	eq VarDecl.unparse() { return "[" + getVar() + "]^" + getLabelAST().unparse(); }
 	
 	// Procedure
-	eq Procedure.unparse() { return "procedure " + getVar() + "; " + getBlock().unparse() + ";"; }
+	eq Procedure.unparse() { return "[procedure " + getVar() + "]^" + getLabelAST().unparse() + "; " + getBlock().unparse() + ";"; }
 	
 	// Expressions
 	eq VarRefExpr.unparse() { return getContents(); }
@@ -104,7 +104,7 @@ aspect Unparse
 	eq RelExpr.unparse() { return getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse(); }
 	
 	// Statements
-	eq CallS.unparse() { return "call " + getVar(); }
+	eq CallS.unparse() { return "[call " + getVar() + "]^" + getLabelAST().unparse(); }
 	eq BeginEndS.unparse()
 	{ 
 		StringBuffer buffer = new StringBuffer();

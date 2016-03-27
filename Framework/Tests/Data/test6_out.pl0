@@ -1,19 +1,19 @@
 const [y = 5]^1, [z = 0]^2;
 var [x]^3, [sum]^4;
 
-[procedure addition]^5;
-var [a]^6, [b]^7;
+[procedure addition]^10;
+var [a]^5, [b]^6;
 
 begin
-    [a := x]^8;
-    [b := y]^9;
-    [sum := (a + b)]^10
+    [a := x]^7;
+    [b := y]^8;
+    [sum := (a + b)]^9
 end;
 
-[procedure hello]^11;
+[procedure hello]^13;
 begin
-    [x := 20]^12;
-    [sum := (sum + x)]^13
+    [x := 20]^11;
+    [sum := (sum + x)]^12
 end;
 
 
@@ -21,11 +21,11 @@ begin
     [x := 2]^14;
     [call addition]^15;
     [sum := (sum + 1)]^16;
-    if [sum > 40]^17 then begin
-        while [x # 20]^18 do begin
-            [x := y]^19;
-            [sum := (y - 20)]^20
+    if [sum > 40]^21 then begin
+        while [x # 20]^19 do begin
+            [x := y]^17;
+            [sum := (y - 20)]^18
         end;
-        [sum := 0]^21
+        [sum := 0]^20
     end
 end.
