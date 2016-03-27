@@ -50,11 +50,12 @@ VarDecl varDecl =
 ;
  
 S stmt =
-    IDENTIFIER ASSIGN expression   	{: return new AssignS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, expression); :}
-  | CALL IDENTIFIER				   	{: return new CallS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
+    IDENTIFIER ASSIGN expression   	{: return new AssignS(IDENTIFIER, expression); :}
+  | CALL IDENTIFIER				   	{: return new CallS(IDENTIFIER); :}
   | BEGIN stmtList END 			   	{: return new BeginEndS(stmtList); :}
   | IF condition THEN stmt  	   	{: return new IfS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
   | WHILE condition DO stmt     	{: return new WhileS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
+
 ;
    
 List stmtList =
