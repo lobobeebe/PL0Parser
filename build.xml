@@ -45,11 +45,18 @@
       (in Eclipse you don't need this target since Eclipse compiles
       java files automatically) -->
 	<target name="build" depends="gen">
-		<javac debug="false" includeantruntime="true"
-		       nowarn="true" destdir="${build}"
-		       classpath=".:${tools}/beaver.jar:tools/junit.jar">
+		<javac 
+            debug="false"
+            includeantruntime="true"
+            nowarn="true"
+            destdir="${build}"
+            classpath=".:${tools}/beaver.jar:tools/junit.jar">
             <src path="${build}"/>
             <src path="${utility}"/>
+            <src>
+                <multirootfileset basedirs="${moduleList}" type="dir">
+                </multirootfileset>
+            </src>
         </javac>
             
 	</target>
