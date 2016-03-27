@@ -1,9 +1,9 @@
 const [y = 5]^1, [z = 0]^2;
 var [x]^3;
 begin
-    if [z = 0]^1
+    if [z = 0]^4
     then
-        [x := y]^2;
-    [x := (x + 1)]^2
+        [x := y]^5;
+    [x := (x + 1)]^6
         
 end.
