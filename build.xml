@@ -125,22 +125,15 @@
     - runs a set of tests by starting the Java program TestAll
     - intended to be used from the command line -->
 	<target name="test" depends="build">
-        <!-- Copy the tests -->
-        <mkdir dir="${basedir}/${build}/${tests}"/>
-		<copy todir="${basedir}/${build}/${tests}">
-            <multirootfileset basedirs="${moduleList}">
-                <include name="**/${tests}/*.java"/>
-            </multirootfileset>
-		</copy>
         <!-- Copy the test cases -->
         <mkdir dir="${basedir}/${build}/${tests}/${testCases}"/>
-		<copy todir="${basedir}/${build}/${tests}/${testCases}">
+		<copy todir="${basedir}/${build}">
             <multirootfileset basedirs="${moduleList}">
-                <include name="**/${tests}/${testCases}/*.pl0"/>
+                <include name="**/${testCases}/*.pl0"/>
             </multirootfileset>
 		</copy>
         <!-- Run tests -->
-		<java classname="tests.TestAll" 
+		<java classname="${tests}.TestAll" 
 			classpath="${build}:${tools}/beaver.jar:tools/junit.jar" 
 			fork="true" dir="${build}" />
 	</target>
