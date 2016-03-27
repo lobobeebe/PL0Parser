@@ -12,7 +12,12 @@ end;
 
 
 begin
-    x := 2;
+    read x;
     call addition;
-    sum := (sum + 1)
+    sum := (sum + 1);
+    if sum > 40 then begin
+        sanitize x;
+        sum := (y - 20);
+        print sum
+    end
 end.

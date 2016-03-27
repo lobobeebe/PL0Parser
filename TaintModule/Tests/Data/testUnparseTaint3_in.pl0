@@ -12,11 +12,8 @@ end;
 
 
 begin
-    x := 2;
+    read x;
     call addition;
     sum := (sum + 1);
-    if sum > 40 then begin
-        x := y;
-        sum := (y - 20)
-    end
+    print sum
 end.

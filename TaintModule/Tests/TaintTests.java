@@ -4,7 +4,7 @@ import Tests.UnparseTests;
 
 public class TaintTests extends UnparseTests {
 
-    private static final int NUM_TAINT_UNPARSE_TESTS = 3;
+    private static final int NUM_TAINT_UNPARSE_TESTS = 4;
 
 	public TaintTests(String s) {
 		super(s);
@@ -14,8 +14,8 @@ public class TaintTests extends UnparseTests {
 	public void testUnparse() {
         super.testUnparse();
 		for (int i = 1; i <= NUM_TAINT_UNPARSE_TESTS; i++) {
-			compareUnparse("Tests/Data/testUnparseTaintIn" + i + ".PL0",
-					"Tests/Data/testUnparseTaintIn" + i + ".PL0");
+			compareUnparse("Tests/Data/testUnparseTaint" + i + "_in.PL0",
+					"Tests/Data/testUnparseTaint" + i + "_out.PL0");
 		}
 	}
     
