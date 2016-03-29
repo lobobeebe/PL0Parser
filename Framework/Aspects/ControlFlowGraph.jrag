@@ -106,7 +106,7 @@ aspect CFG
 
     /** Flows into a block */
 	inh Set<Label> S.inFlows();
-	eq Program.getS().inFlows() = SetRepUtility.emptySet();
+	eq Block.getS().inFlows() = SetRepUtility.emptySet();
 	eq IfS.getS().inFlows() = SetRepUtility.singleton(getLabeledExpr().getLabelAST());
 	eq WhileS.getS().inFlows() = SetRepUtility.singleton(getLabeledExpr().getLabelAST());
 	eq BeginEndS.getStatement(int index).inFlows(){
@@ -124,6 +124,10 @@ aspect CFG
 		ins.addAll(getS().finals());
 		return ins;
 	}
+    eq ABinaryExpr.getLeft().inFlows() = this.inFlows();
+    eq ABinaryExpr.getRight().inFlows() = this.inFlows();
+    eq OddExpr.getExpr().inFlows() = this.inFlows();
+
 
 	/** get next statement for outflows */
 	inh S S.next();
@@ -141,7 +145,7 @@ aspect CFG
 
 	/** Flows out of a block */
 	inh Set<Label> S.outFlows();
-	eq Program.getS().outFlows() = SetRepUtility.emptySet();
+	eq Block.getS().outFlows() = SetRepUtility.emptySet();
 	eq IfS.getS().outFlows(){
 		if(next() == null){
 			return SetRepUtility.emptySet();

@@ -13,7 +13,12 @@ aspect ControlFlowGraphIo
     eq PrintS.finals() = SetRepUtility.singleton(getLabelAST());
 
     /** itsBlock attribute */
-    eq ReadS.itsBlock() = this;
-    eq SanitizeS.itsBlock() = this;
-    eq PrintS.itsBlock() = this;
+    eq ReadS.getLabelAST().itsBlock() = this;
+    eq SanitizeS.getLabelAST().itsBlock() = this;
+    eq PrintS.getLabelAST().itsBlock() = this;
+
+    /** blocks attribute */
+    eq ReadS.blocks() = SetRepUtility.singleton(this);
+    eq SanitizeS.blocks() = SetRepUtility.singleton(this);
+    eq PrintS.blocks() = SetRepUtility.singleton(this);
 }
