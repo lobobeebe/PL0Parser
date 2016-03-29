@@ -24,12 +24,13 @@ aspect ControlFlowGraph
 
     syn Set<Label> S.finals();
     eq AssignS.finals() = SetRepUtility.singleton(getLabel());
-    eq IfS.finals() = S.finals();
+    eq IfS.finals() = getS().finals();
     eq WhileS.finals() = SetRepUtility.singleton(getLabeledExpr().getLabel());
     eq BeginEndS.finals() = getStatement(getNumStatement() - 1).finals();
     eq CallS.finals()
     {
         Set<Label> ret = SetRepUtility.emptySet();
+        /*
         for(int i = 0; i < getNumProcedure(); i++)
         {
             if(getProcedure(i).getVar().equals(getVar()))
@@ -37,6 +38,7 @@ aspect ControlFlowGraph
                 ret = getProcedure(i).getS().finals();
             }
         }
+        */
         return ret;
     }
 
@@ -48,9 +50,9 @@ aspect ControlFlowGraph
         Label getLabel();
     }
 
-    ConstDecl implements ElementaryBlock;
+    Decl implements ElementaryBlock;
     AssignS implements ElementaryBlock;
-    BExpr implements ElementaryBlock;
+    LabeledExpr implements ElementaryBlock;
 
     /** Set of blocks in a statement */
     syn Set<ElementaryBlock> S.blocks();
@@ -78,6 +80,7 @@ aspect ControlFlowGraph
     eq CallS.blocks()
     {
         Set<ElementaryBlock> ret = SetRepUtility.emptySet();
+        /*
         for(int i = 0; i < getNumProcedure(); i++)
         {
             if(getProcedure(i).getVar().equals(getVar()))
@@ -86,6 +89,7 @@ aspect ControlFlowGraph
                 ret.addAll(getProcedure(i).getS().blocks());
             }
         }
+        */
         return ret;
     }
 
@@ -107,9 +111,7 @@ aspect ControlFlowGraph
     eq AssignS.getLabel().itsBlock() = this;
     eq CallS.getLabel().itsBlock() = this;
     eq LabeledExpr.getLabel().itsBlock() = this;
-    eq ConstDecl.getLabel().itsBlock() = this;
-    eq VarDecl.getLabel().itsBlock() = this;
-    eq ProcDecl.getLabel().itsBlock() = this;
+    eq Decl.getLabel().itsBlock() = this;
 
     /** Flows into a block */
 	inh Set<Label> S.inFlows();
@@ -183,7 +185,7 @@ aspect ControlFlowGraph
 	inh Set<Label> LabeledExpr.outFlows();
 	eq IfS.getLabeledExpr().outFlows()
     {
-		return SetRepUtility.singleton(getS.init());
+		return SetRepUtility.singleton(getS().init());
 	}
 	eq WhileS.getLabeledExpr().outFlows()
     {

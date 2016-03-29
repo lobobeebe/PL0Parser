@@ -15,7 +15,7 @@ Block block =
 ;
 
 ProcDecl proc =
-    PROCEDURE IDENTIFIER SEMICOLON block SEMICOLON   {: return new Procedure(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, block); :}
+    PROCEDURE IDENTIFIER SEMICOLON block SEMICOLON   {: return new ProcDecl(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, block); :}
 ;
 
 List procList =
@@ -65,8 +65,8 @@ List stmtList =
 
 BExpr condition =
     ODD expression                            {: return new OddExpr(expression); :}
-  | expression.l OPRELATIONAL expression.r     {: return new BExpr(l, new Op_r(OPRELATIONAL), r); :}
-  | expression.l EQUALS expression.r {: return new BExpr(l, new Op_r(EQUALS), r); :}
+  | expression.l OPRELATIONAL expression.r     {: return new BBinaryExpr(l, new Op_r(OPRELATIONAL), r); :}
+  | expression.l EQUALS expression.r {: return new BBinaryExpr(l, new Op_r(EQUALS), r); :}
 ;
 
 AExpr expression =
