@@ -9,7 +9,7 @@ import AST.*;
 aspect SanitizeMustAnalysis
 {
     /** The kill function for sanitized variables. */
-    syn Set<String> ElemetaryBlock.killSM(Set<String> current);
+    syn Set<String> ElementaryBlock.killSM(Set<String> current);
 
     eq Decl.killSM(Set<String> current) = SetRepUtility.emptySet();
     eq AssignS.killSM(Set<String> current) = SetRepUtility.singleton(getVar());
@@ -17,17 +17,17 @@ aspect SanitizeMustAnalysis
     eq LabeledExpr.killSM(Set<String> current) = SetRepUtility.emptySet();
 
     /** The gen function for available expressions. */
-    syn Set<String> ElemetaryBlock.genSM();
+    syn Set<String> ElementaryBlock.genSM();
 
-    eq ConstDecl.genSM(Set<String> current) = SetRepUtility.emptySet();
+    eq Decl.genSM(Set<String> current) = SetRepUtility.emptySet();
     eq AssignS.genSM(Set<String> current) = SetRepUtility.emptySet();
     eq CallS.genSM(Set<String> current) = SetRepUtility.emptySet();
     eq LabeledExpr.genSM(Set<String> current) = SetRepUtility.emptySet();
 
     /** Compute the entry information for the SM analysis. */
-    syn Set<String> ElemetaryBlock.SMentry() circular [SetRepUtility.emptySet()]; // TODO: Change starting value to Var*
+    syn Set<String> ElementaryBlock.SMentry() circular [SetRepUtility.emptySet()]; // TODO: Change starting value to Var*
 
-    eq ElemetaryBlock.SMentry()
+    eq ElementaryBlock.SMentry()
     {
         Set<String> ret;
         if (getLabel().equals(progInitLabel()))
@@ -41,7 +41,7 @@ aspect SanitizeMustAnalysis
                 {
                     public Set<String> run(Label l)
                     {
-                        ElemetaryBlock b = l.itsBlock();
+                        ElementaryBlock b = l.itsBlock();
                         return b.AEexit();
                     }
                 }, inFlows());
@@ -51,8 +51,8 @@ aspect SanitizeMustAnalysis
     }
 
     /** Compute the exit information for the SM analysis. */
-    syn Set<String> ElemetaryBlock.SMexit() circular [SetRepUtility.emptySet()]; // TODO: Change to Var*
-    eq ElemetaryBlock.SMexit()
+    syn Set<String> ElementaryBlock.SMexit() circular [SetRepUtility.emptySet()]; // TODO: Change to Var*
+    eq ElementaryBlock.SMexit()
     {
         Set<String> ret = SetRepUtility.emptySet(); // start with a fresh set!
         ret.addAll(this.SMentry());

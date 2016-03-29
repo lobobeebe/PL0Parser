@@ -6,18 +6,18 @@ import AST.*;
 aspect Vars
 {
     /** The set of variables in a program. */
-    syn Set<String> Program.Vars();
-    eq Program.Vars()
+    syn Set<String> Block.Vars();
+    eq Block.Vars()
     {
         Set<String> ret = SetRepUtility.emptySet();
         for (int i = 0; i < getNumVar(); i++)
         {
-            ret.add(getVar(i));
+            ret.add(getVar(i).getVar());
         }
 
         for (int i = 0; i < getNumProc(); i++)
         {
-            ret.add(getProc(i).Vars());
+            ret.addAll(getProc(i).Vars());
         }
         return ret;
     }
@@ -34,7 +34,7 @@ aspect Vars
     }
 
     /** The set of variables in the program. */
-    syn Set<String> Program.VarStar();
-    eq Program.VarStar() = getVars();
+    syn Set<String> Block.VarStar();
+    eq Block.VarStar() = getVars();
 
 }
