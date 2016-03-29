@@ -26,7 +26,7 @@ NumLitExpr: AExpr ::= <Contents>;
 ABinaryExpr: AExpr ::= Left:AExpr Op:Op_a Right:AExpr;
 OddExpr: AExpr ::= AExpr;
 
-RelExpr: Expr ::= Left:Expr Op:Op_r Right:Expr;
+RelExpr: Expr ::= Left:AExpr Op:Op_r Right:AExpr;
 LabeledExpr: RelExpr ::= LabelAST:Label Expr;
 
 
