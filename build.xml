@@ -8,24 +8,24 @@
        genClean        - removes all generated files and their class files
 -->
 <project name="PL0" default="build" basedir=".">
-    
+
     <property name="projectName" value="PL0" />
     <property name="fileExtension" value="pl0" />
-    
+
     <!-- Create the build directory to separate generated file -->
     <property name="build" value="Build" />
-    
+
     <!-- Define the tree structure folders hat each module will follow -->
     <property name="framework" value="Framework" />
     <property name="aspects" value="Aspects" />
     <property name="ast" value="AST" />
-    <property name="parser" value="Parser" /> 
+    <property name="parser" value="Parser" />
     <property name="scanner" value="Scanner" />
     <property name="tests" value="Tests" />
     <property name="testCases" value="Data" />
     <property name="utility" value="Utility" />
-    
-    
+
+
     <!-- The directory where tools like javacc, junit, and jastadd are stored. -->
     <property name="tools" value="Tools" />
 
@@ -35,9 +35,9 @@
     <taskdef name="beaver" classname="beaver.comp.run.AntTask" classpath="${tools}/beaver.jar" />
     <!-- The JastAdd ANT task -->
     <taskdef classname="org.jastadd.JastAddTask" name="jastadd" classpath="${tools}/jastadd2.jar" />
-    
-    <property name="moduleList" value="Framework,TaintModule"/>
-    
+
+    <property name="moduleList" value="Framework,IoModule"/>
+
     <!-- compile sources -->
     <!-- build: (automatically runs "gen" if needed)
     - compiles all java files
@@ -45,7 +45,7 @@
       (in Eclipse you don't need this target since Eclipse compiles
       java files automatically) -->
     <target name="build" depends="gen">
-        <javac 
+        <javac
             debug="false"
             includeantruntime="true"
             nowarn="true"
@@ -58,7 +58,7 @@
                 </multirootfileset>
             </src>
         </javac>
-            
+
     </target>
 
     <!-- generate compiler source files and compile sources -->
@@ -86,8 +86,8 @@
             </multirootfileset>
         </concat>
     </target>
-    
-    <target name="gen" depends="genTreeStructure,scanner,parser">  
+
+    <target name="gen" depends="genTreeStructure,scanner,parser">
         <!-- JastAddTask does not support multirootfileset so copy ast and jrags into build folder first -->
         <copy todir="${basedir}/${build}">
             <multirootfileset basedirs="${moduleList}">
@@ -96,7 +96,7 @@
             </multirootfileset>
         </copy>
         <!-- run jastadd to generate AST files -->
-        
+
         <jastadd package="${ast}" beaver="true" rewrite="true" outdir="${basedir}/${build}">
             <fileset dir="${basedir}/${build}">
                 <include name="${ast}/*.ast"/>
@@ -114,7 +114,7 @@
         <!-- generate the parser phase 2, translating .beaver to .java -->
         <beaver file="${build}/${projectName}Parser.beaver" terminalNames="yes" compress="no" useSwitch="yes"/>
       </target>
-      
+
     <target name="genTreeStructure">
         <!-- create a directory for the generated files -->
         <mkdir dir="${basedir}/${build}"/>
@@ -142,8 +142,8 @@
             </multirootfileset>
         </copy>
         <!-- Run tests -->
-        <java classname="${tests}.TestAll" 
-            classpath="${build}:${tools}/beaver.jar:tools/junit.jar" 
+        <java classname="${tests}.TestAll"
+            classpath="${build}:${tools}/beaver.jar:tools/junit.jar"
             fork="true" dir="${build}" />
     </target>
 

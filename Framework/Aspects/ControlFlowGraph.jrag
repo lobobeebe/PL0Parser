@@ -73,7 +73,7 @@ aspect CFG
         Set<Block> ret = SetRepUtility.emptySet();
         for(int i = 0; i < getNumProcedure(); i++)
         {
-            if(getProcedure(i).getVar().equals(getVar())
+            if(getProcedure(i).getVar().equals(getVar()))
             {
                 ret.addAll(getProcedure(i).getConstantList());
                 ret.addAll(getProcedure(i).getS().blocks());
@@ -97,8 +97,8 @@ aspect CFG
     /** Map labels to blocks */
     inh Block Label.itsBlock();
     eq AssignS.getLabelAST().itsBlock() = this;
-    eq LabeledExpr getLabelAST().itsBlock() = this;
-    eq ConstDecl getLabelAST.itsBlock() = this;
+    eq LabeledExpr.getLabelAST().itsBlock() = this;
+    eq ConstDecl.getLabelAST().itsBlock() = this;
 
 
     /** Flows into a block */
@@ -136,7 +136,7 @@ aspect CFG
 	eq IfS.getS().next() = next();
 	eq WhileS.getS().next() = this;
 
-	/** Flows out of a block */	
+	/** Flows out of a block */
 	inh Set<Label> S.outFlows();
 	eq Program.getS().outFlows() = SetRepUtility.emptySet();
 	eq IfS.getS().outFlows(){
@@ -173,10 +173,10 @@ aspect CFG
 	}
 
 	/** flows in a statement */
-	
 
 
-		
+
+
 
 
 }

@@ -18,9 +18,9 @@ aspect SanitizeMustAnalysis
     /** The gen function for available expressions. */
     syn Set<Var> Block.genSM();
 
-    eq AssignS.genSM() = SetRepUtility.emptySet();
-    eq SkipS.genSM() = SetRepUtility.emptySet();
-    eq LabeledExpr.genSM() = SetRepUtility.emptySet();
+    eq ConstDecl.killSM(Set<Var> current) = SetRepUtility.emptySet();
+    eq AssignS.killSM(Set<Var> current) = SetRepUtility.emptySet();
+    eq LabeledExpr.killSM(Set<Var> current) = SetRepUtility.emptySet();
 
     /** Compute the entry information for the SM analysis. */
     syn Set<Var> Block.SMentry() circular [VarStar()];
