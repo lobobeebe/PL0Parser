@@ -8,9 +8,9 @@ import AST.*;
  */
 aspect SanitizeMustAnalysisIo
 {
-    eq ReadS.genSM(Set<String> current) = SetRepUtility.emptySet();
-    eq SanitizeS.genSM(Set<String> current) = SetRepUtility.singleton(getVar());
-    eq PrintS.genSM(Set<String> current) = SetRepUtility.emptySet();
+    eq ReadS.genSM() = SetRepUtility.emptySet();
+    eq SanitizeS.genSM() = SetRepUtility.singleton(getVar());
+    eq PrintS.genSM() = SetRepUtility.emptySet();
 
     eq ReadS.killSM(Set<String> current) = SetRepUtility.emptySet();
     eq SanitizeS.killSM(Set<String> current) = SetRepUtility.emptySet();

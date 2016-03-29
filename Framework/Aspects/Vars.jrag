@@ -28,4 +28,7 @@ aspect Vars
     /** The set of variables in the program. */
     syn Set<String> Block.VarStar();
     eq Block.VarStar() = Vars();
+
+    inh Set<String> S.VarStar();
+    eq Block.getS().VarStar() = Vars();
 }

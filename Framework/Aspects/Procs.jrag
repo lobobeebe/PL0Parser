@@ -17,10 +17,9 @@ aspect Procs
         return ret;
     }
 
-    /** The set of variables in the program. */
-
-
     syn Set<String> Block.ProcStar();
     eq Block.ProcStar() = Procs();
-    //inh Set<Expr> Block.VarStar();
+
+    inh Set<String> S.ProcStar();
+    eq Block.getS().ProcStar() = Procs();
 }

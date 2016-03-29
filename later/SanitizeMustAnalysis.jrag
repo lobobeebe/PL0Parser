@@ -19,10 +19,10 @@ aspect SanitizeMustAnalysis
     /** The gen function for available expressions. */
     syn Set<String> ElementaryBlock.genSM();
 
-    eq Decl.genSM(Set<String> current) = SetRepUtility.emptySet();
-    eq AssignS.genSM(Set<String> current) = SetRepUtility.emptySet();
-    eq CallS.genSM(Set<String> current) = SetRepUtility.emptySet();
-    eq LabeledExpr.genSM(Set<String> current) = SetRepUtility.emptySet();
+    eq Decl.genSM() = SetRepUtility.emptySet();
+    eq AssignS.genSM() = SetRepUtility.emptySet();
+    eq CallS.genSM() = SetRepUtility.emptySet();
+    eq LabeledExpr.genSM() = SetRepUtility.emptySet();
 
     /** Compute the entry information for the SM analysis. */
     syn Set<String> ElementaryBlock.SMentry() circular [SetRepUtility.emptySet()]; // TODO: Change starting value to Var*
@@ -42,7 +42,7 @@ aspect SanitizeMustAnalysis
                     public Set<String> run(Label l)
                     {
                         ElementaryBlock b = l.itsBlock();
-                        return b.AEexit();
+                        return b.SMexit();
                     }
                 }, inFlows());
             ret = SetRepUtility.intersect(inputs);
