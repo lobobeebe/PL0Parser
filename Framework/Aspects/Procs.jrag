@@ -19,8 +19,13 @@ aspect Procs
 
     /** The set of variables in the program. */
     syn Set<String> Block.ProcStar();
-    eq Block.ProcStar() = getProcs();
+    eq Block.ProcStar(){
+        Set<String> ret = SetRepUtility.emptySet();
 
-
+        for(int i = 0; i < getNumProc(); i++){
+            ret.add(getProc(i).toString());
+        }
+        return ret;
+    }
     //inh Set<Expr> Block.VarStar();
 }
