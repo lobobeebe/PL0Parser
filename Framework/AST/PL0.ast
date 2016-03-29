@@ -11,31 +11,27 @@ ProcDecl ::= LabelAST:Label <Var> Block;
 
 // Operations
 abstract Op ::= <Contents>;
-
 Op_r:Op;
 Op_a:Op;
 
 // Expressions
 abstract AExpr;
-abstract BExpr;
-
 VarRefExpr:AExpr ::= <Contents>;
 NumLitExpr:AExpr ::= <Contents>;
 ABinaryExpr:AExpr ::= Left:AExpr Op:Op_a Right:AExpr;
+
+abstract BExpr;
 OddExpr:BExpr ::= AExpr;
-
 BBinaryExpr:BExpr ::=  LabelAST:Label Left:AExpr Op:Op_r Right:AExpr;
-
 
 // Statements
 abstract S;
-
 CallS:S ::= LabelAST:Label <Var>;
 BeginEndS:S ::= Statement:S*;
-
 AssignS:S ::= LabelAST:Label <Var> AExpr;
 IfS:S ::= RelExpr S;
 WhileS:S ::= RelExpr S;
 
+// Labels
 abstract Label;
 NumLabel : Label ::= <Num>;
