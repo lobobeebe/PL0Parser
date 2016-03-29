@@ -14,7 +14,7 @@ Block block =
   | constBlock varBlock procList stmt {: return new Block(constBlock, varBlock, procList, stmt); :}
 ;
 
-Procedure proc =
+ProcDecl proc =
     PROCEDURE IDENTIFIER SEMICOLON block SEMICOLON   {: return new Procedure(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, block); :}
 ;
 
@@ -63,24 +63,24 @@ List stmtList =
   | stmtList SEMICOLON stmt        {: return stmtList.add(stmt); :}
 ;
 
-RelExpr condition =
+BExpr condition =
     ODD expression                            {: return new OddExpr(expression); :}
-  | expression.l OPRELATIONAL expression.r     {: return new RelExpr(l, new Op_r(OPRELATIONAL), r); :}
-  | expression.l EQUALS expression.r {: return new RelExpr(l, new Op_r(EQUALS), r); :}
+  | expression.l OPRELATIONAL expression.r     {: return new BExpr(l, new Op_r(OPRELATIONAL), r); :}
+  | expression.l EQUALS expression.r {: return new BExpr(l, new Op_r(EQUALS), r); :}
 ;
 
-Expr expression =
+AExpr expression =
     term                    {: return term; :}
   | term.l OPPLUS term.r    {: return new ABinaryExpr(l, new Op_a(OPPLUS), r); :}
   | term.l OPMINUS term.r    {: return new ABinaryExpr(l, new Op_a(OPMINUS), r); :}
 ;
 
-Expr term =
+AExpr term =
     factor                    {: return factor; :}
   | factor.l OPMUL factor.r {: return new ABinaryExpr(l, new Op_a(OPMUL), r); :}
 ;
 
-Expr factor =
+AExpr factor =
     IDENTIFIER               {: return new VarRefExpr(IDENTIFIER); :}
   | NUMBER                   {: return new NumLitExpr(NUMBER); :}
   | LPAREN expression RPAREN {: return expression; :}
