@@ -133,10 +133,6 @@ aspect ControlFlowGraph
 		ins.addAll(getS().finals());
 		return ins;
 	}
-    eq ABinaryExpr.getLeft().inFlows() = this.inFlows();
-    eq ABinaryExpr.getRight().inFlows() = this.inFlows();
-    eq OddExpr.getExpr().inFlows() = this.inFlows();
-
 
 	/** get next statement for outflows */
 	inh S S.next();

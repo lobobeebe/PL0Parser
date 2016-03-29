@@ -4,6 +4,10 @@ import Utility.FlowGraph;
 
 aspect ControlFlowGraphIo
 {
+    ReadS implements ElementaryBlock;
+    SanitizeS implements ElementaryBlock;
+    PrintS implements ElementaryBlock;
+
     eq ReadS.init() = getLabelAST();
     eq SanitizeS.init() = getLabelAST();
     eq PrintS.init() = getLabelAST();
