@@ -52,6 +52,7 @@ aspect ControlFlowGraph
 
     Decl implements ElementaryBlock;
     AssignS implements ElementaryBlock;
+    CallS implements ElementaryBlock;
     LabeledExpr implements ElementaryBlock;
 
     /** Set of blocks in a statement */
@@ -114,6 +115,61 @@ aspect ControlFlowGraph
     eq Decl.getLabel().itsBlock() = this;
 
     /** Flows into a block */
+    inh Set<Label> Decl.inFlows();
+    eq Block.getConstant(int index).inFlows()
+    {
+        if(index == 0)
+        {
+            return getS().inFlows();
+        }
+        else
+        {
+            return SetRepUtility.singleton(getConstant(index - 1).getLabel());
+        }
+    }
+    eq Block.getVar(int index).inFlows()
+    {
+        if(index == 0)
+        {
+            if(getNumConstant() > 0)
+            {
+                return SetRepUtility.singleton(getConstant(getNumConstant() - 1).getLabel());
+            }
+            else
+            {
+                return getS().inFlows();
+            }
+        }
+        else
+        {
+            return SetRepUtility.singleton(getVar(index - 1).getLabel());
+        }
+    }
+    eq Block.getProc(int index).inFlows()
+    {
+        if(index == 0)
+        {
+            if(getNumVar() > 0)
+            {
+                return SetRepUtility.singleton(getVar(getNumVar() - 1).getLabel());
+            }
+            else
+            {
+                if(getNumConstant() > 0)
+                {
+                    return SetRepUtility.singleton(getConstant(getNumConstant() - 1).getLabel());
+                }
+                else
+                {
+                    return getS().inFlows();
+                }
+            }
+        }
+        else
+        {
+            return SetRepUtility.singleton(getVar(index - 1).getLabel());
+        }
+    }
 	inh Set<Label> S.inFlows();
 	eq Block.getS().inFlows() = SetRepUtility.emptySet();
 	eq IfS.getS().inFlows() = SetRepUtility.singleton(getLabeledExpr().getLabel());
@@ -148,11 +204,67 @@ aspect ControlFlowGraph
 			return getStatement(index+1);
 		}
 	}
+
 	eq Block.getS().next() = null;
 	eq IfS.getS().next() = next();
 	eq WhileS.getS().next() = this;
 
 	/** Flows out of a block */
+    inh Set<Label> Decl.outFlows();
+    eq Block.getConstant(int index).outFlows()
+    {
+        if(index == getNumConstant() - 1)
+        {
+            if(getNumVar() > 0)
+            {
+                return SetRepUtility.singleton(getVar(0));
+            }
+            else
+            {
+                if(getNumProc() > 0)
+                {
+                    return SetRepUtility.singleton(getProc(0));
+                }
+                else
+                {
+                    return SetRepUtility.singleton(getS().init());
+                }
+            }
+        }
+        else
+        {
+            return SetRepUtility.singleton(getConstant(index + 1).getLabel());
+        }
+    }
+    eq Block.getVar(int index).outFlows()
+    {
+        if(index == getNumVar() - 1)
+        {
+            if(getNumProc() > 0)
+            {
+                return SetRepUtility.singleton(getProc(0).getLabel());
+            }
+            else
+            {
+                return SetRepUtility.singleton(getS().init());
+            }
+        }
+        else
+        {
+            return SetRepUtility.singleton(getVar(index + 1).getLabel());
+        }
+    }
+    eq Block.getProc(int index).outFlows()
+    {
+        if(index == getNumProc() - 1)
+        {
+            return SetRepUtility.singleton(getS().init());
+        }
+        else
+        {
+            return SetRepUtility.singleton(getVar(index + 1).getLabel());
+        }
+    }
 	inh Set<Label> S.outFlows();
 	eq Block.getS().outFlows() = SetRepUtility.emptySet();
 	eq IfS.getS().outFlows()
@@ -163,7 +275,7 @@ aspect ControlFlowGraph
 		}
 		else
         {
-			SetRepUtility.singleton(next().init());
+			return SetRepUtility.singleton(next().init());
 		}
 	}
 	eq WhileS.getS().outFlows()
