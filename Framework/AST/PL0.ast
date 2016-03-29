@@ -23,8 +23,8 @@ abstract AExpr;
 
 VarRefExpr: AExpr ::= <Contents>;
 NumLitExpr: AExpr ::= <Contents>;
-ABinaryExpr: AExpr ::= Left:Expr Op:Op_a Right:Expr;
-OddExpr: AExpr ::= Expr;
+ABinaryExpr: AExpr ::= Left:AExpr Op:Op_a Right:AExpr;
+OddExpr: AExpr ::= AExpr;
 
 RelExpr: Expr ::= Left:Expr Op:Op_r Right:Expr;
 LabeledExpr: RelExpr ::= LabelAST:Label Expr;
