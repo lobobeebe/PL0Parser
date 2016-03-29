@@ -97,8 +97,11 @@ aspect CFG
     /** Map labels to blocks */
     inh Block Label.itsBlock();
     eq AssignS.getLabelAST().itsBlock() = this;
+    eq CallS.getLabelAST().itsBlock() = this;
     eq LabeledExpr.getLabelAST().itsBlock() = this;
     eq ConstDecl.getLabelAST().itsBlock() = this;
+    eq VarDecl.getLabelAST().itsBlock() = this;
+    eq Procedure.getLabelAST().itsBlock() = this;
 
 
     /** Flows into a block */
@@ -132,7 +135,7 @@ aspect CFG
 			return getStatement(index+1);
 		}
 	}
-	eq Program.getS().next() = null;
+	eq Block.getS().next() = null;
 	eq IfS.getS().next() = next();
 	eq WhileS.getS().next() = this;
 
