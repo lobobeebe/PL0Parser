@@ -6,7 +6,7 @@ aspect Unparse
      */
     syn String Program.unparse();
     syn String Block.unparse();
-    syn String constDecl.unparse();
+    syn String ConstDecl.unparse();
     syn String VarDecl.unparse();
     syn String ProcDecl.unparse();
     syn String Op.unparse();
@@ -21,10 +21,13 @@ aspect Unparse
      */
     syn String Program.toString() = unparse();
     syn String Block.toString() = unparse();
-    syn String Procedure.toString() = unparse();
+    syn String ConstDecl.toString() = unparse();
+    syn String VarDecl.toString() = unparse();
+    syn String ProcDecl.toString() = unparse();
     syn String Op.toString() = getContents();
     syn String S.toString() = unparse();
-    syn String Expr.toString() = unparse();
+    syn String AExpr.toString() = unparse();
+    syn String BExpr.toString() = unparse();
     syn String Label.toString() = unparse();
 
 
@@ -93,16 +96,14 @@ aspect Unparse
     // Declarations
     eq ConstDecl.unparse() { return "[" + getVar() + " = " + getNum() + "]^" + getLabelAST().unparse(); }
     eq VarDecl.unparse() { return "[" + getVar() + "]^" + getLabelAST().unparse(); }
-
-    // Procedure
-    eq Procedure.unparse() { return "[procedure " + getVar() + "]^" + getLabelAST().unparse() + "; " + getBlock().unparse() + ";"; }
+    eq ProcDecl.unparse() { return "[procedure " + getVar() + "]^" + getLabelAST().unparse() + ";" + getBlock().unparse() + ";"; }
 
     // Expressions
     eq VarRefExpr.unparse() { return getContents(); }
     eq NumLitExpr.unparse() { return getContents(); }
     eq ABinaryExpr.unparse() { return "(" + getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse() + ")"; }
-    eq OddExpr.unparse() { return "odd " + getExpr().unparse(); }
-    eq RelExpr.unparse() { return getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse(); }
+    eq OddExpr.unparse() { return "odd " + getAExpr().unparse(); }
+    eq BBinaryExpr.unparse() { return "[" + getLeft().unparse() + " " + getOp().unparse() + " " + getRight().unparse() + "]^" + getLabelAST().unparse(); }
 
     // Statements
     eq CallS.unparse() { return "[call " + getVar() + "]^" + getLabelAST().unparse(); }
@@ -127,8 +128,6 @@ aspect Unparse
     eq IfS.unparse() { return "if " + getLabeledExpr().unparse() + " then " + getS().unparse(); }
 
     eq WhileS.unparse() { return "while "  + getLabeledExpr().unparse() + " do " + getS().unparse(); }
-
-    eq LabeledExpr.unparse() { return "[" + getExpr().unparse() + "]^" + getLabelAST().unparse(); }
 
     eq Op.unparse() = getContents();
 
