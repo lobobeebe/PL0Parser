@@ -4,12 +4,10 @@ Program ::= Block;
 // Block
 Block ::= Constant:ConstDecl* Var:VarDecl* Proc:Procedure* S;
 
-
+//Decls
 ConstDecl ::= LabelAST:Label <Var> <Num>;
 VarDecl ::= LabelAST:Label <Var>;
-
-// Procedure
-Procedure ::= LabelAST:Label <Var> Block;
+ProcDecl ::= LabelAST:Label <Var> Block;
 
 // Operations
 abstract Op ::= <Contents>;
