@@ -57,7 +57,7 @@ aspect CFG
     	ret.add(getLabeledExpr());
     	return ret;
     }
-    eq whileS.blocks(){
+    eq WhileS.blocks(){
     	Set<Block> ret = getS().blocks();
     	ret.add(getLabeledExpr());
     	return ret;

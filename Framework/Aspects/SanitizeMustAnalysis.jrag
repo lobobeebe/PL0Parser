@@ -9,35 +9,35 @@ import AST.*;
 aspect SanitizeMustAnalysis
 {
     /** The kill function for sanitized variables. */
-    syn Set<Var> Block.killSM(Set<Var> current);
+    syn Set<String> Block.killSM(Set<String> current);
 
-    eq ConstDecl.killSM(Set<Var> current) = SetRepUtility.emptySet();
-    eq AssignS.killSM(Set<Var> current) = SetRepUtility.singleton(getVar());
-    eq LabeledExpr.killSM(Set<Var> current) = SetRepUtility.emptySet();
+    eq ConstDecl.killSM(Set<String> current) = SetRepUtility.emptySet();
+    eq AssignS.killSM(Set<String> current) = SetRepUtility.singleton(getVar());
+    eq LabeledExpr.killSM(Set<String> current) = SetRepUtility.emptySet();
 
     /** The gen function for available expressions. */
-    syn Set<Var> Block.genSM();
+    syn Set<String> Block.genSM();
 
-    eq ConstDecl.killSM(Set<Var> current) = SetRepUtility.emptySet();
-    eq AssignS.killSM(Set<Var> current) = SetRepUtility.emptySet();
-    eq LabeledExpr.killSM(Set<Var> current) = SetRepUtility.emptySet();
+    eq ConstDecl.killSM(Set<String> current) = SetRepUtility.emptySet();
+    eq AssignS.killSM(Set<String> current) = SetRepUtility.emptySet();
+    eq LabeledExpr.killSM(Set<String> current) = SetRepUtility.emptySet();
 
     /** Compute the entry information for the SM analysis. */
-    syn Set<Var> Block.SMentry() circular [VarStar()];
+    syn Set<String> Block.SMentry() circular [VarStar()];
 
     eq Block.SMentry()
     {
-        Set<Var> ret;
+        Set<String> ret;
         if (getLabelAST().equals(progInitLabel()))
         {
             ret = SetRepUtility.emptySet();
         }
         else
         {
-            Set<Set<Var>> inputs = SetRepUtility.map(
-                new SetRepUtility.Fun<Label, Set<Var>>()
+            Set<Set<String>> inputs = SetRepUtility.map(
+                new SetRepUtility.Fun<Label, Set<String>>()
                 {
-                    public Set<Var> run(Label l)
+                    public Set<String> run(Label l)
                     {
                         Block b = l.itsBlock();
                         return b.AEexit();
@@ -49,10 +49,10 @@ aspect SanitizeMustAnalysis
     }
 
     /** Compute the exit information for the SM analysis. */
-    syn Set<Var> Block.SMexit() circular [VarStar()];
+    syn Set<String> Block.SMexit() circular [VarStar()];
     eq Block.SMexit()
     {
-        Set<Var> ret = SetRepUtility.emptySet(); // start with a fresh set!
+        Set<String> ret = SetRepUtility.emptySet(); // start with a fresh set!
         ret.addAll(this.SMentry());
         ret.removeAll(this.killSM(ret));
         ret.addAll(this.genSM());

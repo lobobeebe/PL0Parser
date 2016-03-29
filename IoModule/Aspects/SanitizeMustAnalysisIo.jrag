@@ -1,0 +1,18 @@
+import java.util.Set;
+import Utility.SetRepUtility;
+import AST.*;
+
+/**
+ * The Sanitize Must Analysis.
+ * For each program point, which variables MUST have been sanitized.
+ */
+aspect SanitizeMustAnalysisIo
+{
+    eq ReadS.killSM(Set<String> current) = SetRepUtility.emptySet();
+    eq SanitizeS.killSM(Set<String> current) = SetRepUtility.singleton(getVar());
+    eq ReadS.killSM(Set<String> current) = SetRepUtility.emptySet();
+
+    eq ReadS.killSM(Set<String> current) = SetRepUtility.emptySet();
+    eq SanitizeS.killSM(Set<String> current) = SetRepUtility.emptySet();
+    eq ReadS.killSM(Set<String> current) = SetRepUtility.emptySet();
+}
