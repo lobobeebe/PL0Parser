@@ -22,9 +22,6 @@ aspect ControlFlowGraph
     syn Set<Label> Block.finals();
     eq Block.finals() = getS().finals();
 
-    syn Set<Label> Procedure.finals();
-    eq Procedure.finals() = getS().finals();
-
     syn Set<Label> S.finals();
     eq AssignS.finals() = SetRepUtility.singleton(getLabel());
     eq IfS.finals() = S.finals();
@@ -36,8 +33,8 @@ aspect ControlFlowGraph
         for(int i = 0; i < getNumProcedure(); i++)
         {
             if(getProcedure(i).getVar().equals(getVar()))
-            {
-                ret = getProcedure(i).finals();
+            {()
+                ret = getProcedure(i).getS().finals();
             }
         }
         return ret;
