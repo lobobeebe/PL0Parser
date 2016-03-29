@@ -4,12 +4,12 @@ Program goal =
   ;
 
 Block block =
-	stmt			{: return new Block(new List(), new List(), new List(), stmt); :}
+    stmt            {: return new Block(new List(), new List(), new List(), stmt); :}
   | procList stmt   {: return new Block(new List(), new List(), procList, stmt); :}
   | constBlock stmt {: return new Block(constBlock, new List(), new List(), stmt); :}
   | constBlock procList stmt {: return new Block(constBlock, new List(), procList, stmt); :}
-  | varBlock stmt	{: return new Block(new List(), varBlock, new List(), stmt); :}
-  | varBlock procList stmt	{: return new Block(new List(), varBlock, procList, stmt); :}
+  | varBlock stmt    {: return new Block(new List(), varBlock, new List(), stmt); :}
+  | varBlock procList stmt    {: return new Block(new List(), varBlock, procList, stmt); :}
   | constBlock varBlock stmt {: return new Block(constBlock, varBlock, new List(), stmt); :}
   | constBlock varBlock procList stmt {: return new Block(constBlock, varBlock, procList, stmt); :}
 ;
@@ -24,64 +24,64 @@ List procList =
 ;
 
 List constBlock =
-	CONST constDeclList SEMICOLON 			{: return constDeclList; :}
+    CONST constDeclList SEMICOLON             {: return constDeclList; :}
 ;
 
 List constDeclList =
-    constDecl 							{: return new List().add(constDecl); :}
-  | constDeclList COMMA constDecl		{: return constDeclList.add(constDecl); :}
+    constDecl                             {: return new List().add(constDecl); :}
+  | constDeclList COMMA constDecl        {: return constDeclList.add(constDecl); :}
 ;
 
 ConstDecl constDecl =
-	IDENTIFIER EQUALS NUMBER {: return new ConstDecl(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, NUMBER); :}
+    IDENTIFIER EQUALS NUMBER {: return new ConstDecl(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, NUMBER); :}
 ;
 
 List varBlock =
-	VAR varDeclList SEMICOLON 				{: return varDeclList; :}
+    VAR varDeclList SEMICOLON                 {: return varDeclList; :}
 ;
 
 List varDeclList =
-	varDecl 					{: return new List().add(varDecl); :}
-  | varDeclList COMMA varDecl 	{: return varDeclList.add(varDecl); :}
+    varDecl                     {: return new List().add(varDecl); :}
+  | varDeclList COMMA varDecl     {: return varDeclList.add(varDecl); :}
 ;
 
 VarDecl varDecl =
-	IDENTIFIER			{: return new VarDecl(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
+    IDENTIFIER            {: return new VarDecl(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
 ;
 
 S stmt =
   IDENTIFIER ASSIGN expression     {: return new AssignS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, expression); :}
   | CALL IDENTIFIER           {: return new CallS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
   | BEGIN stmtList END          {: return new BeginEndS(stmtList); :}
-  | IF condition THEN stmt  	   	{: return new IfS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
-  | WHILE condition DO stmt     	{: return new WhileS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
+  | IF condition THEN stmt             {: return new IfS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
+  | WHILE condition DO stmt         {: return new WhileS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
 
 ;
 
 List stmtList =
-	stmt						{: return new List().add(stmt); :}
-  | stmtList SEMICOLON stmt		{: return stmtList.add(stmt); :}
+    stmt                        {: return new List().add(stmt); :}
+  | stmtList SEMICOLON stmt        {: return stmtList.add(stmt); :}
 ;
 
 RelExpr condition =
-	ODD expression							{: return new OddExpr(expression); :}
-  | expression.l OPRELATIONAL expression.r 	{: return new RelExpr(l, new Op_r(OPRELATIONAL), r); :}
+    ODD expression                            {: return new OddExpr(expression); :}
+  | expression.l OPRELATIONAL expression.r     {: return new RelExpr(l, new Op_r(OPRELATIONAL), r); :}
   | expression.l EQUALS expression.r {: return new RelExpr(l, new Op_r(EQUALS), r); :}
 ;
 
 Expr expression =
-    term					{: return term; :}
-  | term.l OPPLUS term.r	{: return new ABinaryExpr(l, new Op_a(OPPLUS), r); :}
-  | term.l OPMINUS term.r	{: return new ABinaryExpr(l, new Op_a(OPMINUS), r); :}
+    term                    {: return term; :}
+  | term.l OPPLUS term.r    {: return new ABinaryExpr(l, new Op_a(OPPLUS), r); :}
+  | term.l OPMINUS term.r    {: return new ABinaryExpr(l, new Op_a(OPMINUS), r); :}
 ;
 
 Expr term =
-	factor					{: return factor; :}
+    factor                    {: return factor; :}
   | factor.l OPMUL factor.r {: return new ABinaryExpr(l, new Op_a(OPMUL), r); :}
 ;
 
 Expr factor =
-	IDENTIFIER               {: return new VarRefExpr(IDENTIFIER); :}
+    IDENTIFIER               {: return new VarRefExpr(IDENTIFIER); :}
   | NUMBER                   {: return new NumLitExpr(NUMBER); :}
   | LPAREN expression RPAREN {: return expression; :}
 ;

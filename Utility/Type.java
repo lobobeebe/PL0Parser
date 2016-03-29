@@ -1,8 +1,8 @@
 package Utility;
 
 public enum Type {
-	Unknown,
-	Int,
-	Bool,
-	Any;
+    Unknown,
+    Int,
+    Bool,
+    Any;
 }

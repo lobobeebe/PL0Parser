@@ -7,15 +7,15 @@ import java.util.AbstractMap.SimpleEntry;
  */
 public class Pair<K,V> extends SimpleEntry<K, V> {
 
-	public Pair(K key, V val) {
-		super(key, val);
-	}
+    public Pair(K key, V val) {
+        super(key, val);
+    }
 
-	private static final long serialVersionUID = 1L;
-	
-	@Override
-	public String toString() {
-		return "(" + getKey().toString() + "," 
-			       + getValue().toString() + ")";
-	}
+    private static final long serialVersionUID = 1L;
+    
+    @Override
+    public String toString() {
+        return "(" + getKey().toString() + "," 
+                   + getValue().toString() + ")";
+    }
 }

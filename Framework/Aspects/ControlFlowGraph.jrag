@@ -8,16 +8,16 @@ import Utility.FlowGraph;
 aspect CFG
 {
 
-  /** The initial label of an AST node. */
-	syn Label S.init();
-	eq AssignS.init() = getLabelAST();
-	eq IfS.init() = getLabeledExpr().getLabelAST();
-	eq WhileS.init() = getLabeledExpr().getLabelAST();
-	eq BeginEndS.init() = getStatement(0).init();
-	eq CallS.init() = getLabelAST();
+    /** The initial label of an AST node. */
+    syn Label S.init();
+    eq AssignS.init() = getLabelAST();
+    eq IfS.init() = getLabeledExpr().getLabelAST();
+    eq WhileS.init() = getLabeledExpr().getLabelAST();
+    eq BeginEndS.init() = getStatement(0).init();
+    eq CallS.init() = getLabelAST();
 
-	syn Label Decl.init();
-	eq ConstDecl.init() =  getLabelAST();
-	eq VarDecl.init() =  getLabelAST();
-	eq Procedure.init() = getLabelAST();
+    syn Label Decl.init();
+    eq ConstDecl.init() =  getLabelAST();
+    eq VarDecl.init() =  getLabelAST();
+    eq Procedure.init() = getLabelAST();
 }
