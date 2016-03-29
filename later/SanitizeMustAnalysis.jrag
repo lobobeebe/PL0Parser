@@ -16,7 +16,7 @@ aspect SanitizeMustAnalysis
     eq CallS.killSM(Set<String> current) = SetRepUtility.emptySet();
     eq LabeledExpr.killSM(Set<String> current) = SetRepUtility.emptySet();
 
-    /** The gen function for available expressions. */
+    /** The gen function for sanitized variables. */
     syn Set<String> ElementaryBlock.genSM();
 
     eq Decl.genSM() = SetRepUtility.emptySet();
@@ -25,17 +25,18 @@ aspect SanitizeMustAnalysis
     eq LabeledExpr.genSM() = SetRepUtility.emptySet();
 
     /** Compute the entry information for the SM analysis. */
-    syn Set<String> ElementaryBlock.SMentry() circular [SetRepUtility.emptySet()]; // TODO: Change starting value to Var*
+    syn Set<String> ElementaryBlock.SMentry() circular [VarStar()]; 
 
     eq ElementaryBlock.SMentry()
     {
         Set<String> ret;
-        if (getLabel().equals(progInitLabel()))
+        if (getLabelAST().equals(progInitLabel()))
         {
             ret = SetRepUtility.emptySet();
         }
         else
         {
+
             Set<Set<String>> inputs = SetRepUtility.map(
                 new SetRepUtility.Fun<Label, Set<String>>()
                 {
@@ -51,10 +52,10 @@ aspect SanitizeMustAnalysis
     }
 
     /** Compute the exit information for the SM analysis. */
-    syn Set<String> ElementaryBlock.SMexit() circular [SetRepUtility.emptySet()]; // TODO: Change to Var*
+    syn Set<String> ElementaryBlock.SMexit() circular [VarStar()]; 
     eq ElementaryBlock.SMexit()
     {
-        Set<String> ret = SetRepUtility.emptySet(); // start with a fresh set!
+        Set<String> ret = SetRepUtility.emptySet();
         ret.addAll(this.SMentry());
         ret.removeAll(this.killSM(ret));
         ret.addAll(this.genSM());
