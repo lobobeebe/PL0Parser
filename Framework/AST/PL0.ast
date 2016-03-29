@@ -4,14 +4,12 @@ Program ::= Block;
 // Block
 Block ::= Constant:ConstDecl* Var:VarDecl* Proc:Procedure* S;
 
-// Declarations
-abstract Decl;
 
-ConstDecl: Decl ::= LabelAST:Label <Var> <Num>;
-VarDecl: Decl ::= LabelAST:Label <Var>;
+ConstDecl ::= LabelAST:Label <Var> <Num>;
+VarDecl ::= LabelAST:Label <Var>;
 
 // Procedure
-Procedure: Decl ::= LabelAST:Label <Var> Block;
+Procedure ::= LabelAST:Label <Var> Block;
 
 // Operations
 abstract Op ::= <Contents>;
@@ -30,9 +28,6 @@ OddExpr: AExpr ::= Expr;
 
 RelExpr: Expr ::= Left:Expr Op:Op_r Right:Expr;
 LabeledExpr: RelExpr ::= LabelAST:Label Expr;
-
-
-
 
 
 // Statements
