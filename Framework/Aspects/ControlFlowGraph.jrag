@@ -26,14 +26,14 @@ aspect CFG
     /** The set of final labels of an AST node. */
     syn Set<Label> Program.finals();
     eq Program.finals() = getS().finals();
-    
+
     syn Set<Label> S.finals();
     eq AssignS.finals() = SetRepUtility.singleton(getLabelAST());
     eq IfS.finals() = S.finals();
     eq WhileS.finals() = getLabeledExpr().getLabelAST();
     eq BeginEndS.finals() = getStatement(getNumStatement()-1).finals();
     ///////////////
-    //eq CallS.finals() = SetRepUtility.singleton(getLabelAST()); //TODO 
+    //eq CallS.finals() = SetRepUtility.singleton(getLabelAST()); //TODO
 
     ///////////
 
@@ -67,6 +67,16 @@ aspect CFG
     		ret.addAll(getStatement(i).blocks());
     	}
     	return ret;
+    }
+    eq CallS.blocks(){
+        Set<Block> ret = SetRepUtility.emptySet();
+        for(int i = 0; i < getNumProcedure(); i++)
+        {
+            if(getProcedure(i).getVar().equals(getVar())
+            {
+                ret.addAll(getProcedure(i).blocks());
+            }
+        }
     }
 
 
