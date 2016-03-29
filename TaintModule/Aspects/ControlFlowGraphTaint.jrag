@@ -1,0 +1,10 @@
+import java.util.*;
+import Utility.SetRepUtility;
+import Utility.FlowGraph;
+
+aspect ControlFlowGraphTaint
+{
+    eq ReadS.init() = getLabelAST();
+    eq SanitizeS.init() = getLabelAST();
+    eq PrintS.init() = getLabelAST();
+}

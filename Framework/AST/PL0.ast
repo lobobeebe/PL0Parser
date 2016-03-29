@@ -38,8 +38,8 @@ CallS:S ::= LabelAST:Label <Var>;
 BeginEndS:S ::= Statement:S*;
 
 AssignS:S ::= LabelAST:Label <Var> Expr;
-IfS:S ::= Condition:LabeledExpr S;
-WhileS:S ::= Condition:LabeledExpr S;
+IfS:S ::= LabeledExpr S;
+WhileS:S ::= LabeledExpr S;
 
 abstract Label;
 NumLabel:Label ::= <Num>;

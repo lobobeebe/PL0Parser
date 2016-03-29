@@ -1,6 +1,6 @@
 import java.util.*;
-import utility.SetRepUtility;
-import utility.FlowGraph;
+import Utility.SetRepUtility;
+import Utility.FlowGraph;
 
 /** Control Flow Graph attributes, see Section 2.1 of "Principles of Progarm Analysis"
  * by Nielsen, Nielsen, and Hankin (Springer-Verlag, 1999 and 2005).
@@ -13,7 +13,7 @@ aspect CFG
 	eq AssignS.init() = getLabelAST();
 	eq IfS.init() = getLabeledExpr().getLabelAST();
 	eq WhileS.init() = getLabeledExpr().getLabelAST();
-	eq BeginEndS.init() = getSList(0).init();
+	eq BeginEndS.init() = getStatement(0).init();
 	eq CallS.init() = getLabelAST();
 
 	syn Label Decl.init();

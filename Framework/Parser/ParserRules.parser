@@ -13,7 +13,7 @@ Block block =
   | constBlock varBlock stmt {: return new Block(constBlock, varBlock, new List(), stmt); :}
   | constBlock varBlock procList stmt {: return new Block(constBlock, varBlock, procList, stmt); :}
 ;
-  
+
 Procedure proc =
     PROCEDURE IDENTIFIER SEMICOLON block SEMICOLON   {: return new Procedure(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, block); :}
 ;
@@ -25,8 +25,8 @@ List procList =
 
 List constBlock =
 	CONST constDeclList SEMICOLON 			{: return constDeclList; :}
-;  
-  
+;
+
 List constDeclList =
     constDecl 							{: return new List().add(constDecl); :}
   | constDeclList COMMA constDecl		{: return constDeclList.add(constDecl); :}
@@ -44,11 +44,11 @@ List varDeclList =
 	varDecl 					{: return new List().add(varDecl); :}
   | varDeclList COMMA varDecl 	{: return varDeclList.add(varDecl); :}
 ;
- 
+
 VarDecl varDecl =
 	IDENTIFIER			{: return new VarDecl(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
 ;
- 
+
 S stmt =
   IDENTIFIER ASSIGN expression     {: return new AssignS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, expression); :}
   | CALL IDENTIFIER           {: return new CallS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
@@ -57,7 +57,7 @@ S stmt =
   | WHILE condition DO stmt     	{: return new WhileS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
 
 ;
-   
+
 List stmtList =
 	stmt						{: return new List().add(stmt); :}
   | stmtList SEMICOLON stmt		{: return stmtList.add(stmt); :}
@@ -69,7 +69,7 @@ RelExpr condition =
   | expression.l EQUALS expression.r {: return new RelExpr(l, new Op_r(EQUALS), r); :}
 ;
 
-Expr expression = 
+Expr expression =
     term					{: return term; :}
   | term.l OPPLUS term.r	{: return new ABinaryExpr(l, new Op_a(OPPLUS), r); :}
   | term.l OPMINUS term.r	{: return new ABinaryExpr(l, new Op_a(OPMINUS), r); :}
