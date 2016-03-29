@@ -21,22 +21,30 @@ aspect CFG
     eq VarDecl.init() =  getLabelAST();
     eq Procedure.init() = getLabelAST();
 
-
-
     /** The set of final labels of an AST node. */
     syn Set<Label> Program.finals();
     eq Program.finals() = getS().finals();
+
+    syn Set<Label> Procedure.finals();
+    eq Procedure.finals() = getS().finals();
 
     syn Set<Label> S.finals();
     eq AssignS.finals() = SetRepUtility.singleton(getLabelAST());
     eq IfS.finals() = S.finals();
     eq WhileS.finals() = getLabeledExpr().getLabelAST();
     eq BeginEndS.finals() = getStatement(getNumStatement()-1).finals();
-    ///////////////
-    //eq CallS.finals() = SetRepUtility.singleton(getLabelAST()); //TODO
-
-    ///////////
-
+    eq CallS.finals()
+    {
+        Set<Block> ret = SetRepUtility.emptySet();
+        for(int i = 0; i < getNumProcedure(); i++)
+        {
+            if(getProcedure(i).getVar().equals(getVar()))
+            {
+                ret.addAll(getProcedure(i).finals());
+            }
+        }
+        return ret;
+    }
 
     /** Control flow node. */
     public interface Block{
@@ -79,6 +87,7 @@ aspect CFG
                 ret.addAll(getProcedure(i).getS().blocks());
             }
         }
+        return ret;
     }
 
     public boolean Block.equals(Object o){
