@@ -5,9 +5,9 @@ Program ::= Block;
 Block ::= Constant:ConstDecl* Var:VarDecl* Proc:Procedure* S;
 
 //Decls
-ConstDecl ::= LabelAST:Label <Var> <Num>;
-VarDecl ::= LabelAST:Label <Var>;
-ProcDecl ::= LabelAST:Label <Var> Block;
+ConstDecl ::= Label <Var> <Num>;
+VarDecl ::= Label <Var>;
+ProcDecl ::= Label <Var> Block;
 
 // Operations
 abstract Op ::= <Contents>;
@@ -22,16 +22,18 @@ ABinaryExpr:AExpr ::= Left:AExpr Op:Op_a Right:AExpr;
 
 abstract BExpr;
 OddExpr:BExpr ::= AExpr;
-BBinaryExpr:BExpr ::=  LabelAST:Label Left:AExpr Op:Op_r Right:AExpr;
+BBinaryExpr:BExpr ::= Left:AExpr Op:Op_r Right:AExpr;
+
+LabeledExpr:BExpr ::= Label BExpr;
 
 // Statements
 abstract S;
-CallS:S ::= LabelAST:Label <Var>;
+CallS:S ::= Label <Var>;
 BeginEndS:S ::= Statement:S*;
-AssignS:S ::= LabelAST:Label <Var> AExpr;
-IfS:S ::= RelExpr S;
-WhileS:S ::= RelExpr S;
+AssignS:S ::= Label <Var> AExpr;
+IfS:S ::= LabeledExpr S;
+WhileS:S ::= LabeledExpr S;
 
 // Labels
 abstract Label;
-NumLabel : Label ::= <Num>;
+NumLabel:Label ::= <Num>;
