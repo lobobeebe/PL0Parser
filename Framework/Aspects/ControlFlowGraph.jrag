@@ -5,7 +5,7 @@ import Utility.FlowGraph;
 /** Control Flow Graph attributes, see Section 2.1 of "Principles of Progarm Analysis"
  * by Nielsen, Nielsen, and Hankin (Springer-Verlag, 1999 and 2005).
  */
-aspect CFG
+aspect ControlFlowGraph
 {
 
     /** The initial label of an AST node. */
@@ -22,8 +22,8 @@ aspect CFG
     eq Procedure.init() = getLabelAST();
 
     /** The set of final labels of an AST node. */
-    syn Set<Label> Program.finals();
-    eq Program.finals() = getS().finals();
+    syn Set<Label> Block.finals();
+    eq Block.finals() = getS().finals();
 
     syn Set<Label> Procedure.finals();
     eq Procedure.finals() = getS().finals();
@@ -31,7 +31,7 @@ aspect CFG
     syn Set<Label> S.finals();
     eq AssignS.finals() = SetRepUtility.singleton(getLabelAST());
     eq IfS.finals() = S.finals();
-    eq WhileS.finals() = getLabeledExpr().getLabelAST();
+    eq WhileS.finals() = SetRepUtility.singleton(getLabeledExpr().getLabelAST());
     eq BeginEndS.finals() = getStatement(getNumStatement()-1).finals();
     eq CallS.finals()
     {
@@ -40,45 +40,45 @@ aspect CFG
         {
             if(getProcedure(i).getVar().equals(getVar()))
             {
-                ret.addAll(getProcedure(i).finals());
+                ret = getProcedure(i).finals();
             }
         }
         return ret;
     }
 
     /** Control flow node. */
-    public interface Block{
+    public interface ElementaryBlock{
         Set<Label> inFlows();
         Set<Label> outFlows();
         Label getLabelAST();
     }
 
-    ConstDecl implements Block;
-    AssignS implements Block;
-    LabeledExpr implements Block;
+    ConstDecl implements ElementaryBlock;
+    AssignS implements ElementaryBlock;
+    LabeledExpr implements ElementaryBlock;
 
     /** Set of blocks in a statement */
-    syn Set<Block> S.blocks();
+    syn Set<ElementaryBlock> S.blocks();
     eq AssignS.blocks() = SetRepUtility.singleton(this);
     eq IfS.blocks(){
-    	Set<Block> ret = getS().blocks();
+    	Set<ElementaryBlock> ret = getS().blocks();
     	ret.add(getLabeledExpr());
     	return ret;
     }
     eq WhileS.blocks(){
-    	Set<Block> ret = getS().blocks();
+    	Set<ElementaryBlock> ret = getS().blocks();
     	ret.add(getLabeledExpr());
     	return ret;
     }
     eq BeginEndS.blocks(){
-    	Set<Block> ret = SetRepUtility.emptySet();
+    	Set<ElementaryBlock> ret = SetRepUtility.emptySet();
     	for(int i = 0; i < getNumStatement(); i++){
     		ret.addAll(getStatement(i).blocks());
     	}
     	return ret;
     }
     eq CallS.blocks(){
-        Set<Block> ret = SetRepUtility.emptySet();
+        Set<ElementaryBlock> ret = SetRepUtility.emptySet();
         for(int i = 0; i < getNumProcedure(); i++)
         {
             if(getProcedure(i).getVar().equals(getVar()))
@@ -90,21 +90,21 @@ aspect CFG
         return ret;
     }
 
-    public boolean Block.equals(Object o){
-    	if(o == null || !(o instanceof Block)){
+    public boolean ElementaryBlock.equals(Object o){
+    	if(o == null || !(o instanceof ElementaryBlock)){
     		return false;
     	}
-		Block b = (Block) o;
+		ElementaryBlock b = (ElementaryBlock) o;
 
 		return toString().equals(b.toString());
     }
 
-    public int Block.hashCode(){
+    public int ElementaryBlock.hashCode(){
     	return toString().hashCode();
     }
 
     /** Map labels to blocks */
-    inh Block Label.itsBlock();
+    inh ElementaryBlock Label.itsBlock();
     eq AssignS.getLabelAST().itsBlock() = this;
     eq CallS.getLabelAST().itsBlock() = this;
     eq LabeledExpr.getLabelAST().itsBlock() = this;
@@ -164,7 +164,7 @@ aspect CFG
 		}
 	}
 	eq WhileS.getS().outFlows(){
-		return SetRepUtility.singleton(getLabeledExpr.getLabelAST());
+		return SetRepUtility.singleton(getLabeledExpr().getLabelAST());
 	}
 	eq BeginEndS.getStatement(int index).outFlows(){
 		if(index == getNumStatement()-1){
