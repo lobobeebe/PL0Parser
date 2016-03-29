@@ -1,0 +1,61 @@
+import java.util.Set;
+import Utility.SetRepUtility;
+import AST.*;
+
+/**
+ * The Sanitize Must Analysis.
+ * For each program point, which variables MUST have been sanitized.
+ */
+aspect SanitizeMustAnalysis
+{
+    /** The kill function for sanitized variables. */
+    syn Set<String> Block.killSM(Set<String> current);
+
+    eq ConstDecl.killSM(Set<String> current) = SetRepUtility.emptySet();
+    eq AssignS.killSM(Set<String> current) = SetRepUtility.singleton(getVar());
+    eq LabeledExpr.killSM(Set<String> current) = SetRepUtility.emptySet();
+
+    /** The gen function for available expressions. */
+    syn Set<String> Block.genSM();
+
+    eq ConstDecl.killSM(Set<String> current) = SetRepUtility.emptySet();
+    eq AssignS.killSM(Set<String> current) = SetRepUtility.emptySet();
+    eq LabeledExpr.killSM(Set<String> current) = SetRepUtility.emptySet();
+
+    /** Compute the entry information for the SM analysis. */
+    syn Set<String> Block.SMentry() circular [VarStar()];
+
+    eq Block.SMentry()
+    {
+        Set<String> ret;
+        if (getLabelAST().equals(progInitLabel()))
+        {
+            ret = SetRepUtility.emptySet();
+        }
+        else
+        {
+            Set<Set<String>> inputs = SetRepUtility.map(
+                new SetRepUtility.Fun<Label, Set<String>>()
+                {
+                    public Set<String> run(Label l)
+                    {
+                        Block b = l.itsBlock();
+                        return b.AEexit();
+                    }
+                }, inFlows());
+            ret = SetRepUtility.intersect(inputs);
+        }
+        return ret;
+    }
+
+    /** Compute the exit information for the SM analysis. */
+    syn Set<String> Block.SMexit() circular [VarStar()];
+    eq Block.SMexit()
+    {
+        Set<String> ret = SetRepUtility.emptySet(); // start with a fresh set!
+        ret.addAll(this.SMentry());
+        ret.removeAll(this.killSM(ret));
+        ret.addAll(this.genSM());
+        return ret;
+    }
+}
