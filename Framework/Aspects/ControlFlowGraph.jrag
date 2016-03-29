@@ -49,6 +49,7 @@ aspect CFG
     AssignS implements Block;
     LabeledExpr implements Block;
 
+    /** Set of blocks in a statement */
     syn Set<Block> S.blocks();
     eq AssignS.blocks() = SetRepUtility.singleton(this);
     eq IfS.blocks(){
