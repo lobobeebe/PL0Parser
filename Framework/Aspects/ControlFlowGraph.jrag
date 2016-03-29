@@ -13,8 +13,16 @@ aspect CFG {
 	eq SkipS.init() = getLabelAST();
 	eq IfS.init() = getLabeledExpr().getLabelAST();
 	eq WhileS.init() = getLabeledExpr().getLabelAST();
-	eq CompoundS.init() = getSList(0).init();
+	eq BeginEndS.init() = getSList(0).init();
+	eq CallS.init() = getLabelAST();
 	
+	syn Label Decl.init();
+	eq ConstDecl.init() =  getLabelAST();
+	eq VarDecl.init() =  getLabelAST();
+	eq Procedure.init() = getLabelAST();
+
+
+
 	/** The set of final labels of an AST node. */
 	syn Set<Label> Program.finals();
 	eq Program.finals() = getS().finals();
