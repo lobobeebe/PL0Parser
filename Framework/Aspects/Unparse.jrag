@@ -6,11 +6,13 @@ aspect Unparse
      */
     syn String Program.unparse();
     syn String Block.unparse();
-    syn String Decl.unparse();
-    syn String Procedure.unparse();
+    syn String constDecl.unparse();
+    syn String VarDecl.unparse();
+    syn String ProcDecl.unparse();
     syn String Op.unparse();
     syn String S.unparse();
-    syn String Expr.unparse();
+    syn String AExpr.unparse();
+    syn String BExpr.unparse();
     syn String Label.unparse();
 
     /**
@@ -19,7 +21,6 @@ aspect Unparse
      */
     syn String Program.toString() = unparse();
     syn String Block.toString() = unparse();
-    syn String Decl.toString() = unparse();
     syn String Procedure.toString() = unparse();
     syn String Op.toString() = getContents();
     syn String S.toString() = unparse();
