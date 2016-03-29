@@ -45,7 +45,7 @@ aspect CFG
         Label getLabelAST();
     }
 
-    Decl implements Block;
+    ConstDecl implements Block;
     AssignS implements Block;
     LabeledExpr implements Block;
 
@@ -74,42 +74,9 @@ aspect CFG
         {
             if(getProcedure(i).getVar().equals(getVar())
             {
-                ret.addAll(getProcedure(i).blocks());
+                ret.addAll(getProcedure(i).getConstantList());
+                ret.addAll(getProcedure(i).getS().blocks());
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
