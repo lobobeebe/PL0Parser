@@ -18,7 +18,6 @@ Op_r : Op;
 Op_a : Op;
 
 // Expressions
-abstract Expr;
 abstract AExpr;
 
 VarRefExpr: AExpr ::= <Contents>;
@@ -26,7 +25,7 @@ NumLitExpr: AExpr ::= <Contents>;
 ABinaryExpr: AExpr ::= Left:AExpr Op:Op_a Right:AExpr;
 OddExpr: AExpr ::= AExpr;
 
-RelExpr: Expr ::=  LabelAST:Label Left:AExpr Op:Op_r Right:AExpr;
+RelExpr ::=  LabelAST:Label Left:AExpr Op:Op_r Right:AExpr;
 
 
 // Statements
