@@ -97,7 +97,7 @@ aspect Unparse
     // Declarations
     eq ConstDecl.unparse() { return "[" + getVar() + " = " + getNum() + "]^" + getLabel().unparse(); }
     eq VarDecl.unparse() { return "[" + getVar() + "]^" + getLabel().unparse(); }
-    eq ProcDecl.unparse() { return "[procedure " + getVar() + "]^" + getLabel().unparse() + ";" + getBlock().unparse() + ";"; }
+    eq ProcDecl.unparse() { return "[procedure " + getVar() + "]^" + getLabel().unparse() + "; " + getBlock().unparse() + ";"; }
 
     // Expressions
     eq VarRefExpr.unparse() { return getContents(); }

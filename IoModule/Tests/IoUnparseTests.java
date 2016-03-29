@@ -14,8 +14,8 @@ public class IoUnparseTests extends UnparseTests {
     public void testUnparse() {
         super.testUnparse();
         for (int i = 1; i <= NUM_TAINT_UNPARSE_TESTS; i++) {
-            compareUnparse("Tests/Data/TestUnparseTaint" + i + "_in.PL0",
-                    "Tests/Data/TestUnparseTaint" + i + "_out.PL0");
+            compareUnparse("Tests/Data/TestUnparseIo" + i + "_in.PL0",
+                    "Tests/Data/TestUnparseIo" + i + "_out.PL0");
         }
     }
 

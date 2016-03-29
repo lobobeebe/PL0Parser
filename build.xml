@@ -144,7 +144,9 @@
         <!-- Run tests -->
         <java classname="${tests}.TestAll"
             classpath="${build}:${tools}/beaver.jar:tools/junit.jar"
-            fork="true" dir="${build}" />
+            fork="true" dir="${build}">
+            <arg value="-text"/>
+        </java>
     </target>
 
 </project>
