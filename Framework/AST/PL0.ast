@@ -17,13 +17,14 @@ Op_a:Op;
 
 // Expressions
 abstract AExpr;
+abstract BExpr;
 
 VarRefExpr:AExpr ::= <Contents>;
 NumLitExpr:AExpr ::= <Contents>;
 ABinaryExpr:AExpr ::= Left:AExpr Op:Op_a Right:AExpr;
-OddExpr:AExpr ::= AExpr;
+OddExpr:BExpr ::= AExpr;
 
-RelExpr ::=  LabelAST:Label Left:AExpr Op:Op_r Right:AExpr;
+RelExpr:BExpr ::=  LabelAST:Label Left:AExpr Op:Op_r Right:AExpr;
 
 
 // Statements
