@@ -20,15 +20,60 @@ public class ControlFlowGraphTests extends PL0TestCase
     public void testControlFlowGraph() throws IOException, Exception
     {
         Program program = parseFromFile("Tests/Data/TestControlFlowGraph.pl0");
-        TestControlFlowGraphInit(program.getBlock());
+        TestControlFlowGraphProgram(program.getBlock());
         TestProgramOutFlows(program.getBlock());
-        TestConstOutFlows(program.getBlock());
+        TestOuterConstOutFlows(program.getBlock());
     }
 
-    public void TestControlFlowGraphInit(Block block) throws Exception
+    public void TestControlFlowGraphProgram(Block block) throws Exception
     {
+        // Init
         String programInitLabel = ((NumLabel)block.init()).getNum();
         assertTrue(programInitLabel + " -Failure", programInitLabel.equals("1"));
+
+        // blocks
+        Set<ElementaryBlock> elementaryBlocks = block.blocks();
+        assertTrue(elementaryBlocks.size() + "", elementaryBlocks.size() == 12);
+
+        // blocks: Constants
+        List<ConstDecl> constants = new List<ConstDecl>();
+        constants.add(new ConstDecl(new NumLabel("1"), "y", "5"));
+        constants.add(new ConstDecl(new NumLabel("2"), "z", "0"));
+        for(ConstDecl constant : constants)
+        {
+            assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(constant));
+        }
+
+        // blocks: Variables
+        List<VarDecl> variables = new List<VarDecl>();
+        variables.add(new VarDecl(new NumLabel("3"), "x"));
+        variables.add(new VarDecl(new NumLabel("4"), "sum"));
+        for(VarDecl variable : variables)
+        {
+            assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(variable));
+        }
+
+        List<VarDecl> innerVariables = new List<VarDecl>();
+        innerVariables.add(new VarDecl(new NumLabel("5"), "a"));
+        innerVariables.add(new VarDecl(new NumLabel("6"), "b"));
+        for(VarDecl variable : innerVariables)
+        {
+            assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(variable));
+        }
+
+        // blocks: Inner Statements
+        List<S> innerStatements = new List<S>();
+        innerStatements.add(new AssignS(new NumLabel("7"), "a", new VarRefExpr("x")));
+        innerStatements.add(new AssignS(new NumLabel("8"), "b", new VarRefExpr("y")));
+        innerStatements.add(new AssignS(new NumLabel("9"), "sum", new ABinaryExpr(new VarRefExpr("a"), new Op_a("+"), new VarRefExpr("b"))));
+        for(S statement : innerStatements)
+        {
+            assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(statement));
+        }
+
+        // finals
+        // inFlows
+        // outFlows
     }
 
     public void TestProgramOutFlows(Block block) throws Exception
@@ -37,19 +82,18 @@ public class ControlFlowGraphTests extends PL0TestCase
         assertEquals(0, outs.size());
     }
 
-    public void TestConstOutFlows(Block block) throws Exception
+    public void TestOuterConstOutFlows(Block block) throws Exception
     {
         assertTrue(block.getNumConstant() == 2);
-
         ConstDecl const1 = block.getConstant(0);
         Set<Label> outs1 = const1.outFlows();
         assertEquals(1, outs1.size());
-        assertTrue(outs1.contains(new NumLabel("2")));
+        assertTrue(outs1.toString(), outs1.contains(new NumLabel("2")));
 
         ConstDecl const2 = block.getConstant(1);
         Set<Label> outs2 = const2.outFlows();
         assertEquals(1, outs2.size());
-        assertTrue(outs2.contains(new NumLabel("3")));
+        assertTrue(outs2.toString(), outs2.contains(new NumLabel("3")));
     }
 /*
     public void testOutFlows2() throws IOException, Exception {

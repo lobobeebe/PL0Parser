@@ -136,7 +136,24 @@ aspect ControlFlowGraph
         return toString().equals(b.toString());
     }
 
-    public int ElementaryBlock.hashCode(){
+    public int ElementaryBlock.hashCode()
+    {
+        return toString().hashCode();
+    }
+
+    public boolean Label.equals(Object o)
+    {
+        if(o == null || !(o instanceof Label))
+        {
+            return false;
+        }
+
+        Label b = (Label) o;
+        return toString().equals(b.toString());
+    }
+
+    public int Label.hashCode()
+    {
         return toString().hashCode();
     }
 
@@ -250,13 +267,13 @@ aspect ControlFlowGraph
         {
             if(getNumVar() > 0)
             {
-                return SetRepUtility.singleton(getVar(0));
+                return SetRepUtility.singleton(getVar(0).getLabel());
             }
             else
             {
                 if(getNumProc() > 0)
                 {
-                    return SetRepUtility.singleton(getProc(0));
+                    return SetRepUtility.singleton(getProc(0).getLabel());
                 }
                 else
                 {
