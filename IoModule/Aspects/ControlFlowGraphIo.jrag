@@ -2,9 +2,13 @@ import java.util.*;
 import Utility.SetRepUtility;
 import Utility.FlowGraph;
 
-aspect ControlFlowGraphTaint
+aspect ControlFlowGraphIo
 {
     eq ReadS.init() = getLabelAST();
     eq SanitizeS.init() = getLabelAST();
     eq PrintS.init() = getLabelAST();
+
+    eq ReadS.finals() = SetRepUtility.singleton(getLabelAST());
+    eq SanitizeS.finals() = SetRepUtility.singleton(getLabelAST());
+    eq PrintS.finals() = SetRepUtility.singleton(getLabelAST());
 }
