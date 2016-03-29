@@ -33,7 +33,7 @@ aspect ControlFlowGraph
         for(int i = 0; i < getNumProcedure(); i++)
         {
             if(getProcedure(i).getVar().equals(getVar()))
-            {()
+            {
                 ret = getProcedure(i).getS().finals();
             }
         }
