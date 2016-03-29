@@ -1,0 +1,40 @@
+import java.util.Set;
+import Utility.Pair;
+import Utility.SetRepUtility;
+import AST.*;
+
+aspect Vars
+{
+    /** The set of variables in a program. */
+    syn Set<String> Program.Vars();
+    eq Program.Vars()
+    {
+        Set<String> ret = SetRepUtility.emptySet();
+        for (int i = 0; i < getNumVar(); i++)
+        {
+            ret.add(getVar(i));
+        }
+
+        for (int i = 0; i < getNumProc(); i++)
+        {
+            ret.add(getProc(i).Vars());
+        }
+        return ret;
+    }
+
+    syn Set<String> ProcDecl.Vars();
+    eq ProcDecl.Vars()
+    {
+        Set<String> ret = SetRepUtility.emptySet();
+        for (int i = 0; i < getNumVar(); i++)
+        {
+            ret.add(getVar(i).getVar());
+        }
+        return ret;
+    }
+
+    /** The set of variables in the program. */
+    syn Set<String> Program.VarStar();
+    eq Program.VarStar() = getVars();
+
+}
