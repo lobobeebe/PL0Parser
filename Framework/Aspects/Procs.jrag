@@ -5,21 +5,9 @@ import AST.*;
 
 aspect Procs
 {
-    /** The set of Prcoedures in a program. */
-    syn Set<String> Block.Procs();
-    eq Block.Procs()
-    {
-        Set<String> ret = SetRepUtility.emptySet();
-        for (int i = 0; i < getNumProc(); i++)
-        {
-            ret.add(getProc(i).toString());
-        }
-        return ret;
-    }
+    syn List<ProcDecl> Block.ProcStar();
+    eq Block.ProcStar() = getProcList();
 
-    syn Set<String> Block.ProcStar();
-    eq Block.ProcStar() = Procs();
-
-    inh Set<String> S.ProcStar();
-    eq Block.getS().ProcStar() = Procs();
+    inh List<ProcDecl> S.ProcStar();
+    eq Block.getS().ProcStar() = ProcStar();
 }

@@ -1,6 +1,7 @@
 import java.util.*;
 import Utility.SetRepUtility;
 import Utility.FlowGraph;
+import AST.*;
 
 /** Control Flow Graph attributes, see Section 2.1 of "Principles of Progarm Analysis"
  * by Nielsen, Nielsen, and Hankin (Springer-Verlag, 1999 and 2005).
@@ -30,15 +31,14 @@ aspect ControlFlowGraph
     eq CallS.finals()
     {
         Set<Label> ret = SetRepUtility.emptySet();
-        /*
-        for(int i = 0; i < getNumProcedure(); i++)
+
+        for(ProcDecl proc : ProcStar())
         {
-            if(getProcedure(i).getVar().equals(getVar()))
+            if(proc.getVar().equals(getVar()))
             {
-                ret = getProcedure(i).getS().finals();
+                ret = proc.getBlock().finals();
             }
         }
-        */
         return ret;
     }
 
@@ -81,16 +81,32 @@ aspect ControlFlowGraph
     eq CallS.blocks()
     {
         Set<ElementaryBlock> ret = SetRepUtility.emptySet();
-        /*
-        for(int i = 0; i < getNumProcedure(); i++)
+        for(ProcDecl proc : ProcStar())
         {
-            if(getProcedure(i).getVar().equals(getVar()))
+            if(proc.getVar().equals(getVar()))
             {
-                ret.addAll(getProcedure(i).getConstantList());
-                ret.addAll(getProcedure(i).getS().blocks());
+                ret.addAll(proc.getBlock().blocks());
             }
         }
-        */
+        return ret;
+    }
+
+    syn Set<ElementaryBlock> Block.blocks()
+    {
+        Set<ElementaryBlock> ret = SetRepUtility.emptySet();
+        for (ConstDecl constant : getConstantList())
+        {
+            ret.add(constant);
+        }
+        for (VarDecl variable : getVarList())
+        {
+            ret.add(variable);
+        }
+        for (ProcDecl procedure : getProcList())
+        {
+            ret.add(procedure);
+        }
+        ret.addAll(getS().blocks());
         return ret;
     }
 
