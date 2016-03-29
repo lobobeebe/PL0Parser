@@ -80,4 +80,103 @@ aspect CFG
             }
         }
     }
+
+    public boolean Block.equals(Object o){
+    	if(o == null || !(o instanceof Block)){
+    		return false;
+    	}
+		Block b = (Block) o;
+
+		return toString().equals(b.toString());
+    }
+
+    public int Block.hashCode(){
+    	return toString().hashCode();
+    }
+
+    /** Map labels to blocks */
+    inh Block Label.itsBlock();
+    eq AssignS.getLabelAST().itsBlock() = this;
+    eq LabeledExpr getLabelAST().itsBlock() = this;
+    eq ConstDecl getLabelAST.itsBlock() = this;
+
+
+    /** Flows into a block */
+	inh Set<Label> S.inFlows();
+	eq Program.getS().inFlows() = SetRepUtility.emptySet();
+	eq IfS.getS().inFlows() = SetRepUtility.singleton(getLabeledExpr().getLabelAST());
+	eq WhileS.getS().inFlows() = SetRepUtility.singleton(getLabeledExpr().getLabelAST());
+	eq BeginEndS.getStatement(int index).inFlows(){
+		if(index == 0){
+			return inFlows();
+		} else{
+			return getStatement(index-1).finals();
+		}
+	}
+
+	inh Set<Label> LabeledExpr.inFlows();
+	eq IfS.getLabeledExpr().inFlows() = this.inFlows();
+	eq WhileS.getLabeledExpr().inFlows(){
+		Set<Label> ins = this.inFlows();
+		ins.addAll(getS().finals());
+		return ins;
+	}
+
+	/** get next statement for outflows */
+	inh S S.next();
+	eq BeginEndS.getStatement(int index).next(){
+		if(index == getNumStatement()-1){
+			return next();
+		}
+		else{
+			return getStatement(index+1);
+		}
+	}
+	eq Program.getS().next() = null;
+	eq IfS.getS().next() = next();
+	eq WhileS.getS().next() = this;
+
+	/** Flows out of a block */	
+	inh Set<Label> S.outFlows();
+	eq Program.getS().outFlows() = SetRepUtility.emptySet();
+	eq IfS.getS().outFlows(){
+		if(next() == null){
+			return SetRepUtility.emptySet();
+		}
+		else{
+			SetRepUtility.singleton(next().init());
+		}
+	}
+	eq WhileS.getS().outFlows(){
+		return SetRepUtility.singleton(getLabeledExpr.getLabelAST());
+	}
+	eq BeginEndS.getStatement(int index).outFlows(){
+		if(index == getNumStatement()-1){
+			return outFlows();
+		}
+		else{
+			return SetRepUtility.singleton(getStatement(index+1).init());
+		}
+	}
+
+	inh Set<Label> LabeledExpr.outFlows();
+	eq IfS.getLabeledExpr().outFlows(){
+		return SetRepUtility.singleton(getS.init());
+	}
+	eq WhileS.getLabeledExpr().outFlows(){
+		Set<Label> ret = SetRepUtility.singleton(getS().init());
+		if(next() != null){
+			ret.add(next().init());
+		}
+
+		return ret;
+	}
+
+	/** flows in a statement */
+	
+
+
+		
+
+
 }
