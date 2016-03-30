@@ -31,11 +31,11 @@ public class ControlFlowGraphTests extends PL0TestCase
         String programInitLabel = ((NumLabel)block.init()).getNum();
         assertTrue(programInitLabel + " -Failure", programInitLabel.equals("1"));
 
-        // blocks
+        // blocks: Verify amount of blocks
         Set<ElementaryBlock> elementaryBlocks = block.blocks();
-        assertTrue(elementaryBlocks.size() + "", elementaryBlocks.size() == 12);
+        assertTrue(elementaryBlocks.size() + "", elementaryBlocks.size() == 13);
 
-        // blocks: Constants
+        // blocks: Verify all constants exist
         List<ConstDecl> constants = new List<ConstDecl>();
         constants.add(new ConstDecl(new NumLabel("1"), "y", "5"));
         constants.add(new ConstDecl(new NumLabel("2"), "z", "0"));
@@ -44,7 +44,7 @@ public class ControlFlowGraphTests extends PL0TestCase
             assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(constant));
         }
 
-        // blocks: Variables
+        // blocks: Verify all Variables exist
         List<VarDecl> variables = new List<VarDecl>();
         variables.add(new VarDecl(new NumLabel("3"), "x"));
         variables.add(new VarDecl(new NumLabel("4"), "sum"));
@@ -53,6 +53,7 @@ public class ControlFlowGraphTests extends PL0TestCase
             assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(variable));
         }
 
+        // blocks: Inner Variables
         List<VarDecl> innerVariables = new List<VarDecl>();
         innerVariables.add(new VarDecl(new NumLabel("5"), "a"));
         innerVariables.add(new VarDecl(new NumLabel("6"), "b"));
@@ -71,15 +72,36 @@ public class ControlFlowGraphTests extends PL0TestCase
             assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(statement));
         }
 
-        // finals
-        // inFlows
-        // outFlows
+        // blocks: Procedures
+        List<ProcDecl> procedures = new List<ProcDecl>();
+        procedures.add(new ProcDecl(new NumLabel("10"), "addition", new Block(new List<ConstDecl>(), innerVariables, new List<ProcDecl>(), new BeginEndS(innerStatements))));
+        for(ProcDecl proc : procedures)
+        {
+            assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(proc));
+        }
+
+        // blocks: Statements
+        List<S> statements = new List<S>();
+        statements.add(new AssignS(new NumLabel("11"), "x", new NumLitExpr("2")));
+        statements.add(new CallS(new NumLabel("12"), "addition"));
+        statements.add(new AssignS(new NumLabel("13"), "sum", new ABinaryExpr(new VarRefExpr("sum"), new Op_a("+"), new NumLitExpr("1"))));
+        for(S statement : statements)
+        {
+            assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(statement));
+        }
+
+        // finals: Verify there is only one
+        Set<Label> finalLabels = block.finals();
+        assertTrue(finalLabels.size() == 1);
+        assertTrue(finalLabels + " -Failure", finalLabels.contains(new NumLabel("13")));
+
+        // outFlows: Verify there are no outflows to the program block
+        Set<Label> outs = block.outFlows();
+        assertEquals(0, outs.size());
     }
 
     public void TestProgramOutFlows(Block block) throws Exception
     {
-        Set<Label> outs = block.outFlows();
-        assertEquals(0, outs.size());
     }
 
     public void TestOuterConstOutFlows(Block block) throws Exception
