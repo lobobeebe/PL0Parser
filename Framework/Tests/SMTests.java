@@ -14,11 +14,6 @@ public class SMTests extends PL0TestCase {
         Program p = parseFromFile("Tests/Data/TestSM.pl0");
 
     }
-	/** test AEStar helper for the AE analysis */
-	public void testSMStar() throws IOException, Exception {
-		Program p = parseFromFile("Tests/Data/TestSM.pl0");
-		assertEquals("Var* size", 3, p.VarStar().size());		
-	}
 	
 	/** tests based on the file testsrc/ae1.wh */
 	public void testAEentry1() throws IOException, Exception {
