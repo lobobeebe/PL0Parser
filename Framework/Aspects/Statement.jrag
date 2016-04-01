@@ -1,0 +1,167 @@
+import java.util.*;
+import Utility.SetRepUtility;
+import AST.*;
+
+//=========================================================================**
+// Statement Aspect: Holds all attributes of S's(?)
+//=========================================================================**
+
+aspect Statement
+{
+    //=========================================================================**
+    // inFlows(): Flows into a statement
+    //=========================================================================**
+
+    inh Set<Label> S.inFlows();
+    eq Block.getS().inFlows() = SetRepUtility.emptySet();
+    eq IfS.getS().inFlows() = SetRepUtility.singleton(getLabeledExpr().getLabel());
+    eq WhileS.getS().inFlows() = SetRepUtility.singleton(getLabeledExpr().getLabel());
+    eq BeginEndS.getStatement(int index).inFlows(){
+        if(index == 0){
+            return inFlows();
+        } else{
+            return getStatement(index-1).finals();
+        }
+    }
+
+    //=========================================================================**
+    // init()
+    //=========================================================================**
+
+    syn Label S.init();
+    eq AssignS.init() = getLabel();
+    eq IfS.init() = getLabeledExpr().getLabel();
+    eq WhileS.init() = getLabeledExpr().getLabel();
+    eq BeginEndS.init() = getStatement(0).init();
+    eq CallS.init() = getLabeledVarRef().getLabel();
+
+    //=========================================================================**
+    // blocks()
+    //=========================================================================**
+
+    syn Set<ElementaryBlock> S.blocks();
+    eq AssignS.blocks() = SetRepUtility.singleton(this);
+    eq IfS.blocks()
+    {
+        Set<ElementaryBlock> ret = getS().blocks();
+        ret.add(getLabeledExpr());
+        return ret;
+    }
+    eq WhileS.blocks()
+    {
+        Set<ElementaryBlock> ret = getS().blocks();
+        ret.add(getLabeledExpr());
+        return ret;
+    }
+    eq BeginEndS.blocks()
+    {
+        Set<ElementaryBlock> ret = SetRepUtility.emptySet();
+        for(int i = 0; i < getNumStatement(); i++){
+            ret.addAll(getStatement(i).blocks());
+        }
+        return ret;
+    }
+    eq CallS.blocks()
+    {
+        Set<ElementaryBlock> ret = SetRepUtility.emptySet();
+        for(Proc proc : ProcStar())
+        {
+            if(proc.getVar().equals(getVar()))
+            {
+                ret.addAll(proc.getBlock().blocks());
+            }
+        }
+        ret.add(getLabeledVarRef());
+        return ret;
+    }
+
+    //=========================================================================**
+    // ProcStar()
+    //=========================================================================**
+
+    inh List<ProcDecl> S.ProcStar();
+    eq Block.getS().ProcStar() = ProcStar();
+
+    //=========================================================================**
+    // VarStar(): The set of variables in the program.
+    //=========================================================================**
+
+    inh Set<String> S.VarStar();
+    eq Block.getS().VarStar() = Vars();
+
+    //=========================================================================**
+    // next(): Get next statement for outflows
+    //=========================================================================**
+
+    inh S S.next();
+    eq BeginEndS.getStatement(int index).next()
+    {
+        if(index == getNumStatement() - 1)
+        {
+            return next();
+        }
+        else
+        {
+            return getStatement(index+1);
+        }
+    }
+    eq Block.getS().next() = null;
+    eq IfS.getS().next() = next();
+    eq WhileS.getS().next() = this;
+
+    //=========================================================================**
+    // finals()
+    //=========================================================================**
+
+    syn Set<Label> S.finals();
+    eq AssignS.finals() = SetRepUtility.singleton(getLabel());
+    eq IfS.finals() = getS().finals();
+    eq WhileS.finals() = SetRepUtility.singleton(getLabeledExpr().getLabel());
+    eq BeginEndS.finals() = getStatement(getNumStatement() - 1).finals();
+    eq CallS.finals()
+    {
+        Set<Label> ret = SetRepUtility.emptySet();
+
+        for(ProcDecl proc : ProcStar())
+        {
+            if(proc.getVar().equals(getVar()))
+            {
+                ret = proc.getBlock().finals();
+            }
+        }
+        return ret;
+    }
+
+    //=========================================================================**
+    // outFlows(): Flows out a statement.
+    //=========================================================================**
+
+    inh Set<Label> S.outFlows();
+    eq Block.getS().outFlows() = SetRepUtility.emptySet();
+    eq IfS.getS().outFlows()
+    {
+        if(next() == null)
+        {
+            return SetRepUtility.emptySet();
+        }
+        else
+        {
+            return SetRepUtility.singleton(next().init());
+        }
+    }
+    eq WhileS.getS().outFlows()
+    {
+        return SetRepUtility.singleton(getLabeledExpr().getLabel());
+    }
+    eq BeginEndS.getStatement(int index).outFlows()
+    {
+        if(index == getNumStatement() - 1)
+        {
+            return outFlows();
+        }
+        else
+        {
+            return SetRepUtility.singleton(getStatement(index + 1).init());
+        }
+    }
+}

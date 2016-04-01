@@ -7,12 +7,15 @@ var a, b;
 begin
     a := x;
     b := y;
-    sum := (a + b)
+    if a = b then sum := (a + b)
 end;
-
 
 begin
     x := 2;
-    call addition;
-    sum := (sum + 1)
+    sum := 0;
+    while sum < 4 do
+    begin
+        call addition;
+        x := (x + 1)
+    end
 end.

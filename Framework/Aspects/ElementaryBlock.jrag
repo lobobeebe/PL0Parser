@@ -1,0 +1,62 @@
+import java.util.*;
+import Utility.SetRepUtility;
+import AST.*;
+
+aspect ElementaryBlock
+{
+    //=========================================================================**
+    // ElementaryBlock interface
+    //=========================================================================**
+
+    public interface ElementaryBlock
+    {
+        Set<Label> inFlows();
+        Set<Label> outFlows();
+        Label getLabel();
+    }
+
+    //=========================================================================**
+    // Declare Elementary Blocks
+    //=========================================================================**
+
+    LabeledExpr implements ElementaryBlock;
+    LabeledRef implements ElementaryBlock;
+
+    //=========================================================================**
+    // equals()
+    //=========================================================================**
+
+    public boolean ElementaryBlock.equals(Object o)
+    {
+        if(o == null || !(o instanceof ElementaryBlock))
+        {
+            return false;
+        }
+        ElementaryBlock b = (ElementaryBlock) o;
+
+        return toString().equals(b.toString());
+    }
+
+    //=========================================================================**
+    // hashCode()
+    //=========================================================================**
+
+    public int ElementaryBlock.hashCode()
+    {
+        return toString().hashCode();
+    }
+
+    //=========================================================================**
+    // inFlows(): Flows into a block
+    //=========================================================================**
+
+    inh Set<Label> LabeledRef.inFlows();
+    inh Set<Label> LabeledExpr.inFlows();
+
+    //=========================================================================**
+    // outFlows(): Flows out of a block
+    //=========================================================================**
+
+    inh Set<Label> LabeledRef.outFlows();
+    inh Set<Label> LabeledExpr.outFlows();
+}

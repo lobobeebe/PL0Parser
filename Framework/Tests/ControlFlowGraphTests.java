@@ -11,29 +11,33 @@ import AST.*;
 
 public class ControlFlowGraphTests extends PL0TestCase
 {
+    private Program mProgram;
+    private Block mProgramBlock;
+
     public ControlFlowGraphTests(String s)
     {
         super(s);
+
+        try
+        {
+            mProgram = parseFromFile("Tests/Data/TestControlFlowGraph.pl0");
+            mProgramBlock = mProgram.getBlock();
+        }
+        catch(Exception exception)
+        {
+            System.err.println(exception.getMessage());
+        }
     }
 
-    /** Compare the source file to the unparsed string of the AST. Matching proves correctness of AST. */
-    public void testControlFlowGraph() throws IOException, Exception
-    {
-        Program program = parseFromFile("Tests/Data/TestControlFlowGraph.pl0");
-        TestControlFlowGraphProgram(program.getBlock());
-        TestProgramOutFlows(program.getBlock());
-        TestOuterConstOutFlows(program.getBlock());
-    }
-
-    public void TestControlFlowGraphProgram(Block block) throws Exception
+    public void testProgram() throws Exception
     {
         // Init
-        String programInitLabel = ((NumLabel)block.init()).getNum();
-        assertTrue(programInitLabel + " -Failure", programInitLabel.equals("1"));
+        String programInitLabel = ((NumLabel)mProgramBlock.init()).getNum();
+        assertTrue("Initial label of the program should be 1: " + programInitLabel, programInitLabel.equals("1"));
 
         // blocks: Verify amount of blocks
-        Set<ElementaryBlock> elementaryBlocks = block.blocks();
-        assertTrue(elementaryBlocks.size() + "", elementaryBlocks.size() == 13);
+        Set<ElementaryBlock> elementaryBlocks = mProgramBlock.blocks();
+        assertTrue("There should be 13 elementary blocks in the program: " + elementaryBlocks.size(), elementaryBlocks.size() == 16);
 
         // blocks: Verify all constants exist
         List<ConstDecl> constants = new List<ConstDecl>();
@@ -41,7 +45,7 @@ public class ControlFlowGraphTests extends PL0TestCase
         constants.add(new ConstDecl(new NumLabel("2"), "z", "0"));
         for(ConstDecl constant : constants)
         {
-            assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(constant));
+            assertTrue("Constants should contain " + constant + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(constant));
         }
 
         // blocks: Verify all Variables exist
@@ -50,7 +54,7 @@ public class ControlFlowGraphTests extends PL0TestCase
         variables.add(new VarDecl(new NumLabel("4"), "sum"));
         for(VarDecl variable : variables)
         {
-            assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(variable));
+            assertTrue("Variables should contain " + variable + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(variable));
         }
 
         // blocks: Inner Variables
@@ -59,25 +63,27 @@ public class ControlFlowGraphTests extends PL0TestCase
         innerVariables.add(new VarDecl(new NumLabel("6"), "b"));
         for(VarDecl variable : innerVariables)
         {
-            assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(variable));
+            assertTrue("Inner variables should contain " + variable + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(variable));
         }
 
         // blocks: Inner Statements
         List<S> innerStatements = new List<S>();
         innerStatements.add(new AssignS(new NumLabel("7"), "a", new VarRefExpr("x")));
         innerStatements.add(new AssignS(new NumLabel("8"), "b", new VarRefExpr("y")));
-        innerStatements.add(new AssignS(new NumLabel("9"), "sum", new ABinaryExpr(new VarRefExpr("a"), new Op_a("+"), new VarRefExpr("b"))));
+        AssignS thenS = new AssignS(new NumLabel("9"), "sum", new ABinaryExpr(new VarRefExpr("a"), new Op_a("+"), new VarRefExpr("b")));
+        innerStatements.add(thenS);
+        innerStatements.add(new IfS(new LabeledExpr(new NumLabel("10"), new BBinaryExpr(new VarRefExpr("a"), new Op_r("="), new VarRefExpr("b"))), thenS));
         for(S statement : innerStatements)
         {
-            assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(statement));
+            assertTrue("Inner statements should contain " + statement + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(statement));
         }
 
         // blocks: Procedures
         List<ProcDecl> procedures = new List<ProcDecl>();
-        procedures.add(new ProcDecl(new NumLabel("10"), "addition", new Block(new List<ConstDecl>(), innerVariables, new List<ProcDecl>(), new BeginEndS(innerStatements))));
+        procedures.add(new ProcDecl(new NumLabel("11"), "addition", new Block(new List<ConstDecl>(), innerVariables, new List<ProcDecl>(), new BeginEndS(innerStatements))));
         for(ProcDecl proc : procedures)
         {
-            assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(proc));
+            assertTrue("Procedures should contain " + proc + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(proc));
         }
 
         // blocks: Statements
@@ -91,42 +97,74 @@ public class ControlFlowGraphTests extends PL0TestCase
         }
 
         // finals: Verify there is only one
-        Set<Label> finalLabels = block.finals();
+        Set<Label> finalLabels = mProgramBlock.finals();
         assertTrue(finalLabels.size() == 1);
         assertTrue(finalLabels + " -Failure", finalLabels.contains(new NumLabel("13")));
 
         // outFlows: Verify there are no outflows to the program block
-        Set<Label> outs = block.outFlows();
+        Set<Label> outs = mProgramBlock.outFlows();
         assertEquals(0, outs.size());
     }
 
-    public void TestProgramOutFlows(Block block) throws Exception
+    public void testConsts() throws Exception
     {
+        // Verify number of constants
+        assertTrue(mProgramBlock.getNumConstant() == 2);
+        ConstDecl const1 = mProgramBlock.getConstant(0);
+        ConstDecl const2 = mProgramBlock.getConstant(1);
+
+        // init
+        assertTrue(const1.init().equals(new NumLabel("1")));
+        assertTrue(const2.init().equals(new NumLabel("2")));
+
+        // inFlows
+        Set<Label> ins1 = const1.inFlows();
+        assertTrue("Size of const1.inFlows should be 0, was: " + ins1.size(), ins1.size() == 0);
+
+        Set<Label> ins2 = const2.inFlows();
+        assertTrue("Size of const2.inFlows should be 1, was: " + ins2.size(), ins2.size() == 1);
+        assertTrue("Label ^1 should be in const2.inFlows: const2.inFlows = " + ins2, ins2.contains(new NumLabel("1")));
+
+        // outFlows
+        Set<Label> outs1 = const1.outFlows();
+        assertTrue("Size of const1.outFlows should be 1, was: " + outs1.size(), outs1.size() == 1);
+        assertTrue("Label ^2 should be in const1.outFlows: const1.outFlows = " + outs1, outs1.contains(new NumLabel("2")));
+
+        Set<Label> outs2 = const2.outFlows();
+        assertTrue("Size of const2.outFlows should be 2, was: " + outs2.size(), outs2.size() == 1);
+        assertTrue("Label ^3 should be in const2.outFlows: const2.outFlows = " + outs2, outs2.contains(new NumLabel("3")));
     }
 
-    public void TestOuterConstOutFlows(Block block) throws Exception
+    public void testVars() throws IOException, Exception
     {
-        assertTrue(block.getNumConstant() == 2);
-        ConstDecl const1 = block.getConstant(0);
-        Set<Label> outs1 = const1.outFlows();
-        assertEquals(1, outs1.size());
-        assertTrue(outs1.toString(), outs1.contains(new NumLabel("2")));
+        // Verify number of variables
+        assertTrue("There should be 2 variables at the program scope: " + mProgramBlock.getNumVar(), mProgramBlock.getNumVar() == 2);
+        VarDecl var1 = mProgramBlock.getVar(0);
+        VarDecl var2 = mProgramBlock.getVar(1);
 
-        ConstDecl const2 = block.getConstant(1);
-        Set<Label> outs2 = const2.outFlows();
-        assertEquals(1, outs2.size());
-        assertTrue(outs2.toString(), outs2.contains(new NumLabel("3")));
+        // init
+        assertTrue(var1.init().equals(new NumLabel("3")));
+        assertTrue(var2.init().equals(new NumLabel("4")));
+
+        // inFlows
+        Set<Label> ins1 = var1.inFlows();
+        assertTrue("Size of var1.inFlows should be 1, was: " + ins1.size(), ins1.size() == 1);
+        assertTrue("Label ^2 should be in var2.inFlows: var2.inFlows = " + ins1, ins1.contains(new NumLabel("2")));
+
+        Set<Label> ins2 = var2.inFlows();
+        assertTrue("Size of var2.inFlows should be 1, was: " + ins2.size(), ins2.size() == 1);
+        assertTrue("Label ^3 should be in var2.inFlows: var2.inFlows = " + ins2, ins2.contains(new NumLabel("3")));
+
+        // outFlows
+        Set<Label> outs1 = var1.outFlows();
+        assertTrue("Size of var1.outFlows should be 1, was: " + outs1.size(), outs1.size() == 1);
+        assertTrue("Label ^4 should be in var1.outFlows: var1.outFlows = " + outs1, outs1.contains(new NumLabel("4")));
+
+        Set<Label> outs2 = var2.outFlows();
+        assertTrue("Size of var2.outFlows should be 2, was: " + outs2.size(), outs2.size() == 1);
+        assertTrue("Label ^11 should be in var22.outFlows: var2.outFlows = " + outs2, outs2.contains(new NumLabel("11")));
     }
 /*
-    public void testOutFlows2() throws IOException, Exception {
-        Program p = parseFromFile("testsrc/cfg1.wh");
-        assertTrue(p.getS() instanceof CompoundS);
-        S stmt2 = ((CompoundS)p.getS()).getSList(1);
-        Set<Label> outs = stmt2.outFlows();
-        assertEquals(1, outs.size());
-        assertTrue(outs.contains(new NumLabel("6")));
-    }
-
     public void testOutFlows3() throws IOException, Exception {
         Program p = parseFromFile("testsrc/cfg1.wh");
         assertTrue(p.getS() instanceof CompoundS);

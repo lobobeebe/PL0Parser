@@ -1,0 +1,43 @@
+import AST.*;
+
+//=========================================================================**
+// Label Aspect: This serves only to allow Labels to be found in Lists.
+//=========================================================================**
+
+aspect Label
+{
+    //=========================================================================**
+    // equals()
+    //=========================================================================**
+
+    public boolean Label.equals(Object o)
+    {
+        if(o == null || !(o instanceof Label))
+        {
+            return false;
+        }
+
+        Label b = (Label) o;
+        return toString().equals(b.toString());
+    }
+
+    //=========================================================================**
+    // hashCode()
+    //=========================================================================**
+
+    public int Label.hashCode()
+    {
+        return toString().hashCode();
+    }
+
+    //=========================================================================**
+    // itsBlock(): Map labels to blocks
+    //=========================================================================**
+
+    inh ElementaryBlock Label.itsBlock();
+    eq AssignS.getLabel().itsBlock() = this;
+    eq CallS.getLabel().itsBlock() = this;
+    eq LabeledExpr.getLabel().itsBlock() = this;
+    eq Decl.getLabel().itsBlock() = this;
+
+}

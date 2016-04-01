@@ -1,0 +1,44 @@
+import java.util.Set;
+import Utility.Pair;
+import Utility.SetRepUtility;
+import AST.*;
+
+aspect Proc
+{
+    //=========================================================================**
+    // Vars()
+    //=========================================================================**
+
+    syn Set<String> Proc.Vars();
+    eq Proc.Vars() = getBlock().Vars();
+
+    //=========================================================================**
+    // inFlows()
+    //=========================================================================**
+
+    inh Set<Label> Proc.inFlows();
+    eq Proc.getLabeledRef().inFlows() = inFlows();
+
+    //=========================================================================**
+    // finals()
+    //=========================================================================**
+
+    syn Set<Label> Proc.finals();
+    eq Proc.finals() = SetRepUtility.singleton(getLabeledRef().getLabel());
+
+    //=========================================================================**
+    // outFlows(): Flows out of a block
+    //=========================================================================**
+
+    eq ProgramBlock.getProc(int index).outFlows()
+    {
+        if(index == getNumProc() - 1)
+        {
+            return SetRepUtility.singleton(getS().init());
+        }
+        else
+        {
+            return SetRepUtility.singleton(getVar(index + 1).getLabeledRef().getLabel());
+        }
+    }
+}

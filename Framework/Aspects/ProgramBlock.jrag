@@ -1,0 +1,216 @@
+import java.util.*;
+import Utility.SetRepUtility;
+import Utility.FlowGraph;
+import AST.*;
+
+//=========================================================================**
+// ProgramBlock Aspect
+//=========================================================================**
+
+aspect ProgramBlock
+{
+    //=========================================================================**
+    // inFlows()
+    //=========================================================================**
+
+    inh Set<Label> ProgramBlock.inFlows();
+
+    eq ProgramBlock.getConstant(int index).inFlows()
+    {
+        if(index == 0)
+        {
+            return inFlows();
+        }
+        else
+        {
+            return getConstant(index + 1).finals();
+        }
+    }
+
+    eq ProgramBlock.getVar(int index).inFlows()
+    {
+        if(index == 0)
+        {
+            if(getNumConstant() == 0)
+            {
+                return inFlows();
+            }
+            else
+            {
+                return getConstant(getNumConstant() - 1).finals();
+            }
+        }
+        else
+        {
+            return getVar(index - 1).finals();
+        }
+    }
+
+    eq ProgramBlock.getProc(int index).inFlows()
+    {
+        if(index == 0)
+        {
+            if(getNumVar() == 0)
+            {
+                if(getNumConstant() == 0)
+                {
+                    return inFlows();
+                }
+                else
+                {
+                    return getConstant(getNumConstant() - 1).finals();
+                }
+            }
+            else
+            {
+                return getVar(getNumVar() - 1).finals();
+            }
+        }
+        else
+        {
+            return getProc(index - 1).finals();
+        }
+    }
+
+
+    //=========================================================================**
+    // init(): The initial label of a Program Block
+    //=========================================================================**
+
+    syn Label ProgramBlock.init();
+    eq ProgramBlock.init()
+    {
+        if (getNumConstant() > 0)
+        {
+            return getConstant(0).init();
+        }
+        else if(getNumVar() > 0)
+        {
+            return getVar(0).init();
+        }
+        else if(getNumProc() > 0)
+        {
+            return getProc(0).init();
+        }
+        else
+        {
+            return getS().init();
+        }
+    }
+
+    //=========================================================================**
+    // blocks(): Set of elementary blocks in a program block
+    //=========================================================================**
+
+    syn Set<ElementaryBlock> ProgramBlock.blocks()
+    {
+        Set<ElementaryBlock> ret = SetRepUtility.emptySet();
+        for (Const constant : getConstantList())
+        {
+            ret.add(constant.getDecl());
+        }
+        for (Var var : getVarList())
+        {
+            ret.add(var.getDecl());
+        }
+        for (Proc proc : getProcList())
+        {
+            ret.add(proc.getDecl());
+        }
+        ret.addAll(getS().blocks());
+        return ret;
+    }
+
+    //=========================================================================**
+    // Vars()
+    //=========================================================================**
+    syn Set<String> ProgramBlock.Vars();
+    eq ProgramBlock.Vars()
+    {
+        Set<String> ret = SetRepUtility.emptySet();
+        for (int i = 0; i < getNumVar(); i++)
+        {
+            ret.add(getVar(i).getVar());
+        }
+
+        for (int i = 0; i < getNumProc(); i++)
+        {
+            ret.addAll(getProc(i).Vars());
+        }
+        return ret;
+    }
+
+    //=========================================================================**
+    // ProcStar()
+    //=========================================================================**
+
+    syn List<ProcDecl> ProgramBlock.ProcStar();
+    eq ProgramBlock.ProcStar() = getProcList();
+
+    //=========================================================================**
+    // VarStar(): The set of variables in the program.
+    //=========================================================================**
+
+    syn Set<String> ProgramBlock.VarStar();
+    eq ProgramBlock.VarStar() = Vars();
+
+    //=========================================================================**
+    // finals()
+    //=========================================================================**
+
+    syn Set<Label> ProgramBlock.finals();
+    eq ProgramBlock.finals() = getS().finals();
+
+    //=========================================================================**
+    // outFlows()
+    //=========================================================================**
+
+    inh Set<Label> ProgramBlock.outFlows();
+
+    eq ProgramBlock.getS().outFlows() = outFlows();
+
+    eq ProgramBlock.getConstant(int index).outFlows()
+    {
+        if(index == getNumConstant() - 1)
+        {
+            if(getNumVar() > 0)
+            {
+                return SetRepUtility.singleton(getVar(0).getLabel());
+            }
+            else
+            {
+                if(getNumProc() > 0)
+                {
+                    return SetRepUtility.singleton(getProc(0).getLabel());
+                }
+                else
+                {
+                    return SetRepUtility.singleton(getS().init());
+                }
+            }
+        }
+        else
+        {
+            return SetRepUtility.singleton(getConstant(index + 1).getLabel());
+        }
+    }
+
+    eq ProgramBlock.getVar(int index).outFlows()
+    {
+        if(index == getNumVar() - 1)
+        {
+            if(getNumProc() > 0)
+            {
+                return SetRepUtility.singleton(getProc(0).getLabel());
+            }
+            else
+            {
+                return SetRepUtility.singleton(getS().init());
+            }
+        }
+        else
+        {
+            return SetRepUtility.singleton(getVar(index + 1).getLabel());
+        }
+    }
+}

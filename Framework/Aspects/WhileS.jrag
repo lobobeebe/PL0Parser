@@ -1,0 +1,36 @@
+import java.util.Set;
+import Utility.SetRepUtility;
+import AST.*;
+
+//=========================================================================**
+// WhileS aspect
+//=========================================================================**
+
+aspect WhileS
+{
+    //=========================================================================**
+    // getLabeledExpr().inFlows()
+    //=========================================================================**
+
+    eq WhileS.getLabeledExpr().inFlows()
+    {
+        Set<Label> ins = inFlows();
+        ins.addAll(getS().finals());
+        return ins;
+    }
+    
+    //=========================================================================**
+    // getLabeledExpr().outFlows()
+    //=========================================================================**
+
+    eq WhileS.getLabeledExpr().outFlows()
+    {
+        Set<Label> ret = SetRepUtility.singleton(getS().init());
+        if(next() != null)
+        {
+            ret.add(next().init());
+        }
+
+        return ret;
+    }
+}
