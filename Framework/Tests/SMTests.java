@@ -1,8 +1,7 @@
-package tests;
+package Tests;
 
 import java.io.IOException;
 import java.util.Set;
-
 import beaver.Parser.Exception;
 import AST.*;
 
@@ -10,15 +9,22 @@ import AST.*;
 public class SMTests extends PL0TestCase {
 
     /** test VarStar */
+    /*
     public void testVarStar() throws IOException, Exception{
         Program p = parseFromFile("Tests/Data/TestSM.pl0");
 
     }
+    */
 	
 	/** tests based on the file testsrc/ae1.wh */
-	public void testAEentry1() throws IOException, Exception {
+	public void testSMentry1() throws IOException, Exception {
 		Program p = parseFromFile("Tests/Data/TestSM.pl0");
-		assertEquals("Aexp* size", 3, p.AexpStar().size());
+		//assertEquals("Var* size", 3, p.VarStar().size());
+
+
+
+        /*
+        assertEquals("Aexp* size", 3, p.AexpStar().size());
 		assertTrue(p.getS() instanceof CompoundS);
 		CompoundS body = (CompoundS)p.getS();
 		AssignS stmt1 = (AssignS)body.getSList(0);
@@ -57,10 +63,12 @@ public class SMTests extends PL0TestCase {
 		Set<Expr> ae5ex = stmt5.AEexit();
 		assertEquals("ae5ex", 1, ae5ex.size());
 		assertTrue(ae5ex.contains(stmt5.getExpr()));
-	}
+	   */
+    }
 
 		/** tests based on the file testsrc/ae2.wh */
-    	public void testAEentry2() throws IOException, Exception {
+    	/*
+        public void testAEentry2() throws IOException, Exception {
 		Program p = parseFromFile("testsrc/ae2.wh");
 		assertEquals("Aexp* size", 4, p.AexpStar().size());
                 S bod = p.getS();
@@ -100,9 +108,10 @@ public class SMTests extends PL0TestCase {
 		Set<Expr> ae5ex = stmt5.AEexit();
 		checkAEij(5, ae5ex);
 	}
-
+    */
 	/** check that the set contains the expressions i*j-1 and i*j. */
-	protected void checkAEij(int lab, Set<Expr> aes) {
+	/*
+    protected void checkAEij(int lab, Set<Expr> aes) {
 		assertEquals("label " + lab + " aes size in checkAEij for " + aes.toString(),
                 	     2, aes.size());
                 for (Expr e : aes) {
@@ -112,22 +121,22 @@ public class SMTests extends PL0TestCase {
                                || estr.equals("(i * j)"));
                 }
 	}
-
-	public AETests(String s) {
+    */
+	public SMTests(String s) {
 		super(s);
 	}
 	
 	/** return a test suite for this class. */
 	public static junit.framework.Test suite() {
-		return new junit.framework.TestSuite(AETests.class);
+		return new junit.framework.TestSuite(SMTests.class);
 	}
 
 	/** run the tests in text mode .*/
 	public static void main(String args[]) {
 		if (args.length == 1 && args[0].equals("-text")) {
-			junit.textui.TestRunner.run(AETests.class);
+			junit.textui.TestRunner.run(SMTests.class);
 		} else {
-			junit.swingui.TestRunner.run(AETests.class);
+			junit.swingui.TestRunner.run(SMTests.class);
 		}
 	}
 }
