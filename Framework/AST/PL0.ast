@@ -1,14 +1,17 @@
 // Program
 Program ::= ProgramBlock;
 
+// Statement
+abstract S;
+
 // ProgramBlock
-ProgramBlock ::= Const* Var* Proc* S;
+ProgramBlock ::= Const:ConstS* Var:VarS* Proc:ProcS* S:UsageS;
 
 // Declarations
-abstract Decl ::= LabeledRef;
-Const:Decl ::= <Num>;
-Var:Decl;
-Proc:Decl ::= Block:ProgramBlock;
+abstract DeclS:S ::= LabeledRef;
+ConstS:DeclS ::= <Num>;
+VarS:DeclS;
+ProcS:DeclS ::= Block:ProgramBlock;
 
 // Operations
 abstract Op ::= <Contents>;
@@ -28,13 +31,13 @@ BBinaryExpr:BExpr ::= Left:AExpr Op:Op_r Right:AExpr;
 LabeledRef ::= Label <Var>;
 LabeledExpr:BExpr ::= Label;
 
-// Statements
-abstract S;
-CallS:S ::= LabeledRef;
-BeginEndS:S ::= Statement:S*;
-AssignS:S ::= LabeledRef AExpr;
-IfS:S ::= LabeledExpr S;
-WhileS:S ::= LabeledExpr S;
+// Usage Statements
+abstract UsageS:S;
+CallS:UsageS ::= LabeledRef;
+BeginEndS:UsageS ::= Statement:UsageS*;
+AssignS:UsageS ::= LabeledRef AExpr;
+IfS:UsageS ::= LabeledExpr UsageS;
+WhileS:UsageS ::= LabeledExpr UsageS;
 
 // Labels
 abstract Label;
