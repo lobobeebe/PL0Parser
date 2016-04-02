@@ -62,4 +62,18 @@ aspect CallS
     // outFlows()
     //=========================================================================**
 
+    //=========================================================================**
+    // unparse()
+    //=========================================================================**
+
+    eq CallS.unparse()
+    {
+        return getLabeledRef().unparse();
+    }
+
+    eq CallS.getLabeledRef().unparse()
+    {
+        return "[call " + getLabeledRef().getVar() + "]^" + getLabeledRef().getLabel();
+    }
+
 }

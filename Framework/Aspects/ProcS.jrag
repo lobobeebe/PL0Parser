@@ -43,4 +43,18 @@ aspect ProcS
 
     syn Set<Label> ProcS.finals();
     eq ProcS.finals() = SetRepUtility.singleton(getLabeledRef().getLabel());
+
+    //=========================================================================**
+    // unparse()
+    //=========================================================================**
+
+    eq ProcS.unparse()
+    {
+        return getLabeledRef().unparse() + "; " + getBlock().unparse() + ";";
+    }
+
+    eq ProcS.getLabeledRef().unparse()
+    {
+        return "[procedure " + getLabeledRef().getVar() + "]^" + getLabeledRef().getLabel();
+    }
 }

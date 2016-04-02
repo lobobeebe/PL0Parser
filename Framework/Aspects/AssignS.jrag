@@ -38,4 +38,17 @@ aspect AssignS
     // outFlows()
     //=========================================================================**
 
+    //=========================================================================**
+    // unparse()
+    //=========================================================================**
+
+    eq AssignS.unparse()
+    {
+        return getLabeledRef().unparse();
+    }
+
+    eq AssignS.getLabeledRef().unparse()
+    {
+        return "[" + getLabeledRef().getVar() + " := " + getAExpr().unparse() + "]^" + getLabeledRef().getLabel();
+    }
 }

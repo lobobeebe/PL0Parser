@@ -19,17 +19,19 @@ Op_r:Op;
 Op_a:Op;
 
 // Expressions
-abstract AExpr;
+abstract Expr;
+abstract AExpr:Expr;
+abstract BExpr:Expr;
+
 VarRefExpr:AExpr ::= <Contents>;
 NumLitExpr:AExpr ::= <Contents>;
 ABinaryExpr:AExpr ::= Left:AExpr Op:Op_a Right:AExpr;
 
-abstract BExpr;
 OddExpr:BExpr ::= AExpr;
 BBinaryExpr:BExpr ::= Left:AExpr Op:Op_r Right:AExpr;
 
 LabeledRef ::= Label <Var>;
-LabeledExpr ::= Label BExpr;
+LabeledExpr ::= Label Expr:BExpr;
 
 // Usage Statements
 abstract UsageS:S;

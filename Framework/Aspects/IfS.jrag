@@ -64,4 +64,18 @@ aspect IfS
     {
         return SetRepUtility.singleton(getS().init());
     }
+
+    //=========================================================================**
+    // unparse()
+    //=========================================================================**
+
+    eq IfS.unparse()
+    {
+        return "if " + getLabeledExpr() + " then " + getS().unparse();
+    }
+
+    eq IfS.getLabeledExpr().unparse()
+    {
+        return "[" + getLabeledExpr().getExpr() + "]^" + getLabeledExpr().getLabel();
+    }
 }

@@ -246,4 +246,76 @@ aspect ProgramBlock
     eq ProgramBlock.getVar(int index).VarStar() = VarStar();
     eq ProgramBlock.getProc(int index).VarStar() = VarStar();
     eq ProgramBlock.getS().VarStar() = Vars();
+
+    //=========================================================================**
+    // toString()
+    //=========================================================================**
+
+    syn String ProgramBlock.toString() = unparse();
+
+    //=========================================================================**
+    // unparse()
+    //=========================================================================**
+
+    syn String ProgramBlock.unparse();
+    eq ProgramBlock.unparse()
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        // Append Constants
+        int length = getNumConst();
+        if(length > 0)
+        {
+            buffer.append("const ");
+        }
+
+        for(int i = 0; i < length; i++)
+        {
+            buffer.append(getConst(i).unparse());
+
+            if(i == length - 1)
+            {
+                buffer.append(";\n");
+            }
+            else
+            {
+                buffer.append(", ");
+            }
+        }
+
+        // Append Vars
+        length = getNumVar();
+        if(length > 0)
+        {
+            buffer.append("var ");
+        }
+
+        for(int i = 0; i < length; i++)
+        {
+            buffer.append(getVar(i).unparse());
+
+            if(i == length - 1)
+            {
+                buffer.append(";\n");
+            }
+            else
+            {
+                buffer.append(", ");
+            }
+        }
+
+                /*
+        // Append Procedure
+        length = getNumProc();
+
+        for(int i =0; i < length; i++)
+        {
+            buffer.append(getProc(i).unparse() + " ");
+        }
+
+        buffer.append(getS().unparse());
+        */
+
+        return buffer.toString();
+    }
 }

@@ -22,7 +22,7 @@ public class UnparseTests extends PL0TestCase
     }
 
     /** The number of syntax test files in testsrc. */
-    private static final int NUMTESTS = 6;
+    private static final int NUMTESTS = 1;
 
     /** Compare the source file to the unparsed string of the AST. Matching proves correctness of AST. */
     public void testUnparse() {
@@ -46,7 +46,8 @@ public class UnparseTests extends PL0TestCase
 
     /** Compare the unparse of the sourceFile with the contents of the expectedFile. */
     protected void compareUnparse(String sourceFile, String expectedFile) {
-        try {
+        try
+        {
             Program p = parseFromFile(sourceFile);
             String unparsedp = Squeezer.squeeze(p.unparse());
             String expectedString = Squeezer.squeeze(file2String(expectedFile));

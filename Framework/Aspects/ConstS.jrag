@@ -25,4 +25,18 @@ aspect ConstS
     //=========================================================================**
 
     eq ConstS.finals() = SetRepUtility.singleton(getLabeledRef().getLabel());
+
+    //=========================================================================**
+    // unparse()
+    //=========================================================================**
+
+    eq ConstS.unparse()
+    {
+        return getLabeledRef().unparse();
+    }
+
+    eq ConstS.getLabeledRef().unparse()
+    {
+        return "[" + getLabeledRef().getVar() + " = " + getNum() + "]^" + getLabeledRef().getLabel();
+    }
 }

@@ -68,4 +68,18 @@ aspect WhileS
     {
         return SetRepUtility.singleton(getLabeledExpr().getLabel());
     }
+
+    //=========================================================================**
+    // unparse()
+    //=========================================================================**
+
+    eq WhileS.unparse()
+    {
+        return "while " + getLabeledExpr().unparse() + " do " + getS().unparse();
+    }
+
+    eq WhileS.getLabeledExpr().unparse()
+    {
+        return "["  + getLabeledExpr().getExpr() + "]^" + getLabeledExpr().getLabel();
+    }
 }
