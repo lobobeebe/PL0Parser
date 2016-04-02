@@ -6,22 +6,60 @@ import beaver.Parser.Exception;
 import AST.*;
 
 
-public class SMTests extends PL0TestCase {
+public class SVTests extends PL0TestCase {
 
     /** test VarStar */
     /*
     public void testVarStar() throws IOException, Exception{
-        Program p = parseFromFile("Tests/Data/TestSM.pl0");
+        Program p = parseFromFile("Tests/Data/TestSV.pl0");
 
     }
     */
 	
-	/** tests based on the file testsrc/ae1.wh */
-	public void testSMentry1() throws IOException, Exception {
-		Program p = parseFromFile("Tests/Data/TestSM.pl0");
-		//assertEquals("Var* size", 3, p.VarStar().size());
+	/** tests based on the file Tests/Data/TestSV.pl0 */
+	public void testSVentry1() throws IOException, Exception {
+		Program p = parseFromFile("Tests/Data/TestSV.pl0");
+		assertEquals("Var* size", 3, p.getProgramBlock().VarStar().size());
+
+        //Check each statements entry and exit
+        //stmt1 const
+        ConstS stmt1 = (ConstS)p.getProgramBlock().getConst(0);
+        Set<String> sv1en = stmt1.SVentry();
+        assertEquals("sv1en", 0, sv1en.size());
+        Set<String> sv1ex = stmt1.SVExit();
+        assertEquals("sv1ex", 0, sv1ex.size());
+        //stmt2 var
+        VarS stmt2 = (VarS)p.getProgramBlock().getVar(0);
+        Set<String> sv2en = stmt2.SVEntry();
+        assertEquals("sv2en", 0, sv2en.size());
+        Set<String> sv2ex = stmt2.SVExit();
+        assertEquals("sv2ex", 0, sv2ex.size());
+        //stmt3 var
+        VarS stmt3 = (VarS)p.getProgramBlock().getVar(1);
+        Set<String> sv3en = stmt2.SVEntry();
+        assertEquals("sv3en", 0, sv3en.size());
+        Set<String> sv3ex = stmt2.SVExit();
+        assertEquals("sv3ex", 0, sv3ex.size());
+        //stmt4 proc
+        ProcS stmt4 = (ProcS)p.getProgramBlock().getProc(0);
+        //stmt5 var
+        //stmt6 beginEndS 
+        assertTrue("sv6en value", sv6en.contains(stmt7.getS()));
+        //stmt7 readS
+        //stmt8 assignS
+        //stmt9 beginEndS
+        //stmt10 assignS
+        //stmt11 callS
+        //stmt12 sanitizeS
+
+        //stmt13 assignS
 
 
+
+
+
+
+        //assertTrue(p.getProgramBlock().
 
         /*
         assertEquals("Aexp* size", 3, p.AexpStar().size());
@@ -122,21 +160,21 @@ public class SMTests extends PL0TestCase {
                 }
 	}
     */
-	public SMTests(String s) {
+	public SVTests(String s) {
 		super(s);
 	}
 	
 	/** return a test suite for this class. */
 	public static junit.framework.Test suite() {
-		return new junit.framework.TestSuite(SMTests.class);
+		return new junit.framework.TestSuite(SVTests.class);
 	}
 
 	/** run the tests in text mode .*/
 	public static void main(String args[]) {
 		if (args.length == 1 && args[0].equals("-text")) {
-			junit.textui.TestRunner.run(SMTests.class);
+			junit.textui.TestRunner.run(SVTests.class);
 		} else {
-			junit.swingui.TestRunner.run(SMTests.class);
+			junit.swingui.TestRunner.run(SVTests.class);
 		}
 	}
 }
