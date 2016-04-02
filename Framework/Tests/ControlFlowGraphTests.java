@@ -138,7 +138,7 @@ public class ControlFlowGraphTests extends PL0TestCase
         assertTrue("Label ^2 should be in const1.outFlows: const1.outFlows = " + outs1, outs1.contains(new NumLabel("2")));
 
         Set<Label> outs2 = const2.outFlows();
-        assertTrue("Size of const2.outFlows should be 2, was: " + outs2.size(), outs2.size() == 1);
+        assertTrue("Size of const2.outFlows should be 1, was: " + outs2.size(), outs2.size() == 1);
         assertTrue("Label ^3 should be in const2.outFlows: const2.outFlows = " + outs2, outs2.contains(new NumLabel("3")));
     }
 

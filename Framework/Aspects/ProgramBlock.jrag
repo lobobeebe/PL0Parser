@@ -23,7 +23,7 @@ aspect ProgramBlock
         }
         else
         {
-            return getConst(index + 1).finals();
+            return getConst(index - 1).finals();
         }
     }
 
@@ -200,9 +200,9 @@ aspect ProgramBlock
 
     inh Set<Label> ProgramBlock.outFlows();
 
-    eq ProgramBlock.getConst(int index).outFlows() = SetRepUtility.singleton(next().init());
-    eq ProgramBlock.getVar(int index).outFlows() = SetRepUtility.singleton(next().init());
-    eq ProgramBlock.getProc(int index).outFlows() = SetRepUtility.singleton(next().init());
+    eq ProgramBlock.getConst(int index).outFlows() = SetRepUtility.singleton(getConst(index).next().init());
+    eq ProgramBlock.getVar(int index).outFlows() = SetRepUtility.singleton(getVar(index).next().init());
+    eq ProgramBlock.getProc(int index).outFlows() = SetRepUtility.singleton(getProc(index).next().init());
     eq ProgramBlock.getS().outFlows() = outFlows();
 
     //=========================================================================**
