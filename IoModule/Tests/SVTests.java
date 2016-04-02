@@ -58,12 +58,12 @@ public class SVTests extends PL0TestCase {
         assertTrue(procb.getS() instanceof BeginEndS);
         BeginEndS body = (BeginEndS)procb.getS();
         //stmt6 SanitizeS
-        ReadS stmt6 = (SanitizeS)body.getS(0);
+        SanitizeS stmt6 = (SanitizeS)body.getS(0);
         Set<String> sv6en = stmt6.SVentry();
         assertEquals("sv6en", 0, sv6en.size());
         Set<String> sv6ex = stmt6.SVexit();
         assertEquals("sv6ex", 1, sv6ex.size());
-        assertTrue(sv14ex.contains(stmt6.getVar()));
+        assertTrue(sv6ex.contains(stmt6.getVar()));
         //stmt7 IfS
         IfS stmt7 = (IfS)body.getS(1);
         LabeledExpr condition = stmt7.getLabeledExpr();
