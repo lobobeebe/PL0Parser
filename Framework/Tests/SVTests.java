@@ -19,89 +19,84 @@ public class SVTests extends PL0TestCase {
 	/** tests based on the file Tests/Data/TestSV.pl0 */
 	public void testSVentry1() throws IOException, Exception {
 		Program p = parseFromFile("Tests/Data/TestSV.pl0");
-		assertEquals("Var* size", 3, p.getProgramBlock().VarStar().size());
+		ProgramBlock pb = p.getProgramBlock();
+        assertEquals("Var* size", 3, pb().VarStar().size());
 
         //Check each statements entry and exit
         //stmt1 const
-        ConstS stmt1 = (ConstS)p.getProgramBlock().getConst(0);
+        ConstS stmt1 = (ConstS)pb.getConst(0);
         Set<String> sv1en = stmt1.SVentry();
         assertEquals("sv1en", 0, sv1en.size());
-        Set<String> sv1ex = stmt1.SVExit();
+        Set<String> sv1ex = stmt1.SVexit();
         assertEquals("sv1ex", 0, sv1ex.size());
         //stmt2 var
-        VarS stmt2 = (VarS)p.getProgramBlock().getVar(0);
-        Set<String> sv2en = stmt2.SVEntry();
+        VarS stmt2 = (VarS)pb.getVar(0);
+        Set<String> sv2en = stmt2.SVentry();
         assertEquals("sv2en", 0, sv2en.size());
-        Set<String> sv2ex = stmt2.SVExit();
+        Set<String> sv2ex = stmt2.SVexit();
         assertEquals("sv2ex", 0, sv2ex.size());
         //stmt3 var
-        VarS stmt3 = (VarS)p.getProgramBlock().getVar(1);
-        Set<String> sv3en = stmt2.SVEntry();
+        VarS stmt3 = (VarS)pb.getVar(1);
+        Set<String> sv3en = stmt3.SVentry();
         assertEquals("sv3en", 0, sv3en.size());
-        Set<String> sv3ex = stmt2.SVExit();
+        Set<String> sv3ex = stmt3.SVexit();
         assertEquals("sv3ex", 0, sv3ex.size());
         //stmt4 proc
-        ProcS stmt4 = (ProcS)p.getProgramBlock().getProc(0);
+        ProcS stmt4 = (ProcS)pb.getProc(0);
+        ProgramBlock procb = stmt4.getBlock();
+        Set<String> sv4en = stmt4.SVentry();
+        assertEquals("sv4en", 0, sv4en.size());
+        Set<String> sv4ex = stmt4.SVexit();
+        assertEquals("sv4ex", 0, sv4ex.size());
         //stmt5 var
-        //stmt6 beginEndS 
-        assertTrue("sv6en value", sv6en.contains(stmt7.getS()));
-        //stmt7 readS
+        VarS stmt5 = (VarS)procb.getVar(0);
+        Set<String> sv5en = stmt5.SVentry();
+        assertEquals("sv5en", 0, sv5en.size());
+        Set<String> sv5ex = stmt5.SVexit();
+        assertEquals("sv5ex", 0, sv5ex.size());
+        //beginEndS 
+        assertTrue(procb.getS() instanceof BeginEndS);
+        BeginEndS body = (BeginEndS)procb.getS();
+        //stmt6 readS
+        ReadS stmt6 = (ReadS)body.getS(0);
+        Set<String> sv6en = stmt6.SVentry();
+        assertEquals("sv6en", 0, sv6en.size());
+        Set<String> sv6ex = stmt6.SVexit();
+        assertEquals("sv6ex", 0, sv6ex.size());
+        //stmt7 assignS
+        AssignS stmt7 = (AssignS)body.getS(1);
+        Set<String> sv7en = stmt7.SVentry();
+        assertEquals("sv7en", 0, sv7en.size());
+        Set<String> sv7ex = stmt7.SVexit();
+        assertEquals("sv7ex", 0, sv7ex.size());
+        //beginEndS
+        assertTrue(pb.getS() instanceof BeginEndS);
+        BeginEndS body = (BeginEndS)pb.getS();
         //stmt8 assignS
-        //stmt9 beginEndS
-        //stmt10 assignS
-        //stmt11 callS
-        //stmt12 sanitizeS
-
-        //stmt13 assignS
-
-
-
-
-
-
-        //assertTrue(p.getProgramBlock().
-
-        /*
-        assertEquals("Aexp* size", 3, p.AexpStar().size());
-		assertTrue(p.getS() instanceof CompoundS);
-		CompoundS body = (CompoundS)p.getS();
-		AssignS stmt1 = (AssignS)body.getSList(0);
-		Set<Expr> ae1n = stmt1.AEentry();
-		assertEquals("ae1n", 0, ae1n.size());
-		Set<Expr> ae1ex = stmt1.AEexit();
-		assertEquals("ae1ex", 1, ae1ex.size());
-		assertTrue("ae1ex value", ae1ex.contains(stmt1.getExpr()));
-		AssignS stmt2 = (AssignS)body.getSList(1);
-		Set<Expr> ae2n = stmt2.AEentry();
-		assertEquals("ae2n", 1, ae2n.size());
-		assertTrue("ae2n value", ae2n.contains(stmt1.getExpr()));
-		Set<Expr> ae2ex = stmt2.AEexit();
-		assertEquals("ae2ex", 2, ae2ex.size());
-		assertTrue("ae2ex value", ae2ex.contains(stmt1.getExpr()));
-		assertTrue(ae2ex.contains(stmt2.getExpr()));
-		WhileS stmt3 = (WhileS)body.getSList(2);
-		LabeledExpr test = stmt3.getLabeledExpr();
-		Set<Expr> ae3n = test.AEentry();
-		// System.out.println("ae3n is: " + ae3n.toString());
-		assertEquals("ae3n", 1, ae3n.size());
-		assertTrue(ae3n.contains(stmt1.getExpr()));
-		Set<Expr> ae3ex = test.AEexit();
-		assertEquals("ae3ex", 1, ae3ex.size());
-		assertTrue(ae3ex.contains(stmt1.getExpr()));
-		CompoundS whb = (CompoundS) stmt3.getS();
-		AssignS stmt4 = (AssignS) whb.getSList(0);
-		Set<Expr> ae4n = stmt4.AEentry();
-		assertEquals("ae4n", 1, ae4n.size());
-		assertTrue(ae4n.contains(stmt1.getExpr()));
-		Set<Expr> ae4ex = stmt4.AEexit();
-		assertEquals("ae4ex", 0, ae4ex.size());
-		AssignS stmt5 = (AssignS) whb.getSList(1);
-		Set<Expr> ae5n = stmt5.AEentry();
-		assertEquals("ae5n", 0, ae5n.size());
-		Set<Expr> ae5ex = stmt5.AEexit();
-		assertEquals("ae5ex", 1, ae5ex.size());
-		assertTrue(ae5ex.contains(stmt5.getExpr()));
-	   */
+        AssignS stmt8 = (AssignS)body.getS(0);
+        Set<String> sv8en = stmt8.SVentry();
+        assertEquals("sv8en", 0, sv8en.size());
+        Set<String> sv8ex = stmt8.SVexit();
+        assertEquals("sv8ex", 0, sv8ex.size());
+        //stmt9 callS
+        CallS stmt9 = (CallS)body.getS(1);
+        Set<String> sv9en = stmt9.SVentry();
+        assertEquals("sv9en", 0, sv9en.size());
+        Set<String> sv9ex = stmt9.SVexit();
+        assertEquals("sv9ex", 0, sv9ex.size());
+        //stmt10 sanitizeS
+        SanitizeS stmt10 = (SanitizeS)body.getS(2);
+        Set<String> sv10en = stmt10.SVentry();
+        assertEquals("sv10en", 0, sv10en.size());
+        Set<String> sv10ex = stmt10.SVexit();
+        assertEquals("sv10ex", 1, sv10ex.size());
+        assertTrue(sv10ex.contains(stmt10.getLabelRef().getVar()));
+        //stmt11 assignS
+        AssignS stmt11 = (AssignS)body.getS(3);
+        Set<String> sv11en = stmt11.SVentry();
+        assertEquals("sv11en", 1, sv11en.size());
+        Set<String> sv11ex = stmt11.SVexit();
+        assertEquals("sv11ex", 0, sv11ex.size());
     }
 
 		/** tests based on the file testsrc/ae2.wh */
