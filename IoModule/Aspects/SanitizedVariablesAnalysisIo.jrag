@@ -16,7 +16,7 @@ aspect SanitizedVariablesAnalysisIo
     eq PrintS.genSV() = SetRepUtility.emptySet();
 
     /** Kill Functions */
-    eq ReadS.killSV(Set<String> current) = SetRepUtility.sington(getVar());
+    eq ReadS.killSV(Set<String> current) = SetRepUtility.singleton(getVar());
     eq SanitizeS.killSV(Set<String> current) = SetRepUtility.emptySet();
     eq PrintS.killSV(Set<String> current) = SetRepUtility.emptySet();
     
