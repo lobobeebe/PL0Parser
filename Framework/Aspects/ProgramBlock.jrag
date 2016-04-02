@@ -309,11 +309,12 @@ aspect ProgramBlock
 
         for(int i =0; i < length; i++)
         {
-            buffer.append(getProc(i).unparse() + " ");
+            buffer.append(getProc(i).unparse());
+            buffer.append(getProc(i).unparseBlock() + " ");
         }
 
         buffer.append(getS().unparse());
-        
+
         return buffer.toString();
     }
 }

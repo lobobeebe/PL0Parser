@@ -48,6 +48,16 @@ aspect ProcS
 
     eq ProcS.unparse()
     {
-        return "[procedure " + getName() + "]^" + getLabel() + "; " + getBlock().unparse() + ";";
+        return "[procedure " + getName() + "]^" + getLabel() + ";";
+    }
+
+    //=========================================================================**
+    // unparseBlock()
+    //=========================================================================**
+
+    syn String ProcS.unparseBlock();
+    eq ProcS.unparseBlock()
+    {
+        return " " + getBlock().unparse() + ";";
     }
 }

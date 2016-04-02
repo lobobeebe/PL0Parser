@@ -12,7 +12,7 @@ aspect Program
     // inFlows()
     //=========================================================================**
 
-    eq Program.getProgramBlock().inFlows() = null;
+    eq Program.getProgramBlock().inFlows() = SetRepUtility.emptySet();
 
     //=========================================================================**
     // next()
@@ -24,7 +24,7 @@ aspect Program
     // outFlows()
     //=========================================================================**
 
-    eq Program.getProgramBlock().outFlows() = null;
+    eq Program.getProgramBlock().outFlows() = SetRepUtility.emptySet();
 
     //=========================================================================**
     // toString()

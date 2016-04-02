@@ -66,13 +66,15 @@ public class ControlFlowGraphTests extends PL0TestCase
             assertTrue("Inner variables should contain " + variable + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(variable));
         }
 
+        // blocks: Inner Labeled Expr
+        LabeledExpr innerExpr = new LabeledExpr(new NumLabel("10"), new BBinaryExpr(new VarRefExpr("a"), new Op_r("="), new VarRefExpr("b")));
+        assertTrue("ElementaryBlocks should contain " + innerExpr + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(innerExpr));
+
         // blocks: Inner Statements
         List<UsageS> innerStatements = new List<UsageS>();
         innerStatements.add(new AssignS(new NumLabel("7"), "a", new VarRefExpr("x")));
         innerStatements.add(new AssignS(new NumLabel("8"), "b", new VarRefExpr("y")));
-        AssignS thenS = new AssignS(new NumLabel("9"), "sum", new ABinaryExpr(new VarRefExpr("a"), new Op_a("+"), new VarRefExpr("b")));
-        innerStatements.add(thenS);
-        innerStatements.add(new IfS(new LabeledExpr(new NumLabel("10"), new BBinaryExpr(new VarRefExpr("a"), new Op_r("="), new VarRefExpr("b"))), thenS));
+        innerStatements.add(new AssignS(new NumLabel("9"), "sum", new ABinaryExpr(new VarRefExpr("a"), new Op_a("+"), new VarRefExpr("b"))));
         for(UsageS statement : innerStatements)
         {
             assertTrue("Inner statements should contain " + statement + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(statement));
@@ -83,23 +85,28 @@ public class ControlFlowGraphTests extends PL0TestCase
         procedures.add(new ProcS(new NumLabel("11"), "addition", new ProgramBlock(new List<ConstS>(), innerVariables, new List<ProcS>(), new BeginEndS(innerStatements))));
         for(ProcS proc : procedures)
         {
-            assertTrue("Procedures should contain " + proc + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(proc));
+            assertTrue("Procedures should contain " + proc.unparse() + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(proc));
         }
 
         // blocks: Statements
         List<UsageS> statements = new List<UsageS>();
-        statements.add(new AssignS(new NumLabel("11"), "x", new NumLitExpr("2")));
-        statements.add(new CallS(new NumLabel("12"), "addition"));
-        statements.add(new AssignS(new NumLabel("13"), "sum", new ABinaryExpr(new VarRefExpr("sum"), new Op_a("+"), new NumLitExpr("1"))));
+        statements.add(new AssignS(new NumLabel("12"), "x", new NumLitExpr("2")));
+        statements.add(new AssignS(new NumLabel("13"), "sum", new NumLitExpr("0")));
+        statements.add(new CallS(new NumLabel("14"), "addition"));
+        statements.add(new AssignS(new NumLabel("15"), "x", new ABinaryExpr(new VarRefExpr("x"), new Op_a("+"), new NumLitExpr("1"))));
         for(UsageS statement : statements)
         {
-            assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(statement));
+            assertTrue("Elementary blocks should contain " + statement.unparse() + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(statement));
         }
+
+        // blocks: LabeledExpr
+        LabeledExpr labeledExpr = new LabeledExpr(new NumLabel("16"), new BBinaryExpr(new VarRefExpr("sum"), new Op_r("<"), new NumLitExpr("4")));
+        assertTrue("ElementaryBlocks should contain " + innerExpr.unparse() + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(innerExpr));
 
         // finals: Verify there is only one
         Set<Label> finalLabels = mProgramBlock.finals();
         assertTrue(finalLabels.size() == 1);
-        assertTrue(finalLabels + " -Failure", finalLabels.contains(new NumLabel("13")));
+        assertTrue(finalLabels + " -Failure", finalLabels.contains(new NumLabel("16")));
 
         // outFlows: Verify there are no outflows to the program block
         Set<Label> outs = mProgramBlock.outFlows();
