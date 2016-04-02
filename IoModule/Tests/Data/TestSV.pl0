@@ -5,11 +5,11 @@ procedure addition;
 var a;
 
 begin
-    read x;
+    sanitize c;
     if x > 20 then begin
         c := 5;
         print c
-    end
+    end;
     c := x
 end;
 
@@ -18,6 +18,6 @@ begin
     x := 2;
     call addition;
     while odd x do 
-        sanitize x
+        sanitize x;
     x := 2 + c
 end.
