@@ -8,10 +8,10 @@ abstract S;
 ProgramBlock ::= Const:ConstS* Var:VarS* Proc:ProcS* S:UsageS;
 
 // Declarations
-abstract DeclS:S ::= LabeledRef;
-ConstS:DeclS ::= <Num>;
-VarS:DeclS;
-ProcS:DeclS ::= Block:ProgramBlock;
+abstract DeclS:S;
+ConstS:DeclS ::= Label <Name> <Num>;
+VarS:DeclS ::= Label <Name>;
+ProcS:DeclS ::= Label <Name> Block:ProgramBlock;
 
 // Operations
 abstract Op ::= <Contents>;
@@ -30,14 +30,13 @@ ABinaryExpr:AExpr ::= Left:AExpr Op:Op_a Right:AExpr;
 OddExpr:BExpr ::= AExpr;
 BBinaryExpr:BExpr ::= Left:AExpr Op:Op_r Right:AExpr;
 
-LabeledRef ::= Label <Var>;
-LabeledExpr ::= Label Expr:BExpr;
+LabeledExpr ::= Label BExpr;
 
 // Usage Statements
 abstract UsageS:S;
-CallS:UsageS ::= LabeledRef;
+CallS:UsageS ::= Label <ProcName>;
 BeginEndS:UsageS ::= S:UsageS*;
-AssignS:UsageS ::= LabeledRef AExpr;
+AssignS:UsageS ::= Label <Var> AExpr;
 IfS:UsageS ::= LabeledExpr S:UsageS;
 WhileS:UsageS ::= LabeledExpr S:UsageS;
 

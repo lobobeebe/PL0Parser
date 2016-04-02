@@ -12,7 +12,7 @@ import AST.*;
 public class ControlFlowGraphTests extends PL0TestCase
 {
     private Program mProgram;
-    private Block mProgramBlock;
+    private ProgramBlock mProgramBlock;
 
     public ControlFlowGraphTests(String s)
     {
@@ -21,7 +21,7 @@ public class ControlFlowGraphTests extends PL0TestCase
         try
         {
             mProgram = parseFromFile("Tests/Data/TestControlFlowGraph.pl0");
-            mProgramBlock = mProgram.getBlock();
+            mProgramBlock = mProgram.getProgramBlock();
         }
         catch(Exception exception)
         {
@@ -40,58 +40,58 @@ public class ControlFlowGraphTests extends PL0TestCase
         assertTrue("There should be 13 elementary blocks in the program: " + elementaryBlocks.size(), elementaryBlocks.size() == 16);
 
         // blocks: Verify all constants exist
-        List<ConstDecl> constants = new List<ConstDecl>();
-        constants.add(new ConstDecl(new NumLabel("1"), "y", "5"));
-        constants.add(new ConstDecl(new NumLabel("2"), "z", "0"));
-        for(ConstDecl constant : constants)
+        List<ConstS> constants = new List<ConstS>();
+        constants.add(new ConstS(new NumLabel("1"), "y", "5"));
+        constants.add(new ConstS(new NumLabel("2"), "z", "0"));
+        for(ConstS constant : constants)
         {
             assertTrue("Constants should contain " + constant + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(constant));
         }
 
         // blocks: Verify all Variables exist
-        List<VarDecl> variables = new List<VarDecl>();
-        variables.add(new VarDecl(new NumLabel("3"), "x"));
-        variables.add(new VarDecl(new NumLabel("4"), "sum"));
-        for(VarDecl variable : variables)
+        List<VarS> variables = new List<VarS>();
+        variables.add(new VarS(new NumLabel("3"), "x"));
+        variables.add(new VarS(new NumLabel("4"), "sum"));
+        for(VarS variable : variables)
         {
             assertTrue("Variables should contain " + variable + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(variable));
         }
 
         // blocks: Inner Variables
-        List<VarDecl> innerVariables = new List<VarDecl>();
-        innerVariables.add(new VarDecl(new NumLabel("5"), "a"));
-        innerVariables.add(new VarDecl(new NumLabel("6"), "b"));
-        for(VarDecl variable : innerVariables)
+        List<VarS> innerVariables = new List<VarS>();
+        innerVariables.add(new VarS(new NumLabel("5"), "a"));
+        innerVariables.add(new VarS(new NumLabel("6"), "b"));
+        for(VarS variable : innerVariables)
         {
             assertTrue("Inner variables should contain " + variable + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(variable));
         }
 
         // blocks: Inner Statements
-        List<S> innerStatements = new List<S>();
+        List<UsageS> innerStatements = new List<UsageS>();
         innerStatements.add(new AssignS(new NumLabel("7"), "a", new VarRefExpr("x")));
         innerStatements.add(new AssignS(new NumLabel("8"), "b", new VarRefExpr("y")));
         AssignS thenS = new AssignS(new NumLabel("9"), "sum", new ABinaryExpr(new VarRefExpr("a"), new Op_a("+"), new VarRefExpr("b")));
         innerStatements.add(thenS);
         innerStatements.add(new IfS(new LabeledExpr(new NumLabel("10"), new BBinaryExpr(new VarRefExpr("a"), new Op_r("="), new VarRefExpr("b"))), thenS));
-        for(S statement : innerStatements)
+        for(UsageS statement : innerStatements)
         {
             assertTrue("Inner statements should contain " + statement + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(statement));
         }
 
         // blocks: Procedures
-        List<ProcDecl> procedures = new List<ProcDecl>();
-        procedures.add(new ProcDecl(new NumLabel("11"), "addition", new Block(new List<ConstDecl>(), innerVariables, new List<ProcDecl>(), new BeginEndS(innerStatements))));
-        for(ProcDecl proc : procedures)
+        List<ProcS> procedures = new List<ProcS>();
+        procedures.add(new ProcS(new NumLabel("11"), "addition", new ProgramBlock(new List<ConstS>(), innerVariables, new List<ProcS>(), new BeginEndS(innerStatements))));
+        for(ProcS proc : procedures)
         {
             assertTrue("Procedures should contain " + proc + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(proc));
         }
 
         // blocks: Statements
-        List<S> statements = new List<S>();
+        List<UsageS> statements = new List<UsageS>();
         statements.add(new AssignS(new NumLabel("11"), "x", new NumLitExpr("2")));
         statements.add(new CallS(new NumLabel("12"), "addition"));
         statements.add(new AssignS(new NumLabel("13"), "sum", new ABinaryExpr(new VarRefExpr("sum"), new Op_a("+"), new NumLitExpr("1"))));
-        for(S statement : statements)
+        for(UsageS statement : statements)
         {
             assertTrue(elementaryBlocks.toString(), elementaryBlocks.contains(statement));
         }
@@ -109,9 +109,9 @@ public class ControlFlowGraphTests extends PL0TestCase
     public void testConsts() throws Exception
     {
         // Verify number of constants
-        assertTrue(mProgramBlock.getNumConstant() == 2);
-        ConstDecl const1 = mProgramBlock.getConstant(0);
-        ConstDecl const2 = mProgramBlock.getConstant(1);
+        assertTrue(mProgramBlock.getNumConst() == 2);
+        ConstS const1 = mProgramBlock.getConst(0);
+        ConstS const2 = mProgramBlock.getConst(1);
 
         // init
         assertTrue(const1.init().equals(new NumLabel("1")));
@@ -139,8 +139,8 @@ public class ControlFlowGraphTests extends PL0TestCase
     {
         // Verify number of variables
         assertTrue("There should be 2 variables at the program scope: " + mProgramBlock.getNumVar(), mProgramBlock.getNumVar() == 2);
-        VarDecl var1 = mProgramBlock.getVar(0);
-        VarDecl var2 = mProgramBlock.getVar(1);
+        VarS var1 = mProgramBlock.getVar(0);
+        VarS var2 = mProgramBlock.getVar(1);
 
         // init
         assertTrue(var1.init().equals(new NumLabel("3")));
