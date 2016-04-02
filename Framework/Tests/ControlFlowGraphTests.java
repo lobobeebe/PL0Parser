@@ -171,68 +171,54 @@ public class ControlFlowGraphTests extends PL0TestCase
         assertTrue("Size of var2.outFlows should be 2, was: " + outs2.size(), outs2.size() == 1);
         assertTrue("Label ^11 should be in var22.outFlows: var2.outFlows = " + outs2, outs2.contains(new NumLabel("11")));
     }
+
+    public void testProcedure() throws IOException, Exception
+    {
+        ProcS proc = mProgramBlock.getProc(0);
+        ProgramBlock block = proc.getBlock();
+
+        // Verify number of constants in the procedure
+        assertTrue(block.getNumConst() == 0);
+
+        // Verify number of variables
+        assertTrue("There should be 2 variables at the procedure scope: " + block.getNumVar(), block.getNumVar() == 2);
+        VarS var1 = block.getVar(0);
+        VarS var2 = block.getVar(1);
+
+        // vars init
+        assertTrue(var1.init().equals(new NumLabel("5")));
+        assertTrue(var2.init().equals(new NumLabel("6")));
+
+        // vars inFlows
+        Set<Label> ins1 = var1.inFlows();
+        assertTrue("Size of var1.inFlows should be 1, was: " + ins1.size(), ins1.size() == 1);
+        assertTrue("Label ^4 should be in var2.inFlows: var2.inFlows = " + ins1, ins1.contains(new NumLabel("4")));
+
+        Set<Label> ins2 = var2.inFlows();
+        assertTrue("Size of var2.inFlows should be 1, was: " + ins2.size(), ins2.size() == 1);
+        assertTrue("Label ^5 should be in var2.inFlows: var2.inFlows = " + ins2, ins2.contains(new NumLabel("5")));
+
+        // outFlows
+        Set<Label> outs1 = var1.outFlows();
+        assertTrue("Size of var1.outFlows should be 1, was: " + outs1.size(), outs1.size() == 1);
+        assertTrue("Label ^6 should be in var1.outFlows: var1.outFlows = " + outs1, outs1.contains(new NumLabel("6")));
+
+        Set<Label> outs2 = var2.outFlows();
+        assertTrue("Size of var2.outFlows should be 2, was: " + outs2.size(), outs2.size() == 1);
+        assertTrue("Label ^7 should be in var2.outFlows: var2.outFlows = " + outs2, outs2.contains(new NumLabel("7")));
+
 /*
-    public void testOutFlows3() throws IOException, Exception {
-        Program p = parseFromFile("testsrc/cfg1.wh");
-        assertTrue(p.getS() instanceof CompoundS);
-        S stmt3 = ((CompoundS)p.getS()).getSList(2);
-        assertTrue(stmt3 instanceof WhileS);
-        WhileS wh = (WhileS)stmt3;
-        LabeledExpr blk6 = wh.getLabeledExpr();
-        Set<Label> outs = blk6.outFlows();
-        assertEquals(2, outs.size());
-        assertTrue(outs.contains(new NumLabel("3")));
-        assertTrue(outs.contains(new NumLabel("7")));
-    }
+        // Verify number of statements in the procedure
+        assertTrue(block.getS() instanceof BeginEndS);
+        BeginEndS blockStatement = (BeginEndS) block.getS();
 
-    public void testInFlows3() throws IOException, Exception {
-        Program p = parseFromFile("testsrc/cfg1.wh");
-        assertTrue(p.getS() instanceof CompoundS);
-        S stmt3 = ((CompoundS)p.getS()).getSList(2);
-        assertTrue(stmt3 instanceof WhileS);
-        WhileS wh = (WhileS)stmt3;
-        LabeledExpr blk6 = wh.getLabeledExpr();
-        Set<Label> ins = blk6.inFlows();
-        assertEquals(2, ins.size());
-        assertTrue(ins.contains(new NumLabel("5")));
-        assertTrue(ins.contains(new NumLabel("2")));
-    }
-
-    public void testWhileBodyFlows() throws IOException, Exception {
-        Program p = parseFromFile("testsrc/cfg1.wh");
-        assertTrue(p.getS() instanceof CompoundS);
-        S stmt6 = ((CompoundS)p.getS()).getSList(2);
-        assertTrue(stmt6 instanceof WhileS);
-        WhileS wh = (WhileS)stmt6;
-        CompoundS body = (CompoundS)wh.getS();
-        S stmt3 = body.getSList(0);
-        Set<Label> ins = stmt3.inFlows();
-        assertEquals(1, ins.size());
-        assertTrue(ins.contains(new NumLabel("6")));
-        Set<Label> outs = stmt3.outFlows();
-        assertEquals(1, outs.size());
-        assertTrue(outs.contains(new NumLabel("4")));
-    }
-
-    public void testProgLabels() throws IOException, Exception {
-        Program p = parseFromFile("testsrc/cfg1.wh");
-        assertTrue(p.getS() instanceof CompoundS);
-        S stmt6 = ((CompoundS)p.getS()).getSList(2);
-        assertTrue(stmt6 instanceof WhileS);
-        WhileS wh = (WhileS)stmt6;
-        CompoundS body = (CompoundS)wh.getS();
-        AssignS stmt3 = (AssignS) body.getSList(0);
-        Set<Label> labs = stmt3.progLabels();
-        assertEquals(7, labs.size());
-        assertTrue(labs.contains(new NumLabel("1")));
-        assertTrue(labs.contains(new NumLabel("2")));
-        assertTrue(labs.contains(new NumLabel("3")));
-        assertTrue(labs.contains(new NumLabel("4")));
-        assertTrue(labs.contains(new NumLabel("5")));
-        assertTrue(labs.contains(new NumLabel("6")));
-        assertTrue(labs.contains(new NumLabel("7")));
-    }
+        assertTrue(blockStatement.getNumS() == 3);
+        S stmt0 = blockStatement.getS(0);
+        assertTrue(stmt0.equals(new AssignS(new NumLabel("7"), "a", new VarRefExpr("x"))));
+        S stmt1 = blockStatement.getS(1);
+        assertTrue(stmt1.equals(new AssignS(new NumLabel("8"), "a", new VarRefExpr("x"))));
 */
+    }
     public static junit.framework.Test suite()
     {
         return new junit.framework.TestSuite(Tests.ControlFlowGraphTests.class);
