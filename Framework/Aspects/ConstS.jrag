@@ -8,23 +8,25 @@ import AST.*;
 
 aspect ConstS
 {
+    ConstS implements ElementaryBlock;
+
     //=========================================================================**
     // init()
     //=========================================================================**
 
-    eq ConstS.init() = getLabeledRef().getLabel();
+    eq ConstS.init() = getLabel();
 
     //=========================================================================**
     // blocks()
     //=========================================================================**
 
-    eq ConstS.blocks() = SetRepUtility.singleton(getLabeledRef().getLabel());
+    eq ConstS.blocks() = SetRepUtility.singleton(this);
 
     //=========================================================================**
     // finals()
     //=========================================================================**
 
-    eq ConstS.finals() = SetRepUtility.singleton(getLabeledRef().getLabel());
+    eq ConstS.finals() = SetRepUtility.singleton(getLabel());
 
     //=========================================================================**
     // unparse()
@@ -32,11 +34,6 @@ aspect ConstS
 
     eq ConstS.unparse()
     {
-        return getLabeledRef().unparse();
-    }
-
-    eq ConstS.getLabeledRef().unparse()
-    {
-        return "[" + getLabeledRef().getVar() + " = " + getNum() + "]^" + getLabeledRef().getLabel();
+        return "[" + getName() + " = " + getNum() + "]^" + getLabel();
     }
 }

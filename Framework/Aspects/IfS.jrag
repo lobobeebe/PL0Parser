@@ -71,11 +71,6 @@ aspect IfS
 
     eq IfS.unparse()
     {
-        return "if " + getLabeledExpr() + " then " + getS().unparse();
-    }
-
-    eq IfS.getLabeledExpr().unparse()
-    {
-        return "[" + getLabeledExpr().getExpr() + "]^" + getLabeledExpr().getLabel();
+        return "if " + getLabeledExpr().unparse() + " then " + getS().unparse();
     }
 }

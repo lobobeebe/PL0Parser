@@ -15,7 +15,7 @@ ProgramBlock block =
 ;
 
 ProcS proc =
-    PROCEDURE IDENTIFIER SEMICOLON block SEMICOLON   {: return new ProcS(new LabeledRef(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER), block); :}
+    PROCEDURE IDENTIFIER SEMICOLON block SEMICOLON   {: return new ProcS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, block); :}
 ;
 
 List procList =
@@ -33,7 +33,7 @@ List constDeclList =
 ;
 
 ConstS constDecl =
-    IDENTIFIER EQUALS NUMBER {: return new ConstS(new LabeledRef(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER), NUMBER); :}
+    IDENTIFIER EQUALS NUMBER {: return new ConstS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, NUMBER); :}
 ;
 
 List varBlock =
@@ -46,12 +46,12 @@ List varDeclList =
 ;
 
 VarS varDecl =
-    IDENTIFIER            {: return new VarS(new LabeledRef(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER)); :}
+    IDENTIFIER            {: return new VarS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
 ;
 
 UsageS stmt =
-  IDENTIFIER ASSIGN expression  {: return new AssignS(new LabeledRef(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER), expression); :}
-  | CALL IDENTIFIER             {: return new CallS(new LabeledRef(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER)); :}
+  IDENTIFIER ASSIGN expression  {: return new AssignS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, expression); :}
+  | CALL IDENTIFIER             {: return new CallS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
   | BEGIN stmtList END          {: return new BeginEndS(stmtList); :}
   | IF condition THEN stmt      {: return new IfS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
   | WHILE condition DO stmt     {: return new WhileS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}

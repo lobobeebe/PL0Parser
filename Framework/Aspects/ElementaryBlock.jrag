@@ -20,7 +20,6 @@ aspect ElementaryBlock
     //=========================================================================**
 
     LabeledExpr implements ElementaryBlock;
-    LabeledRef implements ElementaryBlock;
 
     //=========================================================================**
     // equals()
@@ -56,14 +55,12 @@ aspect ElementaryBlock
     // inFlows(): Flows into a block
     //=========================================================================**
 
-    inh Set<Label> LabeledRef.inFlows();
     inh Set<Label> LabeledExpr.inFlows();
 
     //=========================================================================**
     // outFlows(): Flows out of a block
     //=========================================================================**
 
-    inh Set<Label> LabeledRef.outFlows();
     inh Set<Label> LabeledExpr.outFlows();
 
     //=========================================================================**
@@ -76,5 +73,6 @@ aspect ElementaryBlock
     // unparse()
     //=========================================================================**
 
-    inh String ElementaryBlock.unparse();
+    syn String LabeledExpr.unparse();
+    eq LabeledExpr.unparse() = "[" + getBExpr().unparse() + "]^" + getLabel();
 }
