@@ -57,40 +57,41 @@ public class SVTests extends PL0TestCase {
         //beginEndS 
         assertTrue(procb.getS() instanceof BeginEndS);
         BeginEndS body = (BeginEndS)procb.getS();
-        //stmt6 readS
-        ReadS stmt6 = (ReadS)body.getS(0);
+        //stmt6 SanitizeS
+        ReadS stmt6 = (SanitizeS)body.getS(0);
         Set<String> sv6en = stmt6.SVentry();
         assertEquals("sv6en", 0, sv6en.size());
         Set<String> sv6ex = stmt6.SVexit();
-        assertEquals("sv6ex", 0, sv6ex.size());
+        assertEquals("sv6ex", 1, sv6ex.size());
+        assertTrue(sv14ex.contains(stmt6.getVar()));
         //stmt7 IfS
         IfS stmt7 = (IfS)body.getS(1);
         LabeledExpr condition = stmt7.getLabeledExpr();
         Set<String> sv7en = condition.SVentry();
-        assertEquals("sv7en", 0, sv7en.size());
+        assertEquals("sv7en", 1, sv7en.size());
         Set<String> sv7ex = condition.SVexit();
-        assertEquals("sv7ex", 0, sv7ex.size());
+        assertEquals("sv7ex", 1, sv7ex.size());
         //beginEndS
         assertTrue(stmt7.getS() instanceof BeginEndS);
         BeginEndS body2 = (BeginEndS)stmt7.getS();
         //stmt8 AssignS
         AssignS stmt8 = (AssignS)body2.getS(0);
         Set<String> sv8en = stmt8.SVentry();
-        assertEquals("sv8en", 0, sv8en.size());
+        assertEquals("sv8en", 1, sv8en.size());
         Set<String> sv8ex = stmt8.SVexit();
-        assertEquals("sv8ex", 0, sv8ex.size());
+        assertEquals("sv8ex", 1, sv8ex.size());
         //stmt9 PrintS
         PrintS stmt9 = (PrintS)body2.getS(1);
         Set<String> sv9en = stmt9.SVentry();
-        assertEquals("sv9en", 0, sv9en.size());
+        assertEquals("sv9en", 1, sv9en.size());
         Set<String> sv9ex = stmt9.SVexit();
-        assertEquals("sv9ex", 0, sv9ex.size());
+        assertEquals("sv9ex", 1, sv9ex.size());
         //stmt10 assignS
         AssignS stmt10 = (AssignS)body.getS(2);
         Set<String> sv10en = stmt10.SVentry();
-        assertEquals("sv10en", 0, sv10en.size());
+        assertEquals("sv10en", 1, sv10en.size());
         Set<String> sv10ex = stmt10.SVexit();
-        assertEquals("sv10ex", 0, sv10ex.size());
+        assertEquals("sv10ex", 1, sv10ex.size());
         //beginEndS
         assertTrue(pb.getS() instanceof BeginEndS);
         BeginEndS body3 = (BeginEndS)pb.getS();
@@ -105,27 +106,31 @@ public class SVTests extends PL0TestCase {
         Set<String> sv12en = stmt12.SVentry();
         assertEquals("sv12en", 0, sv12en.size());
         Set<String> sv12ex = stmt12.SVexit();
-        assertEquals("sv12ex", 0, sv12ex.size());
+        assertEquals("sv12ex", 1, sv12ex.size());
         //stmt13 While
         WhileS stmt13 = (WhileS)body3.getS(2);
         LabeledExpr condition2 = stmt13.getLabeledExpr();
         Set<String> sv13en = condition2.SVentry();
-        assertEquals("sv13en", 0, sv13en.size());
+        assertEquals("sv13en", 1, sv13en.size());
         Set<String> sv13ex = condition2.SVexit();
-        assertEquals("sv13ex", 0, sv13ex.size());
+        assertEquals("sv13ex", 1, sv13ex.size());
         //stmt14 sanitizeS
         SanitizeS stmt14 = (SanitizeS)stmt13.getS();
         Set<String> sv14en = stmt14.SVentry();
-        assertEquals("sv14en", 0, sv14en.size());
+        assertEquals("sv14en", 1, sv14en.size());
         Set<String> sv14ex = stmt14.SVexit();
-        assertEquals("sv14ex", 1, sv14ex.size());
+        assertEquals("sv14ex", 2, sv14ex.size());
         assertTrue(sv14ex.contains(stmt14.getVar()));
+        assertTrue(sv14ex.contains(stmt6.getVar()));
         //stmt15 assignS
         AssignS stmt15 = (AssignS)body3.getS(3);
         Set<String> sv15en = stmt15.SVentry();
         assertEquals("sv15en", 1, sv15en.size());
-        Set<String> sv15ex = stmt11.SVexit();
-        assertEquals("sv15ex", 0, sv15ex.size());
+        Set<String> sv15ex = stmt15.SVexit();
+        assertEquals("sv15ex", 1, sv15ex.size());
+
+
+
     }
 
 		/** tests based on the file testsrc/ae2.wh */
