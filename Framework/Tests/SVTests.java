@@ -63,35 +63,59 @@ public class SVTests extends PL0TestCase {
         assertEquals("sv6en", 0, sv6en.size());
         Set<String> sv6ex = stmt6.SVexit();
         assertEquals("sv6ex", 0, sv6ex.size());
-        //stmt7 assignS
-        AssignS stmt7 = (AssignS)body.getS(1);
-        Set<String> sv7en = stmt7.SVentry();
+        //stmt7 IfS
+        IfS stmt7 = (IfS)body.getS(1);
+        LabeledExpr condition = stmt7.getLabeledExpr();
+        Set<String> sv7en = condition.SVentry();
         assertEquals("sv7en", 0, sv7en.size());
-        Set<String> sv7ex = stmt7.SVexit();
+        Set<String> sv7ex = condition.SVexit();
         assertEquals("sv7ex", 0, sv7ex.size());
         //beginEndS
-        assertTrue(pb.getS() instanceof BeginEndS);
-        BeginEndS body = (BeginEndS)pb.getS();
-        //stmt8 assignS
-        AssignS stmt8 = (AssignS)body.getS(0);
+        assertTrue(stmt7.getS() instanceof BeginEndS);
+        BeginEndS body2 = (BeginEndS)stmt7.getS();
+        //stmt8 AssignS
+        AssignS stmt8 = (AssignS)body2.getS(0);
         Set<String> sv8en = stmt8.SVentry();
         assertEquals("sv8en", 0, sv8en.size());
         Set<String> sv8ex = stmt8.SVexit();
         assertEquals("sv8ex", 0, sv8ex.size());
-        //stmt9 callS
-        CallS stmt9 = (CallS)body.getS(1);
+        //stmt9 PrintS
+        PrintS stmt9 = (PrintS)body2.getS(1);
         Set<String> sv9en = stmt9.SVentry();
         assertEquals("sv9en", 0, sv9en.size());
         Set<String> sv9ex = stmt9.SVexit();
         assertEquals("sv9ex", 0, sv9ex.size());
-        //stmt10 sanitizeS
+        //stmt10 assignS
+        AssignS stmt10 = (AssignS)body.getS(2);
+        Set<String> sv10en = stmt10.SVentry();
+        assertEquals("sv10en", 0, sv10en.size());
+        Set<String> sv10ex = stmt10.SVexit();
+        assertEquals("sv10ex", 0, sv10ex.size());
+        //beginEndS
+        assertTrue(pb.getS() instanceof BeginEndS);
+        BeginEndS body = (BeginEndS)pb.getS();
+        //stmt11 assignS
+        AssignS stmt11 = (AssignS)body.getS(0);
+        Set<String> sv11en = stmt11.SVentry();
+        assertEquals("sv11en", 0, sv11en.size());
+        Set<String> sv11ex = stmt11.SVexit();
+        assertEquals("sv11ex", 0, sv11ex.size());
+        //stmt12 callS
+        CallS stmt12 = (CallS)body.getS(1);
+        Set<String> sv12en = stmt12.SVentry();
+        assertEquals("sv12en", 0, sv12en.size());
+        Set<String> sv12ex = stmt12.SVexit();
+        assertEquals("sv12ex", 0, sv12ex.size());
+        //stmt13 While
+
+        //stmt14 sanitizeS
         SanitizeS stmt10 = (SanitizeS)body.getS(2);
         Set<String> sv10en = stmt10.SVentry();
         assertEquals("sv10en", 0, sv10en.size());
         Set<String> sv10ex = stmt10.SVexit();
         assertEquals("sv10ex", 1, sv10ex.size());
         assertTrue(sv10ex.contains(stmt10.getLabelRef().getVar()));
-        //stmt11 assignS
+        //stmt15 assignS
         AssignS stmt11 = (AssignS)body.getS(3);
         Set<String> sv11en = stmt11.SVentry();
         assertEquals("sv11en", 1, sv11en.size());
