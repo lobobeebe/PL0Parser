@@ -1,4 +1,4 @@
-package Tests;
+    package Tests;
 
 import java.io.IOException;
 import java.util.Set;
@@ -93,25 +93,25 @@ public class SVTests extends PL0TestCase {
         assertEquals("sv10ex", 0, sv10ex.size());
         //beginEndS
         assertTrue(pb.getS() instanceof BeginEndS);
-        BeginEndS body = (BeginEndS)pb.getS();
+        BeginEndS body3 = (BeginEndS)pb.getS();
         //stmt11 assignS
-        AssignS stmt11 = (AssignS)body.getS(0);
+        AssignS stmt11 = (AssignS)body3.getS(0);
         Set<String> sv11en = stmt11.SVentry();
         assertEquals("sv11en", 0, sv11en.size());
         Set<String> sv11ex = stmt11.SVexit();
         assertEquals("sv11ex", 0, sv11ex.size());
         //stmt12 callS
-        CallS stmt12 = (CallS)body.getS(1);
+        CallS stmt12 = (CallS)body3.getS(1);
         Set<String> sv12en = stmt12.SVentry();
         assertEquals("sv12en", 0, sv12en.size());
         Set<String> sv12ex = stmt12.SVexit();
         assertEquals("sv12ex", 0, sv12ex.size());
         //stmt13 While
-        WhileS stmt13 = (WhileS)body.getS(2);
-        LabeledExpr condition = stmt13.getLabeledExpr();
-        Set<String> sv13en = condition.SVentry();
+        WhileS stmt13 = (WhileS)body3.getS(2);
+        LabeledExpr condition2 = stmt13.getLabeledExpr();
+        Set<String> sv13en = condition2.SVentry();
         assertEquals("sv13en", 0, sv13en.size());
-        Set<String> sv13em = condition.SVexit();
+        Set<String> sv13ex = condition2.SVexit();
         assertEquals("sv13ex", 0, sv13ex.size());
         //stmt14 sanitizeS
         SanitizeS stmt14 = (SanitizeS)stmt13.getS();
@@ -121,10 +121,10 @@ public class SVTests extends PL0TestCase {
         assertEquals("sv14ex", 1, sv14ex.size());
         assertTrue(sv14ex.contains(stmt14.getVar()));
         //stmt15 assignS
-        AssignS stmt15 = (AssignS)body.getS(3);
+        AssignS stmt15 = (AssignS)body3.getS(3);
         Set<String> sv15en = stmt15.SVentry();
         assertEquals("sv15en", 1, sv15en.size());
-        Set<String> sv11ex = stmt11.SVexit();
+        Set<String> sv15ex = stmt11.SVexit();
         assertEquals("sv15ex", 0, sv15ex.size());
     }
 
