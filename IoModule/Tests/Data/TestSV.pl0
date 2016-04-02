@@ -7,10 +7,10 @@ var a;
 begin
     sanitize c;
     if x > 20 then begin
-        c := 5;
+        x := 5;
         print c
     end;
-    c := x
+    x := c
 end;
 
 
