@@ -12,7 +12,7 @@ aspect ProgramBlock
 
     //=========================================================================**
     // progInitLabel()
-    //=========================================================================**    
+    //=========================================================================**
 
     inh Label ProgramBlock.progInitLabel();
     eq ProgramBlock.getS().progInitLabel() = progInitLabel();
@@ -20,11 +20,9 @@ aspect ProgramBlock
     eq ProgramBlock.getProc(int index).progInitLabel() = progInitLabel();
     eq ProgramBlock.getVar(int index).progInitLabel() = progInitLabel();
 
-
     //=========================================================================**
     // inFlows()
     //=========================================================================**
-
 
     inh Set<Label> ProgramBlock.inFlows();
 
@@ -258,7 +256,7 @@ aspect ProgramBlock
     eq ProgramBlock.getConst(int index).VarStar() = VarStar();
     eq ProgramBlock.getVar(int index).VarStar() = VarStar();
     eq ProgramBlock.getProc(int index).VarStar() = VarStar();
-    eq ProgramBlock.getS().VarStar() = Vars();
+    eq ProgramBlock.getS().VarStar() = VarStar();
 
     //=========================================================================**
     // toString()

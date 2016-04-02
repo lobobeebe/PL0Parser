@@ -22,6 +22,12 @@ aspect ElementaryBlock
     LabeledExpr implements ElementaryBlock;
 
     //=========================================================================**
+    // progInitLabel()
+    //=========================================================================**
+
+    inh Label LabeledExpr.progInitLabel();
+
+    //=========================================================================**
     // equals()
     //=========================================================================**
 
@@ -75,4 +81,10 @@ aspect ElementaryBlock
 
     syn String LabeledExpr.unparse();
     eq LabeledExpr.unparse() = "[" + getBExpr().unparse() + "]^" + getLabel();
+
+    //=========================================================================**
+    // VarStar(): The set of variables in the program.
+    //=========================================================================**
+
+    inh Set<String> LabeledExpr.VarStar();
 }

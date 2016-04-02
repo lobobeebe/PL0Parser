@@ -5,7 +5,7 @@ import AST.*;
 /**
  * The Sanitized Variables Analysis.
  * For each program point, which variables MUST have been sanitized.
- * 
+ *
  * This File contains kill and gen functions for IO operations
  */
 aspect SanitizedVariablesAnalysisIo
@@ -19,7 +19,7 @@ aspect SanitizedVariablesAnalysisIo
     eq ReadS.killSV(Set<String> current) = SetRepUtility.singleton(getVar());
     eq SanitizeS.killSV(Set<String> current) = SetRepUtility.emptySet();
     eq PrintS.killSV(Set<String> current) = SetRepUtility.emptySet();
-    
+
 
 
 }

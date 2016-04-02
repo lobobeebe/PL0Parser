@@ -10,9 +10,10 @@ aspect IfS
 {
     //=========================================================================**
     // progInitLabel()
-    //=========================================================================**    
-    
+    //=========================================================================**
+
     eq IfS.getS().progInitLabel() = progInitLabel();
+    eq IfS.getLabeledExpr().progInitLabel() = progInitLabel();
 
     //=========================================================================**
     // inFlows()
@@ -79,4 +80,11 @@ aspect IfS
     {
         return "if " + getLabeledExpr().unparse() + " then " + getS().unparse();
     }
+
+    //=========================================================================**
+    // VarStar(): The set of variables in the program.
+    //=========================================================================**
+
+    eq IfS.getS().VarStar() = VarStar();
+    eq IfS.getLabeledExpr().VarStar() = VarStar();
 }
