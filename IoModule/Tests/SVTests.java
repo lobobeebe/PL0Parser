@@ -106,7 +106,7 @@ public class SVTests extends PL0TestCase {
         Set<String> sv12en = stmt12.SVentry();
         assertEquals("sv12en", 0, sv12en.size());
         Set<String> sv12ex = stmt12.SVexit();
-        assertEquals("sv12ex", 1, sv12ex.size());
+        assertEquals("sv12ex", 0, sv12ex.size());
         //stmt13 While
         WhileS stmt13 = (WhileS)body3.getS(2);
         LabeledExpr condition2 = stmt13.getLabeledExpr();
