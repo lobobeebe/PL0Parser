@@ -19,5 +19,5 @@ begin
     call addition;
     while odd x do 
         sanitize x
-    x := y + c
+    x := 2 + c
 end.
