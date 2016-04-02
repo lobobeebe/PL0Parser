@@ -6,13 +6,18 @@ var a;
 
 begin
     read x;
-    c := x;
+    if x > 20 then begin
+        c := 5;
+        print c
+    end
+    c := x
 end;
 
 
 begin
     x := 2;
     call addition;
-    sanitize x;
-    x := y + c;
+    while odd x do 
+        sanitize x
+    x := y + c
 end.
