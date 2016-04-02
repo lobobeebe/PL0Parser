@@ -15,7 +15,7 @@ aspect ProgramBlock
 
     inh Set<Label> ProgramBlock.inFlows();
 
-    eq ProgramBlock.getConstant(int index).inFlows()
+    eq ProgramBlock.getConst(int index).inFlows()
     {
         if(index == 0)
         {
@@ -23,7 +23,7 @@ aspect ProgramBlock
         }
         else
         {
-            return getConstant(index + 1).finals();
+            return getConst(index + 1).finals();
         }
     }
 
@@ -31,13 +31,13 @@ aspect ProgramBlock
     {
         if(index == 0)
         {
-            if(getNumConstant() == 0)
+            if(getNumConst() == 0)
             {
                 return inFlows();
             }
             else
             {
-                return getConstant(getNumConstant() - 1).finals();
+                return getConst(getNumConst() - 1).finals();
             }
         }
         else
@@ -52,13 +52,13 @@ aspect ProgramBlock
         {
             if(getNumVar() == 0)
             {
-                if(getNumConstant() == 0)
+                if(getNumConst() == 0)
                 {
                     return inFlows();
                 }
                 else
                 {
-                    return getConstant(getNumConstant() - 1).finals();
+                    return getConst(getNumConst() - 1).finals();
                 }
             }
             else
@@ -72,6 +72,7 @@ aspect ProgramBlock
         }
     }
 
+    eq ProgramBlock.getS().inFlows() = inFlows();
 
     //=========================================================================**
     // init(): The initial label of a Program Block
@@ -80,9 +81,9 @@ aspect ProgramBlock
     syn Label ProgramBlock.init();
     eq ProgramBlock.init()
     {
-        if (getNumConstant() > 0)
+        if (getNumConst() > 0)
         {
-            return getConstant(0).init();
+            return getConst(0).init();
         }
         else if(getNumVar() > 0)
         {
@@ -105,54 +106,86 @@ aspect ProgramBlock
     syn Set<ElementaryBlock> ProgramBlock.blocks()
     {
         Set<ElementaryBlock> ret = SetRepUtility.emptySet();
-        for (Const constant : getConstantList())
+        for (ConstS constant : getConstList())
         {
-            ret.add(constant.getDecl());
+            ret.add(constant.getLabeledRef());
         }
-        for (Var var : getVarList())
+        for (VarS var : getVarList())
         {
-            ret.add(var.getDecl());
+            ret.add(var.getLabeledRef());
         }
-        for (Proc proc : getProcList())
+        for (ProcS proc : getProcList())
         {
-            ret.add(proc.getDecl());
+            ret.add(proc.getLabeledRef());
         }
         ret.addAll(getS().blocks());
         return ret;
     }
 
     //=========================================================================**
-    // Vars()
+    // next()
     //=========================================================================**
-    syn Set<String> ProgramBlock.Vars();
-    eq ProgramBlock.Vars()
-    {
-        Set<String> ret = SetRepUtility.emptySet();
-        for (int i = 0; i < getNumVar(); i++)
-        {
-            ret.add(getVar(i).getVar());
-        }
 
-        for (int i = 0; i < getNumProc(); i++)
+    inh S ProgramBlock.next();
+
+    eq ProgramBlock.getConst(int index).next()
+    {
+        if(index == getNumConst() - 1)
         {
-            ret.addAll(getProc(i).Vars());
+            if(getNumVar() == 0)
+            {
+                if(getNumProc() == 0)
+                {
+                    return getS();
+                }
+                else
+                {
+                    return getProc(0);
+                }
+            }
+            else
+            {
+                return getVar(0);
+            }
         }
-        return ret;
+        else
+        {
+            return getConst(index + 1);
+        }
     }
 
-    //=========================================================================**
-    // ProcStar()
-    //=========================================================================**
+    eq ProgramBlock.getVar(int index).next()
+    {
+        if(index == getNumVar() - 1)
+        {
+            if(getNumProc() == 0)
+            {
+                return getS();
+            }
+            else
+            {
+                return getProc(0);
+            }
+        }
+        else
+        {
+            return getVar(index + 1);
+        }
+    }
 
-    syn List<ProcDecl> ProgramBlock.ProcStar();
-    eq ProgramBlock.ProcStar() = getProcList();
+    eq ProgramBlock.getProc(int index).next()
+    {
+        if(index == getNumProc() - 1)
+        {
+            return getS();
+        }
+        else
+        {
+            return getProc(index + 1);
+        }
+    }
 
-    //=========================================================================**
-    // VarStar(): The set of variables in the program.
-    //=========================================================================**
-
-    syn Set<String> ProgramBlock.VarStar();
-    eq ProgramBlock.VarStar() = Vars();
+    eq ProgramBlock.getS().next() = next();
 
     //=========================================================================**
     // finals()
@@ -167,50 +200,50 @@ aspect ProgramBlock
 
     inh Set<Label> ProgramBlock.outFlows();
 
+    eq ProgramBlock.getConst(int index).outFlows() = SetRepUtility.singleton(next().init());
+    eq ProgramBlock.getVar(int index).outFlows() = SetRepUtility.singleton(next().init());
+    eq ProgramBlock.getProc(int index).outFlows() = SetRepUtility.singleton(next().init());
     eq ProgramBlock.getS().outFlows() = outFlows();
 
-    eq ProgramBlock.getConstant(int index).outFlows()
+    //=========================================================================**
+    // Vars()
+    //=========================================================================**
+
+    syn Set<String> ProgramBlock.Vars();
+    eq ProgramBlock.Vars()
     {
-        if(index == getNumConstant() - 1)
+        Set<String> ret = SetRepUtility.emptySet();
+        for (int i = 0; i < getNumVar(); i++)
         {
-            if(getNumVar() > 0)
-            {
-                return SetRepUtility.singleton(getVar(0).getLabel());
-            }
-            else
-            {
-                if(getNumProc() > 0)
-                {
-                    return SetRepUtility.singleton(getProc(0).getLabel());
-                }
-                else
-                {
-                    return SetRepUtility.singleton(getS().init());
-                }
-            }
+            ret.add(getVar(i).getLabeledRef().getVar());
         }
-        else
+
+        for (int i = 0; i < getNumProc(); i++)
         {
-            return SetRepUtility.singleton(getConstant(index + 1).getLabel());
+            ret.addAll(getProc(i).Vars());
         }
+        return ret;
     }
 
-    eq ProgramBlock.getVar(int index).outFlows()
-    {
-        if(index == getNumVar() - 1)
-        {
-            if(getNumProc() > 0)
-            {
-                return SetRepUtility.singleton(getProc(0).getLabel());
-            }
-            else
-            {
-                return SetRepUtility.singleton(getS().init());
-            }
-        }
-        else
-        {
-            return SetRepUtility.singleton(getVar(index + 1).getLabel());
-        }
-    }
+    //=========================================================================**
+    // ProcStar()
+    //=========================================================================**
+
+    syn List<ProcS> ProgramBlock.ProcStar();
+    eq ProgramBlock.ProcStar() = getProcList();
+    eq ProgramBlock.getConst(int index).ProcStar() = ProcStar();
+    eq ProgramBlock.getVar(int index).ProcStar() = ProcStar();
+    eq ProgramBlock.getProc(int index).ProcStar() = ProcStar();
+    eq ProgramBlock.getS().ProcStar() = ProcStar();
+
+    //=========================================================================**
+    // VarStar(): The set of variables in the program.
+    //=========================================================================**
+
+    syn Set<String> ProgramBlock.VarStar();
+    eq ProgramBlock.VarStar() = Vars();
+    eq ProgramBlock.getConst(int index).VarStar() = VarStar();
+    eq ProgramBlock.getVar(int index).VarStar() = VarStar();
+    eq ProgramBlock.getProc(int index).VarStar() = VarStar();
+    eq ProgramBlock.getS().VarStar() = Vars();
 }

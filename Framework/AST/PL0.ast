@@ -29,15 +29,15 @@ OddExpr:BExpr ::= AExpr;
 BBinaryExpr:BExpr ::= Left:AExpr Op:Op_r Right:AExpr;
 
 LabeledRef ::= Label <Var>;
-LabeledExpr:BExpr ::= Label;
+LabeledExpr ::= Label BExpr;
 
 // Usage Statements
 abstract UsageS:S;
 CallS:UsageS ::= LabeledRef;
-BeginEndS:UsageS ::= Statement:UsageS*;
+BeginEndS:UsageS ::= S:UsageS*;
 AssignS:UsageS ::= LabeledRef AExpr;
-IfS:UsageS ::= LabeledExpr UsageS;
-WhileS:UsageS ::= LabeledExpr UsageS;
+IfS:UsageS ::= LabeledExpr S:UsageS;
+WhileS:UsageS ::= LabeledExpr S:UsageS;
 
 // Labels
 abstract Label;

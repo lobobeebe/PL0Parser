@@ -1,31 +1,29 @@
-import java.util.Set;
+import java.util.*;
 import Utility.SetRepUtility;
 import AST.*;
 
 //=========================================================================**
-// Const aspect
+// Program Aspect
 //=========================================================================**
 
-aspect Const
+aspect Program
 {
     //=========================================================================**
     // inFlows()
     //=========================================================================**
 
-    inh Set<Label> Const.inFlows();
-    eq Const.getLabeledRef().inFlows() = inFlows();
+    eq Program.getProgramBlock().inFlows() = null;
 
     //=========================================================================**
-    // finals()
+    // next()
     //=========================================================================**
 
-    syn Set<Label> Const.finals();
-    eq Const.finals() = SetRepUtility.singleton(getLabeledRef().getLabel());
+    eq Program.getProgramBlock().next() = null;
 
     //=========================================================================**
-    // outFlows(): Flows out of a block
+    // outFlows()
     //=========================================================================**
 
-    inh Set<Label> Const.outFlows();
-    eq Const.getLabeledRef().outFlows() = outFlows();
+    eq Program.getProgramBlock().outFlows() = null;
+
 }

@@ -3,19 +3,19 @@ Program goal =
   block ENDPROGRAM                           {: return new Program(block); :}
   ;
 
-Block block =
-    stmt            {: return new Block(new List(), new List(), new List(), stmt); :}
-  | procList stmt   {: return new Block(new List(), new List(), procList, stmt); :}
-  | constBlock stmt {: return new Block(constBlock, new List(), new List(), stmt); :}
-  | constBlock procList stmt {: return new Block(constBlock, new List(), procList, stmt); :}
-  | varBlock stmt    {: return new Block(new List(), varBlock, new List(), stmt); :}
-  | varBlock procList stmt    {: return new Block(new List(), varBlock, procList, stmt); :}
-  | constBlock varBlock stmt {: return new Block(constBlock, varBlock, new List(), stmt); :}
-  | constBlock varBlock procList stmt {: return new Block(constBlock, varBlock, procList, stmt); :}
+ProgramBlock block =
+    stmt            {: return new ProgramBlock(new List(), new List(), new List(), stmt); :}
+  | procList stmt   {: return new ProgramBlock(new List(), new List(), procList, stmt); :}
+  | constBlock stmt {: return new ProgramBlock(constBlock, new List(), new List(), stmt); :}
+  | constBlock procList stmt {: return new ProgramBlock(constBlock, new List(), procList, stmt); :}
+  | varBlock stmt    {: return new ProgramBlock(new List(), varBlock, new List(), stmt); :}
+  | varBlock procList stmt    {: return new ProgramBlock(new List(), varBlock, procList, stmt); :}
+  | constBlock varBlock stmt {: return new ProgramBlock(constBlock, varBlock, new List(), stmt); :}
+  | constBlock varBlock procList stmt {: return new ProgramBlock(constBlock, varBlock, procList, stmt); :}
 ;
 
-ProcDecl proc =
-    PROCEDURE IDENTIFIER SEMICOLON block SEMICOLON   {: return new ProcDecl(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, block); :}
+ProcS proc =
+    PROCEDURE IDENTIFIER SEMICOLON block SEMICOLON   {: return new ProcS(new LabeledRef(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER), block); :}
 ;
 
 List procList =
@@ -32,8 +32,8 @@ List constDeclList =
   | constDeclList COMMA constDecl        {: return constDeclList.add(constDecl); :}
 ;
 
-ConstDecl constDecl =
-    IDENTIFIER EQUALS NUMBER {: return new ConstDecl(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, NUMBER); :}
+ConstS constDecl =
+    IDENTIFIER EQUALS NUMBER {: return new ConstS(new LabeledRef(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER), NUMBER); :}
 ;
 
 List varBlock =
@@ -45,16 +45,16 @@ List varDeclList =
   | varDeclList COMMA varDecl     {: return varDeclList.add(varDecl); :}
 ;
 
-VarDecl varDecl =
-    IDENTIFIER            {: return new VarDecl(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
+VarS varDecl =
+    IDENTIFIER            {: return new VarS(new LabeledRef(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER)); :}
 ;
 
-S stmt =
-  IDENTIFIER ASSIGN expression     {: return new AssignS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, expression); :}
-  | CALL IDENTIFIER           {: return new CallS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
+UsageS stmt =
+  IDENTIFIER ASSIGN expression  {: return new AssignS(new LabeledRef(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER), expression); :}
+  | CALL IDENTIFIER             {: return new CallS(new LabeledRef(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER)); :}
   | BEGIN stmtList END          {: return new BeginEndS(stmtList); :}
-  | IF condition THEN stmt             {: return new IfS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
-  | WHILE condition DO stmt         {: return new WhileS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
+  | IF condition THEN stmt      {: return new IfS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
+  | WHILE condition DO stmt     {: return new WhileS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
 
 ;
 

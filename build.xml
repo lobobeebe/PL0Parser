@@ -36,7 +36,7 @@
     <!-- The JastAdd ANT task -->
     <taskdef classname="org.jastadd.JastAddTask" name="jastadd" classpath="${tools}/jastadd2.jar" />
 
-    <property name="moduleList" value="Framework,IoModule"/>
+    <property name="moduleList" value="Framework"/>
 
     <!-- compile sources -->
     <!-- build: (automatically runs "gen" if needed)

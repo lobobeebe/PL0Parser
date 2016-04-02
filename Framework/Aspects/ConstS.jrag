@@ -1,38 +1,28 @@
+import java.util.Set;
+import Utility.SetRepUtility;
 import AST.*;
 
 //=========================================================================**
-// Label Aspect: This serves only to allow Labels to be found in Lists.
+// ConstS aspect
 //=========================================================================**
 
-aspect Label
+aspect ConstS
 {
     //=========================================================================**
-    // equals()
+    // init()
     //=========================================================================**
 
-    public boolean Label.equals(Object o)
-    {
-        if(o == null || !(o instanceof Label))
-        {
-            return false;
-        }
-
-        Label b = (Label) o;
-        return toString().equals(b.toString());
-    }
+    eq ConstS.init() = getLabeledRef().getLabel();
 
     //=========================================================================**
-    // hashCode()
+    // blocks()
     //=========================================================================**
 
-    public int Label.hashCode()
-    {
-        return toString().hashCode();
-    }
+    eq ConstS.blocks() = SetRepUtility.singleton(getLabeledRef().getLabel());
 
     //=========================================================================**
-    // itsBlock(): Map labels to blocks
+    // finals()
     //=========================================================================**
 
-    inh ElementaryBlock Label.itsBlock();
+    eq ConstS.finals() = SetRepUtility.singleton(getLabeledRef().getLabel());
 }

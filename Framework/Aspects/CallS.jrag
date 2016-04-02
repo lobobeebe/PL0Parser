@@ -1,58 +1,65 @@
 import java.util.*;
 import Utility.SetRepUtility;
-import AST.*;
+import Utility.FlowGraph;
 
 //=========================================================================**
-// Statement Aspect: Holds all attributes of S's(?)
+// CallS aspect
 //=========================================================================**
 
-aspect Statement
+aspect CallS
 {
     //=========================================================================**
     // inFlows()
     //=========================================================================**
 
-    inh Set<Label> S.inFlows();
-
     //=========================================================================**
     // init()
     //=========================================================================**
 
-    syn Label S.init();
+    eq CallS.init() = getLabeledRef().getLabel();
 
     //=========================================================================**
     // blocks()
     //=========================================================================**
 
-    syn Set<ElementaryBlock> S.blocks();
+    eq CallS.blocks()
+    {
+        Set<ElementaryBlock> ret = SetRepUtility.emptySet();
+        for(ProcS proc : ProcStar())
+        {
+            if(proc.getLabeledRef().getVar().equals(getLabeledRef().getVar()))
+            {
+                ret.addAll(proc.getBlock().blocks());
+            }
+        }
+        ret.add(getLabeledRef());
+        return ret;
+    }
 
     //=========================================================================**
-    // next(): Get next statement for outflows
+    // next()
     //=========================================================================**
-
-    inh S S.next();
 
     //=========================================================================**
     // finals()
     //=========================================================================**
 
-    syn Set<Label> S.finals();
+    eq CallS.finals()
+    {
+        Set<Label> ret = SetRepUtility.emptySet();
+
+        for(ProcS proc : ProcStar())
+        {
+            if(proc.getLabeledRef().getVar().equals(getLabeledRef().getVar()))
+            {
+                ret = proc.getBlock().finals();
+            }
+        }
+        return ret;
+    }
 
     //=========================================================================**
     // outFlows()
     //=========================================================================**
 
-    inh Set<Label> S.outFlows();
-
-    //=========================================================================**
-    // ProcStar()
-    //=========================================================================**
-
-    inh List<ProcS> S.ProcStar();
-
-    //=========================================================================**
-    // VarStar(): The set of variables in the program.
-    //=========================================================================**
-
-    inh Set<String> S.VarStar();
 }

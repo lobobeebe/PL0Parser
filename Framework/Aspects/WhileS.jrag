@@ -9,7 +9,7 @@ import AST.*;
 aspect WhileS
 {
     //=========================================================================**
-    // getLabeledExpr().inFlows()
+    // inFlows()
     //=========================================================================**
 
     eq WhileS.getLabeledExpr().inFlows()
@@ -18,9 +18,40 @@ aspect WhileS
         ins.addAll(getS().finals());
         return ins;
     }
-    
+
+    eq WhileS.getS().inFlows() = SetRepUtility.singleton(getLabeledExpr().getLabel());
+
     //=========================================================================**
-    // getLabeledExpr().outFlows()
+    // init()
+    //=========================================================================**
+
+    eq WhileS.init() = getLabeledExpr().getLabel();
+
+    //=========================================================================**
+    // blocks()
+    //=========================================================================**
+
+    eq WhileS.blocks()
+    {
+        Set<ElementaryBlock> ret = getS().blocks();
+        ret.add(getLabeledExpr());
+        return ret;
+    }
+
+    //=========================================================================**
+    // next()
+    //=========================================================================**
+
+    eq WhileS.getS().next() = this;
+
+    //=========================================================================**
+    // finals()
+    //=========================================================================**
+
+    eq WhileS.finals() = SetRepUtility.singleton(getLabeledExpr().getLabel());
+
+    //=========================================================================**
+    // outFlows()
     //=========================================================================**
 
     eq WhileS.getLabeledExpr().outFlows()
@@ -32,5 +63,9 @@ aspect WhileS
         }
 
         return ret;
+    }
+    eq WhileS.getS().outFlows()
+    {
+        return SetRepUtility.singleton(getLabeledExpr().getLabel());
     }
 }

@@ -3,29 +3,39 @@ import Utility.SetRepUtility;
 import AST.*;
 
 //=========================================================================**
-// Var attribute
+// VarS attribute
 //=========================================================================**
 
-aspect Var
+aspect VarS
 {
     //=========================================================================**
     // inFlows()
     //=========================================================================**
 
-    inh Set<Label> Var.inFlows();
-    eq Var.getLabeledRef().inFlows() = inFlows();
+    eq VarS.getLabeledRef().inFlows() = inFlows();
+
+    //=========================================================================**
+    // init()
+    //=========================================================================**
+
+    eq  VarS.init() = getLabeledRef().getLabel();
+
+    //=========================================================================**
+    // blocks()
+    //=========================================================================**
+
+    eq VarS.blocks() = SetRepUtility.singleton(getLabeledRef().getLabel());
 
     //=========================================================================**
     // finals()
     //=========================================================================**
 
-    syn Set<Label> Var.finals();
-    eq Var.finals() = SetRepUtility.singleton(getLabeledRef().getLabel());
+    syn Set<Label> VarS.finals();
+    eq VarS.finals() = SetRepUtility.singleton(getLabeledRef().getLabel());
 
     //=========================================================================**
     // outFlows()
     //=========================================================================**
 
-    inh Set<Label> Var.outFlows();
-    eq Var.getLabeledRef().outFlows() = outFlows();
+    eq VarS.getLabeledRef().outFlows() = outFlows();
 }
