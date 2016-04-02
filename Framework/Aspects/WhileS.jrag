@@ -77,4 +77,9 @@ aspect WhileS
     {
         return "while " + getLabeledExpr().unparse() + " do " + getS().unparse();
     }
+
+    eq WhileS.getLabeledExpr().unparse()
+    {
+        return "["  + getLabeledExpr().getExpr() + "]^" + getLabeledExpr().getLabel();
+    }
 }

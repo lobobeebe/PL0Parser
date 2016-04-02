@@ -108,15 +108,15 @@ aspect ProgramBlock
         Set<ElementaryBlock> ret = SetRepUtility.emptySet();
         for (ConstS constant : getConstList())
         {
-            ret.add(constant);
+            ret.add(constant.getLabeledRef());
         }
         for (VarS var : getVarList())
         {
-            ret.add(var);
+            ret.add(var.getLabeledRef());
         }
         for (ProcS proc : getProcList())
         {
-            ret.add(proc);
+            ret.add(proc.getLabeledRef());
         }
         ret.addAll(getS().blocks());
         return ret;
@@ -215,7 +215,7 @@ aspect ProgramBlock
         Set<String> ret = SetRepUtility.emptySet();
         for (int i = 0; i < getNumVar(); i++)
         {
-            ret.add(getVar(i).getName());
+            ret.add(getVar(i).getLabeledRef().getVar());
         }
 
         for (int i = 0; i < getNumProc(); i++)
@@ -304,6 +304,7 @@ aspect ProgramBlock
             }
         }
 
+                /*
         // Append Procedure
         length = getNumProc();
 
@@ -313,7 +314,8 @@ aspect ProgramBlock
         }
 
         buffer.append(getS().unparse());
-        
+        */
+
         return buffer.toString();
     }
 }

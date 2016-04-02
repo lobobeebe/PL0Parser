@@ -8,8 +8,6 @@ import Utility.FlowGraph;
 
 aspect AssignS
 {
-    AssignS implements ElementaryBlock;
-
     //=========================================================================**
     // inFlows()
     //=========================================================================**
@@ -18,13 +16,13 @@ aspect AssignS
     // init()
     //=========================================================================**
 
-    eq AssignS.init() = getLabel();
+    eq AssignS.init() = getLabeledRef().getLabel();
 
     //=========================================================================**
     // blocks()
     //=========================================================================**
 
-    eq AssignS.blocks() = SetRepUtility.singleton(this);
+    eq AssignS.blocks() = SetRepUtility.singleton(getLabeledRef());
 
     //=========================================================================**
     // next()
@@ -34,7 +32,7 @@ aspect AssignS
     // finals()
     //=========================================================================**
 
-    eq AssignS.finals() = SetRepUtility.singleton(getLabel());
+    eq AssignS.finals() = SetRepUtility.singleton(getLabeledRef().getLabel());
 
     //=========================================================================**
     // outFlows()
@@ -46,6 +44,11 @@ aspect AssignS
 
     eq AssignS.unparse()
     {
-        return "[" + getVar() + " := " + getAExpr().unparse() + "]^" + getLabel();
+        return getLabeledRef().unparse();
+    }
+
+    eq AssignS.getLabeledRef().unparse()
+    {
+        return "[" + getLabeledRef().getVar() + " := " + getAExpr().unparse() + "]^" + getLabeledRef().getLabel();
     }
 }

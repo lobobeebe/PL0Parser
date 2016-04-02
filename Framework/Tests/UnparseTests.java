@@ -22,7 +22,7 @@ public class UnparseTests extends PL0TestCase
     }
 
     /** The number of syntax test files in testsrc. */
-    private static final int NUMTESTS = 6;
+    private static final int NUMTESTS = 1;
 
     /** Compare the source file to the unparsed string of the AST. Matching proves correctness of AST. */
     public void testUnparse() {

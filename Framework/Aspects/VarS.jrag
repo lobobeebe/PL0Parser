@@ -8,41 +8,48 @@ import AST.*;
 
 aspect VarS
 {
-    VarS implements ElementaryBlock;
-
     //=========================================================================**
     // inFlows()
     //=========================================================================**
+
+    eq VarS.getLabeledRef().inFlows() = inFlows();
 
     //=========================================================================**
     // init()
     //=========================================================================**
 
-    eq  VarS.init() = getLabel();
+    eq  VarS.init() = getLabeledRef().getLabel();
 
     //=========================================================================**
     // blocks()
     //=========================================================================**
 
-    eq VarS.blocks() = SetRepUtility.singleton(getLabel());
+    eq VarS.blocks() = SetRepUtility.singleton(getLabeledRef().getLabel());
 
     //=========================================================================**
     // finals()
     //=========================================================================**
 
     syn Set<Label> VarS.finals();
-    eq VarS.finals() = SetRepUtility.singleton(getLabel());
+    eq VarS.finals() = SetRepUtility.singleton(getLabeledRef().getLabel());
 
     //=========================================================================**
     // outFlows()
     //=========================================================================**
 
+    eq VarS.getLabeledRef().outFlows() = outFlows();
+
     //=========================================================================**
     // unparse()
     //=========================================================================**
 
+    eq VarS.getLabeledRef().unparse()
+    {
+        return "[" + getLabeledRef().getVar() + "]^" + getLabeledRef().getLabel();
+    }
+
     eq VarS.unparse()
     {
-        return "[" + getName() + "]^" + getLabel();
+        return getLabeledRef().unparse();
     }
 }

@@ -37,15 +37,9 @@ aspect Label
     inh ElementaryBlock Label.itsBlock();
 
     //=========================================================================**
-    // toString()
-    //=========================================================================**
-
-    syn String Label.toString() = unparse();
-
-    //=========================================================================**
     // unparse()
     //=========================================================================**
 
-    syn String Label.unparse();
+    syn String NumLabel.unparse();
     eq NumLabel.unparse() = getNum().toString();
 }

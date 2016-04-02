@@ -8,8 +8,6 @@ import Utility.FlowGraph;
 
 aspect CallS
 {
-    CallS implements ElementaryBlock;
-
     //=========================================================================**
     // inFlows()
     //=========================================================================**
@@ -18,7 +16,7 @@ aspect CallS
     // init()
     //=========================================================================**
 
-    eq CallS.init() = getLabel();
+    eq CallS.init() = getLabeledRef().getLabel();
 
     //=========================================================================**
     // blocks()
@@ -29,12 +27,12 @@ aspect CallS
         Set<ElementaryBlock> ret = SetRepUtility.emptySet();
         for(ProcS proc : ProcStar())
         {
-            if(proc.getName().equals(getProcName()))
+            if(proc.getLabeledRef().getVar().equals(getLabeledRef().getVar()))
             {
                 ret.addAll(proc.getBlock().blocks());
             }
         }
-        ret.add(this);
+        ret.add(getLabeledRef());
         return ret;
     }
 
@@ -52,7 +50,7 @@ aspect CallS
 
         for(ProcS proc : ProcStar())
         {
-            if(proc.getName().equals(getProcName()))
+            if(proc.getLabeledRef().getVar().equals(getLabeledRef().getVar()))
             {
                 ret = proc.getBlock().finals();
             }
@@ -70,7 +68,12 @@ aspect CallS
 
     eq CallS.unparse()
     {
-        return "[call " + getProcName() + "]^" + getLabel();
+        return getLabeledRef().unparse();
+    }
+
+    eq CallS.getLabeledRef().unparse()
+    {
+        return "[call " + getLabeledRef().getVar() + "]^" + getLabeledRef().getLabel();
     }
 
 }

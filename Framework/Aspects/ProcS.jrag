@@ -5,8 +5,6 @@ import AST.*;
 
 aspect ProcS
 {
-    ProcS implements ElementaryBlock;
-
     //=========================================================================**
     // Vars()
     //=========================================================================**
@@ -18,17 +16,20 @@ aspect ProcS
     // inFlows()
     //=========================================================================**
 
+    inh Set<Label> ProcS.inFlows();
+    eq ProcS.getLabeledRef().inFlows() = inFlows();
+
     //=========================================================================**
     // init()
     //=========================================================================**
 
-    eq ProcS.init() = getLabel();
+    eq ProcS.init() = getLabeledRef().getLabel();
 
     //=========================================================================**
     // blocks()
     //=========================================================================**
 
-    eq ProcS.blocks() = SetRepUtility.singleton(getLabel());
+    eq ProcS.blocks() = SetRepUtility.singleton(getLabeledRef().getLabel());
 
     //=========================================================================**
     // next()
@@ -40,7 +41,8 @@ aspect ProcS
     // finals()
     //=========================================================================**
 
-    eq ProcS.finals() = SetRepUtility.singleton(getLabel());
+    syn Set<Label> ProcS.finals();
+    eq ProcS.finals() = SetRepUtility.singleton(getLabeledRef().getLabel());
 
     //=========================================================================**
     // unparse()
@@ -48,6 +50,11 @@ aspect ProcS
 
     eq ProcS.unparse()
     {
-        return "[procedure " + getName() + "]^" + getLabel() + "; " + getBlock().unparse() + ";";
+        return getLabeledRef().unparse() + "; " + getBlock().unparse() + ";";
+    }
+
+    eq ProcS.getLabeledRef().unparse()
+    {
+        return "[procedure " + getLabeledRef().getVar() + "]^" + getLabeledRef().getLabel();
     }
 }
