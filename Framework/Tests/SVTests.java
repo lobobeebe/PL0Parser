@@ -20,7 +20,7 @@ public class SVTests extends PL0TestCase {
 	public void testSVentry1() throws IOException, Exception {
 		Program p = parseFromFile("Tests/Data/TestSV.pl0");
 		ProgramBlock pb = p.getProgramBlock();
-        assertEquals("Var* size", 3, pb().VarStar().size());
+        assertEquals("Var* size", 3, pb.VarStar().size());
 
         //Check each statements entry and exit
         //stmt1 const
@@ -119,7 +119,7 @@ public class SVTests extends PL0TestCase {
         assertEquals("sv14en", 0, sv14en.size());
         Set<String> sv14ex = stmt14.SVexit();
         assertEquals("sv14ex", 1, sv14ex.size());
-        assertTrue(sv14ex.contains(stmt14.getLabeledRef().getVar()));
+        assertTrue(sv14ex.contains(stmt14.getVar()));
         //stmt15 assignS
         AssignS stmt15 = (AssignS)body.getS(3);
         Set<String> sv15en = stmt15.SVentry();
