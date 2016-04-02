@@ -9,9 +9,22 @@ import AST.*;
 
 aspect ProgramBlock
 {
+
+    //=========================================================================**
+    // progInitLabel()
+    //=========================================================================**    
+
+    inh Label ProgramBlock.progInitLabel();
+    eq ProgramBlock.getS().progInitLabel() = progInitLabel();
+    eq ProgramBlock.getConst(int index).progInitLabel() = progInitLabel();
+    eq ProgramBlock.getProc(int index).progInitLabel() = progInitLabel();
+    eq ProgramBlock.getVar(int index).progInitLabel() = progInitLabel();
+
+
     //=========================================================================**
     // inFlows()
     //=========================================================================**
+
 
     inh Set<Label> ProgramBlock.inFlows();
 

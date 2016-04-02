@@ -24,13 +24,12 @@ aspect PrintS
     // blocks()
     //=========================================================================**
 
-    eq PrintS.blocks() = SetRepUtility.singleton(getLabel());
+    eq PrintS.blocks() = SetRepUtility.singleton(this);
 
     //=========================================================================**
     // finals()
     //=========================================================================**
 
-    syn Set<Label> PrintS.finals();
     eq PrintS.finals() = SetRepUtility.singleton(getLabel());
 
     //=========================================================================**
@@ -41,8 +40,8 @@ aspect PrintS
     // unparse()
     //=========================================================================**
 
-    eq VarS.unparse()
+    eq PrintS.unparse()
     {
-        return "[print " + getAExpr().unparse() + "]^" + getLabel();
+        return "[print " + getAExpr().unparse() + "]^" + getLabel().unparse();
     }
 }

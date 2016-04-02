@@ -24,13 +24,12 @@ aspect ReadS
     // blocks()
     //=========================================================================**
 
-    eq ReadS.blocks() = SetRepUtility.singleton(getLabel());
+    eq ReadS.blocks() = SetRepUtility.singleton(this);
 
     //=========================================================================**
     // finals()
     //=========================================================================**
 
-    syn Set<Label> ReadS.finals();
     eq ReadS.finals() = SetRepUtility.singleton(getLabel());
 
     //=========================================================================**
@@ -43,6 +42,6 @@ aspect ReadS
 
     eq ReadS.unparse()
     {
-        return "[read " + getVar() + "]^" + getLabel();
+        return "[read " + getVar() + "]^" + getLabel().unparse();
     }
 }

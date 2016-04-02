@@ -1,5 +1,0 @@
-aspect UnparseTaint {
-   eq ReadS.unparse() = "[" + "read " + getVar() + "]^" + getLabel().unparse();
-   eq SanitizeS.unparse() = "[" + "sanitize " + getVar() + "]^" + getLabel().unparse();
-   eq PrintS.unparse() = "[" + "print " + getAExpr().unparse() + "]^" + getLabel().unparse();
-}

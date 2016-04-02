@@ -24,13 +24,12 @@ aspect SanitizeS
     // blocks()
     //=========================================================================**
 
-    eq SanitizeS.blocks() = SetRepUtility.singleton(getLabel());
+    eq SanitizeS.blocks() = SetRepUtility.singleton(this);
 
     //=========================================================================**
     // finals()
     //=========================================================================**
 
-    syn Set<Label> SanitizeS.finals();
     eq SanitizeS.finals() = SetRepUtility.singleton(getLabel());
 
     //=========================================================================**
@@ -43,6 +42,6 @@ aspect SanitizeS
 
     eq SanitizeS.unparse()
     {
-        return "[sanitize " + getVar() + "]^" + getLabel();
+        return "[sanitize " + getVar() + "]^" + getLabel().unparse();
     }
 }
