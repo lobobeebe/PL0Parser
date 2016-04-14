@@ -7,44 +7,4 @@ import Utility.SetRepUtility;
 
 aspect Expr
 {
-    //=========================================================================**
-    // toString()
-    //=========================================================================**
-
-    syn String Expr.toString() = unparse();
-    syn String Op.toString() = unparse();
-
-    //=========================================================================**
-    // unparse()
-    //=========================================================================**
-
-    syn String Expr.unparse();
-
-    eq VarRefExpr.unparse()
-    {
-        return getContents();
-    }
-
-    eq NumLitExpr.unparse()
-    {
-        return getContents();
-    }
-
-    eq ABinaryExpr.unparse()
-    {
-        return "(" + getLeft() + " " + getOp() + " " + getRight() + ")";
-    }
-
-    eq OddExpr.unparse()
-    {
-        return "odd " + getAExpr();
-    }
-
-    eq BBinaryExpr.unparse()
-    {
-        return getLeft() + " " + getOp() + " " + getRight();
-    }
-
-    syn String Op.unparse();
-    eq Op.unparse() = getContents();
 }
