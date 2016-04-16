@@ -1,0 +1,31 @@
+import java.util.*;
+import Utility.SetRepUtility;
+import AST.*;
+
+aspect ElementaryBlock
+{
+    //=========================================================================**
+    // ElementaryBlock interface
+    //=========================================================================**
+
+    public interface ElementaryBlock
+    {
+        Set<Label> inFlows();
+        Set<Label> outFlows();
+        Label getLabel();
+    }
+
+    //=========================================================================**
+    // Declare Elementary Blocks
+    //=========================================================================**
+
+    LabeledExpr implements ElementaryBlock;
+    AssignS implements ElementaryBlock;
+    CallS implements ElementaryBlock;
+    ConstS implements ElementaryBlock;
+    PrintS implements ElementaryBlock;
+    ProcS implements ElementaryBlock;
+    ReadS implements ElementaryBlock;
+    SanitizeS implements ElementaryBlock;
+    VarS implements ElementaryBlock;
+}

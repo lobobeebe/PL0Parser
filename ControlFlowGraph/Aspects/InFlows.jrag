@@ -1,0 +1,107 @@
+import Utility.SetRepUtility;
+
+//=========================================================================**
+// InFlows aspect
+//=========================================================================**
+
+aspect InFlows
+{
+    //=========================================================================**
+    // Program
+    //=========================================================================**
+
+    eq Program.getProgramBlock().inFlows() = SetRepUtility.emptySet();
+    inh Set<Label> ProgramBlock.inFlows();
+
+    //=========================================================================**
+    // Statements
+    //=========================================================================**
+
+    inh Set<Label> S.inFlows();
+
+    eq BeginEndS.getS(int index).inFlows()
+    {
+        if(index == 0)
+        {
+            return inFlows();
+        }
+
+        return getS(index - 1).finals();
+    }
+    eq IfS.getS().inFlows() = SetRepUtility.singleton(getLabeledExpr().getLabel());
+    eq ProcS.getBlock().inFlows() = inFlows();
+
+    eq ProgramBlock.getConst(int index).inFlows()
+    {
+        if(index == 0)
+        {
+            return inFlows();
+        }
+        else
+        {
+            return getConst(index - 1).finals();
+        }
+    }
+
+    eq ProgramBlock.getVar(int index).inFlows()
+    {
+        if(index == 0)
+        {
+            if(getNumConst() == 0)
+            {
+                return inFlows();
+            }
+            else
+            {
+                return getConst(getNumConst() - 1).finals();
+            }
+        }
+        else
+        {
+            return getVar(index - 1).finals();
+        }
+    }
+
+    eq ProgramBlock.getProc(int index).inFlows()
+    {
+        if(index == 0)
+        {
+            if(getNumVar() == 0)
+            {
+                if(getNumConst() == 0)
+                {
+                    return inFlows();
+                }
+                else
+                {
+                    return getConst(getNumConst() - 1).finals();
+                }
+            }
+            else
+            {
+                return getVar(getNumVar() - 1).finals();
+            }
+        }
+        else
+        {
+            return getProc(index - 1).finals();
+        }
+    }
+
+    eq ProgramBlock.getS().inFlows() = inFlows();
+
+    //=========================================================================**
+    // LabeledExpr
+    //=========================================================================**
+
+    inh Set<Label> LabeledExpr.inFlows();
+    eq IfS.getLabeledExpr().inFlows() = inFlows();
+    eq WhileS.getLabeledExpr().inFlows()
+    {
+        Set<Label> ins = inFlows();
+        ins.addAll(getS().finals());
+        return ins;
+    }
+
+    eq WhileS.getS().inFlows() = SetRepUtility.singleton(getLabeledExpr().getLabel());
+}

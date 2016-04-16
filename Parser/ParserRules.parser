@@ -1,0 +1,89 @@
+Program goal =
+  block ENDPROGRAM                      {: return new Program(block); :}
+  ;
+
+ProgramBlock block =
+    stmt                                {: return new ProgramBlock(new List(), new List(), new List(), stmt); :}
+  | procList stmt                       {: return new ProgramBlock(new List(), new List(), procList, stmt); :}
+  | constBlock stmt                     {: return new ProgramBlock(constBlock, new List(), new List(), stmt); :}
+  | constBlock procList stmt            {: return new ProgramBlock(constBlock, new List(), procList, stmt); :}
+  | varBlock stmt                       {: return new ProgramBlock(new List(), varBlock, new List(), stmt); :}
+  | varBlock procList stmt              {: return new ProgramBlock(new List(), varBlock, procList, stmt); :}
+  | constBlock varBlock stmt            {: return new ProgramBlock(constBlock, varBlock, new List(), stmt); :}
+  | constBlock varBlock procList stmt   {: return new ProgramBlock(constBlock, varBlock, procList, stmt); :}
+;
+
+ProcS proc =
+    PROCEDURE IDENTIFIER SEMICOLON block SEMICOLON   {: return new ProcS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, block); :}
+;
+
+List procList =
+    proc            {: return new List().add(proc); :}
+  | procList proc   {: return procList.add(proc); :}
+;
+
+List constBlock =
+    CONST constDeclList SEMICOLON   {: return constDeclList; :}
+;
+
+List constDeclList =
+    constDecl                            {: return new List().add(constDecl); :}
+  | constDeclList COMMA constDecl        {: return constDeclList.add(constDecl); :}
+;
+
+ConstS constDecl =
+    IDENTIFIER EQUALS NUMBER {: return new ConstS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, NUMBER); :}
+;
+
+List varBlock =
+    VAR varDeclList SEMICOLON   {: return varDeclList; :}
+;
+
+List varDeclList =
+    varDecl                     {: return new List().add(varDecl); :}
+  | varDeclList COMMA varDecl   {: return varDeclList.add(varDecl); :}
+;
+
+VarS varDecl =
+    IDENTIFIER                  {: return new VarS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
+;
+
+UsageS stmt =
+  IDENTIFIER ASSIGN expression  {: return new AssignS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, expression); :}
+  | CALL IDENTIFIER             {: return new CallS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
+  | BEGIN stmtList END          {: return new BeginEndS(stmtList); :}
+  | IF condition THEN stmt      {: return new IfS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
+  | WHILE condition DO stmt     {: return new WhileS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
+  | READ IDENTIFIER             {: return new ReadS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
+  | SANITIZE IDENTIFIER         {: return new SanitizeS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
+  | PRINT expression.e          {: return new PrintS(new NumLabel(LabelUtility.nextLabel()), e); :}
+
+;
+
+List stmtList =
+    stmt                        {: return new List().add(stmt); :}
+  | stmtList SEMICOLON stmt     {: return stmtList.add(stmt); :}
+;
+
+BExpr condition =
+    ODD expression                            {: return new OddExpr(expression); :}
+  | expression.l OPRELATIONAL expression.r    {: return new BBinaryExpr(l, new Op_r(OPRELATIONAL), r); :}
+  | expression.l EQUALS expression.r          {: return new BBinaryExpr(l, new Op_r(EQUALS), r); :}
+;
+
+AExpr expression =
+    term                    {: return term; :}
+  | term.l OPPLUS term.r    {: return new ABinaryExpr(l, new Op_a(OPPLUS), r); :}
+  | term.l OPMINUS term.r   {: return new ABinaryExpr(l, new Op_a(OPMINUS), r); :}
+;
+
+AExpr term =
+    factor                      {: return factor; :}
+  | factor.l OPMUL factor.r     {: return new ABinaryExpr(l, new Op_a(OPMUL), r); :}
+;
+
+AExpr factor =
+    IDENTIFIER                  {: return new VarRefExpr(IDENTIFIER); :}
+  | NUMBER                      {: return new NumLitExpr(NUMBER); :}
+  | LPAREN expression RPAREN    {: return expression; :}
+;

@@ -1,0 +1,190 @@
+import java.util.*;
+import Utility.SetRepUtility;
+import Utility.FlowGraph;
+
+//=========================================================================**
+// Unparse aspect
+//=========================================================================**
+
+aspect Unparse
+{
+    //=========================================================================**
+    // Program
+    //=========================================================================**
+
+    syn String Program.unparse();
+    eq Program.unparse()
+    {
+        return getProgramBlock().unparse() + ".";
+    }
+
+    syn String ProgramBlock.unparse();
+    eq ProgramBlock.unparse()
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        // Append Constants
+        int length = getNumConst();
+        if(length > 0)
+        {
+            buffer.append("const ");
+        }
+
+        for(int i = 0; i < length; i++)
+        {
+            buffer.append(getConst(i).unparse());
+
+            if(i == length - 1)
+            {
+                buffer.append(";\n");
+            }
+            else
+            {
+                buffer.append(", ");
+            }
+        }
+
+        // Append Vars
+        length = getNumVar();
+        if(length > 0)
+        {
+            buffer.append("var ");
+        }
+
+        for(int i = 0; i < length; i++)
+        {
+            buffer.append(getVar(i).unparse());
+
+            if(i == length - 1)
+            {
+                buffer.append(";\n");
+            }
+            else
+            {
+                buffer.append(", ");
+            }
+        }
+
+        // Append Procedure
+        length = getNumProc();
+
+        for(int i =0; i < length; i++)
+        {
+            buffer.append(getProc(i).unparse());
+            buffer.append(getProc(i).unparseBlock() + " ");
+        }
+
+        buffer.append(getS().unparse());
+
+        return buffer.toString();
+    }
+
+    //=========================================================================**
+    // Statements
+    //=========================================================================**
+
+    syn String S.unparse();
+
+    eq AssignS.unparse()
+    {
+        return "[" + getVar() + " := " + getAExpr().unparse() + "]^" + getLabel();
+    }
+
+    eq BeginEndS.unparse()
+    {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("begin\n");
+        int len = getNumS();
+        for (int i = 0; i < len; i++)
+        {
+            buffer.append(getS(i).unparse());
+            if (i < len-1)
+            {
+                buffer.append(";\n");
+            }
+        }
+        buffer.append("\nend");
+        return buffer.toString();
+    }
+
+    eq CallS.unparse()
+    {
+        return "[call " + getProcName() + "]^" + getLabel();
+    }
+
+    eq ConstS.unparse()
+    {
+        return "[" + getName() + " = " + getNum() + "]^" + getLabel();
+    }
+
+    eq IfS.unparse()
+    {
+        return "if " + getLabeledExpr().unparse() + " then " + getS().unparse();
+    }
+
+    eq ProcS.unparse()
+    {
+        return "[procedure " + getName() + "]^" + getLabel() + ";";
+    }
+
+    syn String ProcS.unparseBlock();
+    eq ProcS.unparseBlock()
+    {
+        return " " + getBlock().unparse() + ";";
+    }
+
+    eq VarS.unparse()
+    {
+        return "[" + getName() + "]^" + getLabel();
+    }
+
+    eq WhileS.unparse()
+    {
+        return "while " + getLabeledExpr().unparse() + " do " + getS().unparse();
+    }
+
+    //=========================================================================**
+    // Expressions
+    //=========================================================================**
+
+    syn String LabeledExpr.unparse();
+    eq LabeledExpr.unparse() = "[" + getBExpr().unparse() + "]^" + getLabel();
+
+    syn String Expr.unparse();
+
+    eq VarRefExpr.unparse()
+    {
+        return getContents();
+    }
+
+    eq NumLitExpr.unparse()
+    {
+        return getContents();
+    }
+
+    eq ABinaryExpr.unparse()
+    {
+        return "(" + getLeft() + " " + getOp() + " " + getRight() + ")";
+    }
+
+    eq OddExpr.unparse()
+    {
+        return "odd " + getAExpr();
+    }
+
+    eq BBinaryExpr.unparse()
+    {
+        return getLeft() + " " + getOp() + " " + getRight();
+    }
+
+    syn String Op.unparse();
+    eq Op.unparse() = getContents();
+
+
+    //=========================================================================**
+    // Label
+    //=========================================================================**
+
+    syn String Label.unparse();
+    eq NumLabel.unparse() = getNum().toString();
+}

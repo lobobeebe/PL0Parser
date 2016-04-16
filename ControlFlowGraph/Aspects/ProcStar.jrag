@@ -1,0 +1,26 @@
+import java.util.*;
+import Utility.SetRepUtility;
+
+//=========================================================================**
+// ProcStar Aspect
+//=========================================================================**
+
+aspect ProcStar
+{
+    //=========================================================================**
+    // Program
+    //=========================================================================**
+
+    syn List<ProcS> ProgramBlock.ProcStar();
+    eq ProgramBlock.ProcStar() = getProcList();
+
+    //=========================================================================**
+    // Statements
+    //=========================================================================**
+
+    inh List<ProcS> S.ProcStar();
+    eq ProgramBlock.getConst(int index).ProcStar() = ProcStar();
+    eq ProgramBlock.getVar(int index).ProcStar() = ProcStar();
+    eq ProgramBlock.getProc(int index).ProcStar() = ProcStar();
+    eq ProgramBlock.getS().ProcStar() = ProcStar();
+}

@@ -1,0 +1,78 @@
+import Utility.SetRepUtility;
+
+//=========================================================================**
+// Init aspect
+//=========================================================================**
+
+aspect Init
+{
+    //=========================================================================**
+    // Program
+    //=========================================================================**
+
+    syn Set<ElementaryBlock> ProgramBlock.blocks()
+    {
+        Set<ElementaryBlock> ret = SetRepUtility.emptySet();
+        for (ConstS constant : getConstList())
+        {
+            ret.add(constant);
+        }
+        for (VarS var : getVarList())
+        {
+            ret.add(var);
+        }
+        for (ProcS proc : getProcList())
+        {
+            ret.add(proc);
+        }
+        ret.addAll(getS().blocks());
+        return ret;
+    }
+
+    //=========================================================================**
+    // Statements
+    //=========================================================================**
+
+    syn Set<ElementaryBlock> S.blocks();
+    eq AssignS.blocks() = SetRepUtility.singleton(this);
+    eq BeginEndS.blocks()
+    {
+        Set<ElementaryBlock> ret = SetRepUtility.emptySet();
+        for(int i = 0; i < getNumS(); i++)
+        {
+            ret.addAll(getS(i).blocks());
+        }
+        return ret;
+    }
+    eq CallS.blocks()
+    {
+        Set<ElementaryBlock> ret = SetRepUtility.emptySet();
+        for(ProcS proc : ProcStar())
+        {
+            if(proc.getName().equals(getProcName()))
+            {
+                ret.addAll(proc.getBlock().blocks());
+            }
+        }
+        ret.add(this);
+        return ret;
+    }
+    eq ConstS.blocks() = SetRepUtility.singleton(this);
+    eq IfS.blocks()
+    {
+        Set<ElementaryBlock> ret = getS().blocks();
+        ret.add(getLabeledExpr());
+        return ret;
+    }
+    eq PrintS.blocks() = SetRepUtility.singleton(this);
+    eq ProcS.blocks() = SetRepUtility.singleton(getLabel());
+    eq ReadS.blocks() = SetRepUtility.singleton(this);
+    eq SanitizeS.blocks() = SetRepUtility.singleton(this);
+    eq VarS.blocks() = SetRepUtility.singleton(getLabel());
+    eq WhileS.blocks()
+    {
+        Set<ElementaryBlock> ret = getS().blocks();
+        ret.add(getLabeledExpr());
+        return ret;
+    }
+}

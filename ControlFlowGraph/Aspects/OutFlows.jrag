@@ -1,0 +1,63 @@
+import Utility.SetRepUtility;
+
+//=========================================================================**
+// OutFlows aspect
+//=========================================================================**
+
+aspect OutFlows
+{
+    //=========================================================================**
+    // Program
+    //=========================================================================**
+
+    eq Program.getProgramBlock().outFlows() = SetRepUtility.emptySet();
+    inh Set<Label> ProgramBlock.outFlows();
+
+    //=========================================================================**
+    // Statements
+    //=========================================================================**
+
+    inh Set<Label> S.outFlows();
+    eq IfS.getS().outFlows()
+    {
+        if(next() == null)
+        {
+            return SetRepUtility.emptySet();
+        }
+        else
+        {
+            return SetRepUtility.singleton(next().init());
+        }
+    }
+
+    eq ProgramBlock.getConst(int index).outFlows() = SetRepUtility.singleton(getConst(index).next().init());
+    eq ProgramBlock.getVar(int index).outFlows() = SetRepUtility.singleton(getVar(index).next().init());
+    eq ProgramBlock.getProc(int index).outFlows() = SetRepUtility.singleton(getProc(index).next().init());
+    eq ProgramBlock.getS().outFlows() = outFlows();
+
+    //=========================================================================**
+    // LabeledExpr
+    //=========================================================================**
+
+    inh Set<Label> LabeledExpr.outFlows();
+
+    eq IfS.getLabeledExpr().outFlows()
+    {
+        return SetRepUtility.singleton(getS().init());
+    }
+
+    eq WhileS.getLabeledExpr().outFlows()
+    {
+        Set<Label> ret = SetRepUtility.singleton(getS().init());
+        if(next() != null)
+        {
+            ret.add(next().init());
+        }
+
+        return ret;
+    }
+    eq WhileS.getS().outFlows()
+    {
+        return SetRepUtility.singleton(getLabeledExpr().getLabel());
+    }
+}

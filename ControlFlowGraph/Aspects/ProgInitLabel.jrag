@@ -1,0 +1,38 @@
+import Utility.SetRepUtility;
+
+//=========================================================================**
+// ProgInitLabel aspect
+//=========================================================================**
+
+aspect ProgInitLabel
+{
+    //=========================================================================**
+    // Program
+    //=========================================================================**
+
+    syn Label Program.progInitLabel() = getProgramBlock().init();
+    inh Label ProgramBlock.progInitLabel();
+    eq Program.getProgramBlock().progInitLabel() = progInitLabel();
+
+    //=========================================================================**
+    // Statements
+    //=========================================================================**
+
+    inh Label S.progInitLabel();
+    eq BeginEndS.getS(int index).progInitLabel() = progInitLabel();
+    eq IfS.getS().progInitLabel() = progInitLabel();
+    eq IfS.getLabeledExpr().progInitLabel() = progInitLabel();
+    eq ProcS.getBlock().progInitLabel() = progInitLabel();
+    eq WhileS.getS().progInitLabel() = progInitLabel();
+    eq ProgramBlock.getS().progInitLabel() = progInitLabel();
+    eq ProgramBlock.getConst(int index).progInitLabel() = progInitLabel();
+    eq ProgramBlock.getProc(int index).progInitLabel() = progInitLabel();
+    eq ProgramBlock.getVar(int index).progInitLabel() = progInitLabel();
+
+    //=========================================================================**
+    // LabeledExpr
+    //=========================================================================**
+
+    inh Label LabeledExpr.progInitLabel();
+
+}

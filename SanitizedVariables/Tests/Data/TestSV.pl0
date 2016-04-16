@@ -1,0 +1,23 @@
+const y = 5;
+var x, c;
+
+procedure addition;
+var a;
+
+begin
+    sanitize c;
+    if x > 20 then begin
+        x := 5;
+        print c
+    end;
+    x := c
+end;
+
+
+begin
+    x := 2;
+    call addition;
+    while odd x do 
+        sanitize x;
+    x := 2 + c
+end.

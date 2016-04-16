@@ -16,7 +16,7 @@
     <property name="build" value="Build" />
 
     <!-- Define the tree structure folders hat each module will follow -->
-    <property name="framework" value="Framework" />
+    <property name="modules" value="Modules" />
     <property name="aspects" value="Aspects" />
     <property name="ast" value="AST" />
     <property name="parser" value="Parser" />
@@ -36,7 +36,7 @@
     <!-- The JastAdd ANT task -->
     <taskdef classname="org.jastadd.JastAddTask" name="jastadd" classpath="${tools}/jastadd2.jar" />
 
-    <property name="moduleList" value="Framework,IoModule"/>
+    <property name="moduleList" value="ControlFlowGraph,Unparse,SanitizedVariables"/>
 
     <!-- compile sources -->
     <!-- build: (automatically runs "gen" if needed)
@@ -63,40 +63,31 @@
 
     <!-- generate compiler source files and compile sources -->
     <target name="scanner">
-        <!-- compose the scanner -->
-        <concat destfile="${build}/${scanner}/${projectName}.flex" binary="true" force="false">
-            <fileset dir="${framework}/${scanner}">
-                <include name="ScannerPrelude.flex"/>
-            </fileset>
-            <multirootfileset basedirs="${moduleList}">
-                <include name="${scanner}/*.flex"/>
-                <exclude name="**/ScannerPrelude.flex"/>
-                <exclude name="**/ScannerEnd.flex"/>
-            </multirootfileset>
-            <fileset dir="${framework}/${scanner}">
-                <include name="ScannerEnd.flex"/>
-            </fileset>
-        </concat>
+        <copy file="${basedir}/${scanner}/${projectName}.flex" todir="${basedir}/${build}/${scanner}"/>
     </target>
+    <!-- compose the parser -->
     <target name="parser">
-        <!-- compose the parser -->
         <concat destfile="${build}/${parser}/${projectName}Parser.parser" binary="true" force="false">
-            <multirootfileset basedirs="${moduleList}">
-                <include name="${parser}/*.parser"/>
-            </multirootfileset>
+            <fileset dir="${parser}">
+                <include name="*.parser"/>
+            </fileset>
         </concat>
     </target>
 
     <target name="gen" depends="genTreeStructure,scanner,parser">
         <!-- JastAddTask does not support multirootfileset so copy ast and jrags into build folder first -->
+        <copy todir="${basedir}/${build}/${ast}">
+            <fileset dir="${ast}">
+                <include name="${projectName}.ast"/>
+            </fileset>
+        </copy>
         <copy todir="${basedir}/${build}">
             <multirootfileset basedirs="${moduleList}">
-                <include name="${ast}/*.ast"/>
                 <include name="${aspects}/*.jrag"/>
             </multirootfileset>
         </copy>
-        <!-- run jastadd to generate AST files -->
 
+        <!-- run jastadd to generate AST files -->
         <jastadd package="${ast}" beaver="true" rewrite="true" outdir="${basedir}/${build}">
             <fileset dir="${basedir}/${build}">
                 <include name="${ast}/*.ast"/>
@@ -105,7 +96,7 @@
         </jastadd>
         <!-- generate the scanner -->
         <echo message = "Running jflex"/>
-        <jflex file="${build}/${scanner}/${projectName}.flex" outdir="${build}" nobak="yes"/>
+        <jflex file="${basedir}/${scanner}/${projectName}.flex" outdir="${build}" nobak="yes"/>
         <!-- generate the parser phase 1, translating .parser to .beaver -->
         <echo message = "generating beaver input"/>
         <java fork="true" dir="${basedir}/${build}" classpath="${basedir}:${tools}/proj.jar:${tools}/beaver-rt.jar" classname="Main">

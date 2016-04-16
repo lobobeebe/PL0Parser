@@ -1,0 +1,32 @@
+import java.util.Set;
+import AST.*;
+
+aspect Vars
+{
+    //=========================================================================**
+    // Program
+    //=========================================================================**
+
+    syn Set<String> ProgramBlock.Vars();
+    eq ProgramBlock.Vars()
+    {
+        Set<String> ret = SetRepUtility.emptySet();
+        for (int i = 0; i < getNumVar(); i++)
+        {
+            ret.add(getVar(i).getName());
+        }
+
+        for (int i = 0; i < getNumProc(); i++)
+        {
+            ret.addAll(getProc(i).Vars());
+        }
+        return ret;
+    }
+
+    //=========================================================================**
+    // ProcS
+    //=========================================================================**
+
+    syn Set<String> ProcS.Vars();
+    eq ProcS.Vars() = getBlock().Vars();
+}

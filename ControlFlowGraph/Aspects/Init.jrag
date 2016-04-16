@@ -1,0 +1,51 @@
+import Utility.SetRepUtility;
+
+//=========================================================================**
+// Init aspect
+//=========================================================================**
+
+aspect Init
+{
+    //=========================================================================**
+    // Program
+    //=========================================================================**
+
+    syn Label ProgramBlock.init();
+    eq ProgramBlock.init()
+    {
+        if (getNumConst() > 0)
+        {
+            return getConst(0).init();
+        }
+        else if(getNumVar() > 0)
+        {
+            return getVar(0).init();
+        }
+        else if(getNumProc() > 0)
+        {
+            return getProc(0).init();
+        }
+        else
+        {
+            return getS().init();
+        }
+    }
+
+    //=========================================================================**
+    // Statements
+    //=========================================================================**
+
+    syn Label S.init();
+    eq AssignS.init() = getLabel();
+    eq BeginEndS.init() = getS(0).init();
+    eq CallS.init() = getLabel();
+    eq ConstS.init() = getLabel();
+    eq IfS.init() = getLabeledExpr().getLabel();
+    eq PrintS.init() = getLabel();
+    eq ProcS.init() = getLabel();
+    eq ReadS.init() = getLabel();
+    eq SanitizeS.init() = getLabel();
+    eq VarS.init() = getLabel();
+    eq WhileS.init() = getLabeledExpr().getLabel();
+
+}

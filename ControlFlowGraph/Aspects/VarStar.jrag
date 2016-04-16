@@ -1,0 +1,36 @@
+import java.util.Set;
+import Utility.SetRepUtility;
+import AST.*;
+
+//=========================================================================**
+// VarStar aspect
+//=========================================================================**
+
+aspect VarStar
+{
+    //=========================================================================**
+    // Program()
+    //=========================================================================**
+
+    syn Set<String> ProgramBlock.VarStar();
+
+    //=========================================================================**
+    // Statements
+    //=========================================================================**
+
+    inh Set<String> S.VarStar();
+    eq IfS.getS().VarStar() = VarStar();
+    eq IfS.getLabeledExpr().VarStar() = VarStar();
+
+    eq ProgramBlock.VarStar() = Vars();
+    eq ProgramBlock.getConst(int index).VarStar() = VarStar();
+    eq ProgramBlock.getVar(int index).VarStar() = VarStar();
+    eq ProgramBlock.getProc(int index).VarStar() = VarStar();
+    eq ProgramBlock.getS().VarStar() = VarStar();
+
+    //=========================================================================**
+    // LabeledExpr
+    //=========================================================================**
+
+    inh Set<String> LabeledExpr.VarStar();
+}

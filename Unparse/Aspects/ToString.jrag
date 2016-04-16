@@ -1,0 +1,22 @@
+import java.util.*;
+import Utility.SetRepUtility;
+import Utility.FlowGraph;
+
+//=========================================================================**
+// ToString aspect
+//=========================================================================**
+
+aspect ToString
+{
+    syn String ElementaryBlock.toString() = unparse();
+
+    syn String Expr.toString() = unparse();
+    syn String Op.toString() = unparse();
+
+    syn String Label.toString() = unparse();
+
+    syn String Program.toString() = unparse();
+    syn String ProgramBlock.toString() = unparse();
+
+    syn String S.toString() = unparse();
+}

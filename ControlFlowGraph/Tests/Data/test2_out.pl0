@@ -1,0 +1,9 @@
+const [y = 5]^1, [z = 0]^2;
+var [x]^3;
+begin
+    if [z = 0]^5
+    then
+        [x := y]^4;
+    [x := (x + 1)]^6
+        
+end.

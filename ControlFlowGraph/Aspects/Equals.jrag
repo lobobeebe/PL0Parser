@@ -1,0 +1,67 @@
+import Utility.SetRepUtility;
+
+//=========================================================================**
+// Equals aspect
+//=========================================================================**
+
+aspect Equals
+{
+    //=========================================================================**
+    // ElementaryBlock
+    //=========================================================================**
+
+    public boolean ElementaryBlock.equals(Object o)
+    {
+        if(o == null || !(o instanceof ElementaryBlock))
+        {
+            return false;
+        }
+        ElementaryBlock b = (ElementaryBlock) o;
+
+        return toString().equals(b.toString());
+    }
+    public int ElementaryBlock.hashCode()
+    {
+        return toString().hashCode();
+    }
+
+    //=========================================================================**
+    // Statements
+    //=========================================================================**
+
+    public boolean S.equals(Object o)
+    {
+        if(o == null || !(o instanceof S))
+        {
+            return false;
+        }
+        S b = (S) o;
+
+        return toString().equals(b.toString());
+    }
+
+    public int S.hashCode()
+    {
+        return toString().hashCode();
+    }
+
+    //=========================================================================**
+    // Label
+    //=========================================================================**
+
+    public boolean Label.equals(Object o)
+    {
+        if(o == null || !(o instanceof Label))
+        {
+            return false;
+        }
+
+        Label b = (Label) o;
+        return toString().equals(b.toString());
+    }
+
+    public int Label.hashCode()
+    {
+        return toString().hashCode();
+    }
+}
