@@ -68,7 +68,7 @@ aspect Unparse
         // Append Procedure
         length = getNumProc();
 
-        for(int i =0; i < length; i++)
+        for(int i = 0; i < length; i++)
         {
             buffer.append(getProc(i).unparse());
             buffer.append(getProc(i).unparseBlock() + " ");
@@ -109,7 +109,7 @@ aspect Unparse
 
     eq CallS.unparse()
     {
-        return "[call " + getProcName() + "]^" + getLabel();
+        return "[call " + getProcName() + "]^" + getCallLabel() + "_" + getReturnLabel();
     }
 
     eq ConstS.unparse()
@@ -124,7 +124,7 @@ aspect Unparse
 
     eq ProcS.unparse()
     {
-        return "[procedure " + getName() + "]^" + getLabel() + ";";
+        return "[procedure " + getName() + "]^" + getIsLabel() + "_" + getEndLabel() + ";";
     }
 
     syn String ProcS.unparseBlock();

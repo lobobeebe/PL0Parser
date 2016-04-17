@@ -11,7 +11,7 @@ ProgramBlock ::= Const:ConstS* Var:VarS* Proc:ProcS* S:UsageS;
 abstract DeclS:S;
 ConstS:DeclS ::= Label <Name> <Num>;
 VarS:DeclS ::= Label <Name>;
-ProcS:DeclS ::= Label <Name> Block:ProgramBlock;
+ProcS:DeclS ::= IsLabel:Label <Name> Block:ProgramBlock EndLabel:Label;
 
 // Operations
 abstract Op ::= <Contents>;
@@ -34,7 +34,7 @@ LabeledExpr ::= Label BExpr;
 
 // Usage Statements
 abstract UsageS:S;
-CallS:UsageS ::= Label <ProcName>;
+CallS:UsageS ::= CallLabel:Label <ProcName> ReturnLabel:Label;
 BeginEndS:UsageS ::= S:UsageS*;
 AssignS:UsageS ::= Label <Var> AExpr;
 IfS:UsageS ::= LabeledExpr S:UsageS;

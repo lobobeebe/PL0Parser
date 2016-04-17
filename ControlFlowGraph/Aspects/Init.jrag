@@ -38,7 +38,7 @@ aspect Init
     syn Label S.init();
     eq AssignS.init() = getLabel();
     eq BeginEndS.init() = getS(0).init();
-    eq CallS.init() = getLabel();
+    eq CallS.init() = getCallLabel();
     eq ConstS.init() = getLabel();
     eq IfS.init() = getLabeledExpr().getLabel();
     eq PrintS.init() = getLabel();

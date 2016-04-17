@@ -14,7 +14,7 @@ ProgramBlock block =
 ;
 
 ProcS proc =
-    PROCEDURE IDENTIFIER SEMICOLON block SEMICOLON   {: return new ProcS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, block); :}
+    PROCEDURE IDENTIFIER SEMICOLON block SEMICOLON   {: return new ProcS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, block, new NumLabel(LabelUtility.nextLabel())); :}
 ;
 
 List procList =
@@ -50,7 +50,7 @@ VarS varDecl =
 
 UsageS stmt =
   IDENTIFIER ASSIGN expression  {: return new AssignS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, expression); :}
-  | CALL IDENTIFIER             {: return new CallS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER); :}
+  | CALL IDENTIFIER             {: return new CallS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, new NumLabel(LabelUtility.nextLabel())); :}
   | BEGIN stmtList END          {: return new BeginEndS(stmtList); :}
   | IF condition THEN stmt      {: return new IfS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
   | WHILE condition DO stmt     {: return new WhileS(new LabeledExpr(new NumLabel(LabelUtility.nextLabel()), condition), stmt); :}
