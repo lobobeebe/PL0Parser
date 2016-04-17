@@ -1,6 +1,0 @@
-var [x]^1;
-begin
-    [read x]^2;
-    [x := (45 + x)]^3
-    
-end.

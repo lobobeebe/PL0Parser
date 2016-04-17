@@ -1,3 +1,0 @@
-ReadS: UsageS ::= Label <Var>;
-SanitizeS: UsageS ::= Label <Var>;
-PrintS: UsageS ::= Label AExpr;

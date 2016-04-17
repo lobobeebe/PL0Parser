@@ -1,6 +1,0 @@
-var x;
-begin
-    read x;
-    x := (45 + x)
-    
-end.
