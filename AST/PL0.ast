@@ -11,7 +11,7 @@ ProgramBlock ::= Const:ConstS* Var:VarS* Proc:ProcS* S:UsageS;
 abstract DeclS:S;
 ConstS:DeclS ::= Label <Name> <Num>;
 VarS:DeclS ::= Label <Name>;
-ProcS:DeclS ::= Label <Name> Block:ProgramBlock;
+ProcS:DeclS ::= <Name> Block:ProgramBlock;
 
 // Operations
 abstract Op ::= <Contents>;
