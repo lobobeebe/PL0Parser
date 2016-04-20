@@ -5,19 +5,17 @@ import AST.*;
 /**
  * The Tainted Variables Analysis.
  * For each program point, which variables must have been assigned from user input.
+ * Note: This analysis is not transitive for variable assignments
  */
 aspect TaintedVariablesAnalysis
 {
     /** The kill function for tainted variables. */
-    //kill variable whenever they are assigned a constant or sanitized
-    //(kill if variable is assigned to variables that are already sanitized??)
-
     syn Set<String> ElementaryBlock.killTV(Set<String> current);
 
     eq ConstS.killTV(Set<String> current) = SetRepUtility.emptySet();
     eq VarS.killTV(Set<String> current) = SetRepUtility.emptySet();
 
-    //eq AssignS.killTV(Set<String> current) = SetRepUtility.singleton(getVar());
+    eq AssignS.killTV(Set<String> current) = SetRepUtility.singleton(getVar());
     eq CallS.killTV(Set<String> current) = SetRepUtility.emptySet();
     eq ReadS.killTV(Set<String> current) = SetRepUtility.emptySet();
     eq SanitizeS.killTV(Set<String> current) = SetRepUtility.singleton(getVar());
@@ -25,14 +23,12 @@ aspect TaintedVariablesAnalysis
     eq LabeledExpr.killTV(Set<String> current) = SetRepUtility.emptySet();
 
     /** The gen function for tainted variables. */
-    //gen tainted variables whnever a variable is read in from input with read
-    //(gen if variable is assined to variables that are not sanitized?/)
     syn Set<String> ElementaryBlock.genTV();
 
     eq ConstS.genTV() = SetRepUtility.emptySet();
     eq VarS.genTV() = SetRepUtility.emptySet();
 
-    //eq AssignS.genTV() = SetRepUtility.emptySet();
+    eq AssignS.genTV() = SetRepUtility.emptySet();
     eq CallS.genTV() = SetRepUtility.emptySet();
     eq ReadS.genTV() = SetRepUtility.singleton(getVar());
     eq SanitizeS.genTV() = SetRepUtility.emptySet();
@@ -57,7 +53,7 @@ aspect TaintedVariablesAnalysis
                     public Set<String> run(Label l)
                     {
                         ElementaryBlock b = l.itsBlock();
-                        return b.STexit();
+                        return b.TVexit();
                     }
                 }, inFlows());
             ret = SetRepUtility.intersect(inputs);
