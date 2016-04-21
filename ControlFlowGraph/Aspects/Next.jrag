@@ -39,7 +39,14 @@ aspect Next
         {
             if(getNumVar() == 0)
             {
-                return getS();
+                if(getNumProc() == 0)
+                {
+                    return getS();
+                }
+                else
+                {
+                    return getProc(0);
+                }
             }
             else
             {
@@ -56,7 +63,14 @@ aspect Next
     {
         if(index == getNumVar() - 1)
         {
-            return getS();
+            if(getNumProc() == 0)
+            {
+                return getS();
+            }
+            else
+            {
+                return getProc(0);
+            }
         }
         else
         {

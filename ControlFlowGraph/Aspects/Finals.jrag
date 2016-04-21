@@ -20,7 +20,19 @@ aspect Finals
     syn Set<Label> S.finals();
     eq AssignS.finals() = SetRepUtility.singleton(getLabel());
     eq BeginEndS.finals() = getS(getNumS() - 1).finals();
-    eq CallS.finals() = SetRepUtility.singleton(getLabel());
+    eq CallS.finals()
+    {
+        Set<Label> ret = SetRepUtility.emptySet();
+
+        for(ProcS proc : ProcStar())
+        {
+            if(proc.getName().equals(getProcName()))
+            {
+                ret = proc.getBlock().finals();
+            }
+        }
+        return ret;
+    }
     eq ConstS.finals() = SetRepUtility.singleton(getLabel());
     eq IfS.finals() = getS().finals();
     eq PrintS.finals() = SetRepUtility.singleton(getLabel());

@@ -20,7 +20,7 @@ public class ControlFlowGraphTests extends PL0TestCase
 
         try
         {
-            mProgram = parseFromFile("Tests/Data/test1.pl0");
+            mProgram = parseFromFile("Tests/Data/TestControlFlowGraph.pl0");
             mProgramBlock = mProgram.getProgramBlock();
         }
         catch(Exception exception)
@@ -37,7 +37,7 @@ public class ControlFlowGraphTests extends PL0TestCase
 
         // blocks: Verify amount of blocks
         Set<ElementaryBlock> elementaryBlocks = mProgramBlock.blocks();
-        assertTrue("There should be 14 elementary blocks in the main program: " + elementaryBlocks.size(), elementaryBlocks.size() == 14);
+        assertTrue("There should be 13 elementary blocks in the program: " + elementaryBlocks.size(), elementaryBlocks.size() == 10);
 
         // blocks: Verify all constants exist
         List<ConstS> constants = new List<ConstS>();
@@ -59,35 +59,23 @@ public class ControlFlowGraphTests extends PL0TestCase
 
         // blocks: Statements
         List<UsageS> statements = new List<UsageS>();
-        statements.add(new AssignS(new NumLabel("17"), "x", new NumLitExpr("2")));
-        statements.add(new CallS(new NumLabel("18"), "addition"));
-        statements.add(new AssignS(new NumLabel("19"), "sum", new ABinaryExpr(new VarRefExpr("sum"), new Op_a("+"), new NumLitExpr("1"))));
-        statements.add(new ReadS(new NumLabel("20"), "sum"));
-        statements.add(new AssignS(new NumLabel("21"), "x", new VarRefExpr("y")));
-        statements.add(new AssignS(new NumLabel("22"), "sum", new ABinaryExpr(
-            new ABinaryExpr(new VarRefExpr("y"), new Op_a("-"), new NumLitExpr("20")),
-            new Op_a("+"),
-            new ABinaryExpr(new NumLitExpr("5"), new Op_a("*"), new NumLitExpr("2")))));
-        statements.add(new AssignS(new NumLabel("24"), "sum", new NumLitExpr("0")));
-        statements.add(new CallS(new NumLabel("26"), "hello"));
+        statements.add(new AssignS(new NumLabel("12"), "x", new NumLitExpr("2")));
+        statements.add(new AssignS(new NumLabel("13"), "sum", new NumLitExpr("0")));
+        statements.add(new CallS(new NumLabel("14"), "addition"));
+        statements.add(new AssignS(new NumLabel("15"), "x", new ABinaryExpr(new VarRefExpr("x"), new Op_a("+"), new NumLitExpr("1"))));
         for(UsageS statement : statements)
         {
             assertTrue("Elementary blocks should contain " + statement.unparse() + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(statement));
         }
 
         // blocks: LabeledExpr
-        List<LabeledExpr> labeledExprs = new List<>();
-        labeledExprs.add(new LabeledExpr(new NumLabel("25"), new BBinaryExpr(new VarRefExpr("sum"), new Op_r(">"), new NumLitExpr("40"))));
-        labeledExprs.add(new LabeledExpr(new NumLabel("23"), new BBinaryExpr(new VarRefExpr("x"), new Op_r("#"), new NumLitExpr("20"))));
-        for(LabeledExpr labeledExpr : labeledExprs)
-        {
-            assertTrue("ElementaryBlocks should contain " + labeledExpr.unparse() + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(labeledExpr));
-        }
+        LabeledExpr labeledExpr = new LabeledExpr(new NumLabel("16"), new BBinaryExpr(new VarRefExpr("sum"), new Op_r("<"), new NumLitExpr("4")));
+        assertTrue("ElementaryBlocks should contain " + labeledExpr.unparse() + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(labeledExpr));
 
         // finals: Verify there is only one
         Set<Label> finalLabels = mProgramBlock.finals();
-        assertTrue("Finals size should be 1: " + finalLabels.size(), finalLabels.size() == 1);
-        assertTrue(finalLabels + " -Failure", finalLabels.contains(new NumLabel("26")));
+        assertTrue(finalLabels.size() == 1);
+        assertTrue(finalLabels + " -Failure", finalLabels.contains(new NumLabel("16")));
 
         // outFlows: Verify there are no outflows to the program block
         Set<Label> outs = mProgramBlock.outFlows();
@@ -150,10 +138,10 @@ public class ControlFlowGraphTests extends PL0TestCase
 
         Set<Label> outs2 = var2.outFlows();
         assertTrue("Size of var2.outFlows should be 2, was: " + outs2.size(), outs2.size() == 1);
-        assertTrue("Label ^17 should be in var2.outFlows: var2.outFlows = " + outs2, outs2.contains(new NumLabel("17")));
+        assertTrue("Label ^11 should be in var22.outFlows: var2.outFlows = " + outs2, outs2.contains(new NumLabel("11")));
     }
 
-    public void testProcedureAddition() throws IOException, Exception
+    public void testProcedure() throws IOException, Exception
     {
         ProcS proc = mProgramBlock.getProc(0);
         ProgramBlock block = proc.getBlock();
@@ -185,28 +173,25 @@ public class ControlFlowGraphTests extends PL0TestCase
         assertTrue("Label ^6 should be in var1.outFlows: var1.outFlows = " + outs1, outs1.contains(new NumLabel("6")));
 
         Set<Label> outs2 = var2.outFlows();
-        assertTrue("Size of var2.outFlows should be 1, was: " + outs2.size(), outs2.size() == 1);
-        assertTrue("Label ^9 should be in var2.outFlows: var2.outFlows = " + outs2, outs2.contains(new NumLabel("9")));
+        assertTrue("Size of var2.outFlows should be 2, was: " + outs2.size(), outs2.size() == 1);
+        assertTrue("Label ^7 should be in var2.outFlows: var2.outFlows = " + outs2, outs2.contains(new NumLabel("7")));
 
-        // LabeledExpr
-        LabeledExpr expr = new LabeledExpr(new NumLabel("12"), new BBinaryExpr(new VarRefExpr("x"), new Op_r("<="), new NumLitExpr("5")));
-        assertTrue("Inner blocks should contain the " + expr, innerBlocks.contains(expr));
+
+        // blocks: Inner Labeled Expr
+        LabeledExpr innerExpr = new LabeledExpr(new NumLabel("10"), new BBinaryExpr(new VarRefExpr("a"), new Op_r("="), new VarRefExpr("b")));
+        assertTrue("InnerBlocks should contain " + innerExpr + ": " + innerBlocks.toString(), innerBlocks.contains(innerExpr));
 
         // blocks: Inner Statements
         List<UsageS> innerStatements = new List<UsageS>();
-        innerStatements.add(new AssignS(new NumLabel("9"), "a", new VarRefExpr("x")));
-        innerStatements.add(new AssignS(new NumLabel("10"), "b", new VarRefExpr("y")));
-        innerStatements.add(new PrintS(new NumLabel("11"), new VarRefExpr("x")));
-        innerStatements.add(new ReadS(new NumLabel("13"), "x"));
-        innerStatements.add(new SanitizeS(new NumLabel("14"), "x"));
-        innerStatements.add(new PrintS(new NumLabel("15"), new VarRefExpr("x")));
-        innerStatements.add(new AssignS(new NumLabel("16"), "sum", new ABinaryExpr(new VarRefExpr("a"), new Op_a("+"), new VarRefExpr("b"))));
+        innerStatements.add(new AssignS(new NumLabel("7"), "a", new VarRefExpr("x")));
+        innerStatements.add(new AssignS(new NumLabel("8"), "b", new VarRefExpr("y")));
+        innerStatements.add(new AssignS(new NumLabel("9"), "sum", new ABinaryExpr(new VarRefExpr("a"), new Op_a("+"), new VarRefExpr("b"))));
         for(UsageS statement : innerStatements)
         {
             assertTrue("Inner statements should contain " + statement + ": " + innerBlocks.toString(), innerBlocks.contains(statement));
         }
     }
-
+    
     public static junit.framework.Test suite()
     {
         return new junit.framework.TestSuite(Tests.ControlFlowGraphTests.class);
