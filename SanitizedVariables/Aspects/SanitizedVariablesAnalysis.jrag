@@ -13,11 +13,25 @@ aspect SanitizedVariablesAnalysis
 
     eq ConstS.killSV(Set<String> current) = SetRepUtility.emptySet();
     eq VarS.killSV(Set<String> current) = SetRepUtility.emptySet();
-    eq ProcS.killSV(Set<String> current) = SetRepUtility.emptySet();
+/*
+    eq ProcS.killSV(Set<String> current)
+    {
 
+        Set<Set<String>> killedSets = new Set<Set<String>>();
+
+        for(Label final : finals)
+        {
+            killedSets.add(final.itsBlock().SVexit());
+        }
+        return SetRepUtility.emptySet();
+    }
+    */
 
     eq AssignS.killSV(Set<String> current) = SetRepUtility.singleton(getVar());
     eq CallS.killSV(Set<String> current) = SetRepUtility.emptySet();
+    eq ReadS.killSV(Set<String> current) = SetRepUtility.singleton(getVar());
+    eq SanitizeS.killSV(Set<String> current) = SetRepUtility.emptySet();
+    eq PrintS.killSV(Set<String> current) = SetRepUtility.emptySet();
     eq LabeledExpr.killSV(Set<String> current) = SetRepUtility.emptySet();
 
     /** The gen function for sanitized variables. */
@@ -25,13 +39,15 @@ aspect SanitizedVariablesAnalysis
 
     eq ConstS.genSV() = SetRepUtility.emptySet();
     eq VarS.genSV() = SetRepUtility.emptySet();
-    eq ProcS.genSV() = SetRepUtility.emptySet();
     eq AssignS.genSV() = SetRepUtility.emptySet();
     eq CallS.genSV() = SetRepUtility.emptySet();
+    eq ReadS.genSV() = SetRepUtility.emptySet();
+    eq SanitizeS.genSV() = SetRepUtility.singleton(getVar());
+    eq PrintS.genSV() = SetRepUtility.emptySet();
     eq LabeledExpr.genSV() = SetRepUtility.emptySet();
 
     /** Compute the entry information for the SV analysis. */
-    syn Set<String> ElementaryBlock.SVentry() circular [VarStar()]; 
+    syn Set<String> ElementaryBlock.SVentry() circular [VarStar()];
 
     eq ElementaryBlock.SVentry()
     {
@@ -42,7 +58,6 @@ aspect SanitizedVariablesAnalysis
         }
         else
         {
-
             Set<Set<String>> inputs = SetRepUtility.map(
                 new SetRepUtility.Fun<Label, Set<String>>()
                 {
@@ -58,7 +73,7 @@ aspect SanitizedVariablesAnalysis
     }
 
     /** Compute the exit information for the SV analysis. */
-    syn Set<String> ElementaryBlock.SVexit() circular [VarStar()]; 
+    syn Set<String> ElementaryBlock.SVexit() circular [VarStar()];
     eq ElementaryBlock.SVexit()
     {
         Set<String> ret = SetRepUtility.emptySet();
@@ -67,4 +82,23 @@ aspect SanitizedVariablesAnalysis
         ret.addAll(this.genSV());
         return ret;
     }
+/*
+    eq ProcS.SVentry()
+    {
+        Set<String> ret = SetRepUtility.emptySet();
+        ret.addAll(this.SVentry());
+        ret.removeAll(this.killSV(ret));
+        ret.addAll(this.genSV());
+        return ret;
+    }
+
+    eq ProcS.SVexit()
+    {
+        Set<String> ret = SetRepUtility.emptySet();
+        ret.addAll(this.SVentry());
+        ret.removeAll(this.killSV(ret));
+        ret.addAll(this.genSV());
+        return ret;
+    }
+    */
 }

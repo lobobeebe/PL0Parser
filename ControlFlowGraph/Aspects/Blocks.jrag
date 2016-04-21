@@ -44,19 +44,7 @@ aspect Blocks
         }
         return ret;
     }
-    eq CallS.blocks()
-    {
-        Set<ElementaryBlock> ret = SetRepUtility.emptySet();
-        for(ProcS proc : ProcStar())
-        {
-            if(proc.getName().equals(getProcName()))
-            {
-                ret.addAll(proc.getBlock().blocks());
-            }
-        }
-        ret.add(this);
-        return ret;
-    }
+    eq CallS.blocks() = SetRepUtility.singleton(this);
     eq ConstS.blocks() = SetRepUtility.singleton(this);
     eq IfS.blocks()
     {

@@ -122,15 +122,30 @@ aspect Unparse
         return "if " + getLabeledExpr().unparse() + " then " + getS().unparse();
     }
 
+    eq PrintS.unparse()
+    {
+        return "[print " + getAExpr() + "]^" + getLabel();
+    }
+
     eq ProcS.unparse()
     {
-        return "[procedure " + getName() + "]^" + getLabel() + ";";
+        return "procedure " + getName() + ";";
     }
 
     syn String ProcS.unparseBlock();
     eq ProcS.unparseBlock()
     {
         return " " + getBlock().unparse() + ";";
+    }
+
+    eq ReadS.unparse()
+    {
+        return "[read " + getVar() + "]^" + getLabel();
+    }
+
+    eq SanitizeS.unparse()
+    {
+        return "[sanitize " + getVar() + "]^" + getLabel();
     }
 
     eq VarS.unparse()

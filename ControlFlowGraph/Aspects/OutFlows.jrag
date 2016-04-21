@@ -32,7 +32,7 @@ aspect OutFlows
 
     eq ProgramBlock.getConst(int index).outFlows() = SetRepUtility.singleton(getConst(index).next().init());
     eq ProgramBlock.getVar(int index).outFlows() = SetRepUtility.singleton(getVar(index).next().init());
-    eq ProgramBlock.getProc(int index).outFlows() = SetRepUtility.singleton(getProc(index).next().init());
+    eq ProgramBlock.getProc(int index).outFlows() = SetRepUtility.emptySet();
     eq ProgramBlock.getS().outFlows() = outFlows();
 
     //=========================================================================**

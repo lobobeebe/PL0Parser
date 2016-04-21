@@ -29,7 +29,7 @@ aspect InFlows
         return getS(index - 1).finals();
     }
     eq IfS.getS().inFlows() = SetRepUtility.singleton(getLabeledExpr().getLabel());
-    eq ProcS.getBlock().inFlows() = inFlows();
+    eq ProcS.getBlock().inFlows() = SetRepUtility.emptySet();
 
     eq ProgramBlock.getConst(int index).inFlows()
     {
@@ -62,31 +62,7 @@ aspect InFlows
         }
     }
 
-    eq ProgramBlock.getProc(int index).inFlows()
-    {
-        if(index == 0)
-        {
-            if(getNumVar() == 0)
-            {
-                if(getNumConst() == 0)
-                {
-                    return inFlows();
-                }
-                else
-                {
-                    return getConst(getNumConst() - 1).finals();
-                }
-            }
-            else
-            {
-                return getVar(getNumVar() - 1).finals();
-            }
-        }
-        else
-        {
-            return getProc(index - 1).finals();
-        }
-    }
+    eq ProgramBlock.getProc(int index).inFlows() = SetRepUtility.emptySet();
 
     eq ProgramBlock.getS().inFlows() = inFlows();
 

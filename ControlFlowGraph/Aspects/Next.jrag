@@ -78,19 +78,9 @@ aspect Next
         }
     }
 
-    eq ProgramBlock.getProc(int index).next()
-    {
-        if(index == getNumProc() - 1)
-        {
-            return getS();
-        }
-        else
-        {
-            return getProc(index + 1);
-        }
-    }
+    eq ProgramBlock.getProc(int index).next() = null;
 
     eq ProgramBlock.getS().next() = next();
-    
+
     eq WhileS.getS().next() = this;
 }

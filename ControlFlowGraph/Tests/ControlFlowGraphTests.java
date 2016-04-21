@@ -37,7 +37,7 @@ public class ControlFlowGraphTests extends PL0TestCase
 
         // blocks: Verify amount of blocks
         Set<ElementaryBlock> elementaryBlocks = mProgramBlock.blocks();
-        assertTrue("There should be 13 elementary blocks in the program: " + elementaryBlocks.size(), elementaryBlocks.size() == 16);
+        assertTrue("There should be 13 elementary blocks in the program: " + elementaryBlocks.size(), elementaryBlocks.size() == 10);
 
         // blocks: Verify all constants exist
         List<ConstS> constants = new List<ConstS>();
@@ -57,37 +57,6 @@ public class ControlFlowGraphTests extends PL0TestCase
             assertTrue("Variables should contain " + variable + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(variable));
         }
 
-        // blocks: Inner Variables
-        List<VarS> innerVariables = new List<VarS>();
-        innerVariables.add(new VarS(new NumLabel("5"), "a"));
-        innerVariables.add(new VarS(new NumLabel("6"), "b"));
-        for(VarS variable : innerVariables)
-        {
-            assertTrue("Inner variables should contain " + variable + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(variable));
-        }
-
-        // blocks: Inner Labeled Expr
-        LabeledExpr innerExpr = new LabeledExpr(new NumLabel("10"), new BBinaryExpr(new VarRefExpr("a"), new Op_r("="), new VarRefExpr("b")));
-        assertTrue("ElementaryBlocks should contain " + innerExpr + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(innerExpr));
-
-        // blocks: Inner Statements
-        List<UsageS> innerStatements = new List<UsageS>();
-        innerStatements.add(new AssignS(new NumLabel("7"), "a", new VarRefExpr("x")));
-        innerStatements.add(new AssignS(new NumLabel("8"), "b", new VarRefExpr("y")));
-        innerStatements.add(new AssignS(new NumLabel("9"), "sum", new ABinaryExpr(new VarRefExpr("a"), new Op_a("+"), new VarRefExpr("b"))));
-        for(UsageS statement : innerStatements)
-        {
-            assertTrue("Inner statements should contain " + statement + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(statement));
-        }
-
-        // blocks: Procedures
-        List<ProcS> procedures = new List<ProcS>();
-        procedures.add(new ProcS(new NumLabel("11"), "addition", new ProgramBlock(new List<ConstS>(), innerVariables, new List<ProcS>(), new BeginEndS(innerStatements))));
-        for(ProcS proc : procedures)
-        {
-            assertTrue("Procedures should contain " + proc.unparse() + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(proc));
-        }
-
         // blocks: Statements
         List<UsageS> statements = new List<UsageS>();
         statements.add(new AssignS(new NumLabel("12"), "x", new NumLitExpr("2")));
@@ -101,7 +70,7 @@ public class ControlFlowGraphTests extends PL0TestCase
 
         // blocks: LabeledExpr
         LabeledExpr labeledExpr = new LabeledExpr(new NumLabel("16"), new BBinaryExpr(new VarRefExpr("sum"), new Op_r("<"), new NumLitExpr("4")));
-        assertTrue("ElementaryBlocks should contain " + innerExpr.unparse() + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(innerExpr));
+        assertTrue("ElementaryBlocks should contain " + labeledExpr.unparse() + ": " + elementaryBlocks.toString(), elementaryBlocks.contains(labeledExpr));
 
         // finals: Verify there is only one
         Set<Label> finalLabels = mProgramBlock.finals();
@@ -176,6 +145,7 @@ public class ControlFlowGraphTests extends PL0TestCase
     {
         ProcS proc = mProgramBlock.getProc(0);
         ProgramBlock block = proc.getBlock();
+        Set<ElementaryBlock> innerBlocks = block.blocks();
 
         // Verify number of constants in the procedure
         assertTrue(block.getNumConst() == 0);
@@ -191,8 +161,7 @@ public class ControlFlowGraphTests extends PL0TestCase
 
         // vars inFlows
         Set<Label> ins1 = var1.inFlows();
-        assertTrue("Size of var1.inFlows should be 1, was: " + ins1.size(), ins1.size() == 1);
-        assertTrue("Label ^4 should be in var2.inFlows: var2.inFlows = " + ins1, ins1.contains(new NumLabel("4")));
+        assertTrue("Size of var1.inFlows should be 0, was: " + ins1.size(), ins1.size() == 0);
 
         Set<Label> ins2 = var2.inFlows();
         assertTrue("Size of var2.inFlows should be 1, was: " + ins2.size(), ins2.size() == 1);
@@ -207,18 +176,22 @@ public class ControlFlowGraphTests extends PL0TestCase
         assertTrue("Size of var2.outFlows should be 2, was: " + outs2.size(), outs2.size() == 1);
         assertTrue("Label ^7 should be in var2.outFlows: var2.outFlows = " + outs2, outs2.contains(new NumLabel("7")));
 
-/*
-        // Verify number of statements in the procedure
-        assertTrue(block.getS() instanceof BeginEndS);
-        BeginEndS blockStatement = (BeginEndS) block.getS();
 
-        assertTrue(blockStatement.getNumS() == 3);
-        S stmt0 = blockStatement.getS(0);
-        assertTrue(stmt0.equals(new AssignS(new NumLabel("7"), "a", new VarRefExpr("x"))));
-        S stmt1 = blockStatement.getS(1);
-        assertTrue(stmt1.equals(new AssignS(new NumLabel("8"), "a", new VarRefExpr("x"))));
-*/
+        // blocks: Inner Labeled Expr
+        LabeledExpr innerExpr = new LabeledExpr(new NumLabel("10"), new BBinaryExpr(new VarRefExpr("a"), new Op_r("="), new VarRefExpr("b")));
+        assertTrue("InnerBlocks should contain " + innerExpr + ": " + innerBlocks.toString(), innerBlocks.contains(innerExpr));
+
+        // blocks: Inner Statements
+        List<UsageS> innerStatements = new List<UsageS>();
+        innerStatements.add(new AssignS(new NumLabel("7"), "a", new VarRefExpr("x")));
+        innerStatements.add(new AssignS(new NumLabel("8"), "b", new VarRefExpr("y")));
+        innerStatements.add(new AssignS(new NumLabel("9"), "sum", new ABinaryExpr(new VarRefExpr("a"), new Op_a("+"), new VarRefExpr("b"))));
+        for(UsageS statement : innerStatements)
+        {
+            assertTrue("Inner statements should contain " + statement + ": " + innerBlocks.toString(), innerBlocks.contains(statement));
+        }
     }
+    
     public static junit.framework.Test suite()
     {
         return new junit.framework.TestSuite(Tests.ControlFlowGraphTests.class);

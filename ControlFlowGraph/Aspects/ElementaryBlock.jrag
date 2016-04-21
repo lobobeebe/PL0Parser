@@ -28,7 +28,6 @@ aspect ElementaryBlock
     CallS implements ElementaryBlock;
     ConstS implements ElementaryBlock;
     PrintS implements ElementaryBlock;
-    ProcS implements ElementaryBlock;
     ReadS implements ElementaryBlock;
     SanitizeS implements ElementaryBlock;
     VarS implements ElementaryBlock;
