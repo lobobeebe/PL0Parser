@@ -17,10 +17,16 @@ ant test
 # Analysis Questions
 (i) Tainted Variables(TV): For each program point, which variables may have been assigned from user input.
     -Property Space: L = P(Var*)
+    -Safety: Largest Set
+    -Soundness: Smallest Safe Set
 (ii) Available Expressions(AE): For each program point, which expressions must have already been computed, and not later modified, on all paths to the program point. 
     -Property Space: L = (AExp*)
+    -Safety: Smallest Set
+    -Soundness: Largest Safe Set
 (iii) Sanitized Variables(SV): For each program point, which variables must have been sanitized.
     -Property Space: L = (Var*)
+    -Safety: Smallest Set
+    -Soundness: Largest Safe Set
 # Modules
 This project is broken into Modules for ease of building, debugging, and testing. The Modules are represented as directories in the root PL0Parser project. The Module List is as follows: ControlFlowGraph, Unparse, AvailableExpressions, SanitizedVariables, and TaintedVariables. Each Module relies on the core framework consisting of AST, Scanner, Parser, Tools, and Utilities. Modules will all have a set of Aspects and Tests within it that relate to the Module. The Aspects directory contains the JRAG files that define the operations necessary for the Module and the Tests folder contains tests ensuring that the operations perform as expected.
 
