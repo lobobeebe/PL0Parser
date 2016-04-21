@@ -1,23 +1,40 @@
-const y = 5;
-var x, c;
+var a, b, c, d, e;
 
-procedure addition;
-var a;
+procedure readAll;
 
 begin
-    sanitize c;
-    if x > 20 then begin
-        x := 5;
-        print c
-    end;
-    x := c
+    read a;
+    read b;
+    read c;
+    read d;
+    read e
 end;
 
+procedure sanitizeAll;
 
 begin
-    x := 2;
-    call addition;
-    while odd x do 
-        sanitize x;
-    x := 2 + c
+    sanitize a;
+    sanitize b;
+    sanitize c;
+    sanitize d;
+    sanitize e
+end;
+
+procedure sanitizeSome;
+
+begin
+    sanitize a;
+    sanitize b;
+    sanitize c
+end;
+
+begin
+    call readAll;
+    b := 1;
+    d := (b + a);
+    call sanitizeAll;
+    if c - e < b + a then call readAll;
+    call sanitizeSome;
+    sanitize d;
+    sanitize e
 end.

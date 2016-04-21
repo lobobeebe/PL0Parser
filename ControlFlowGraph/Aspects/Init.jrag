@@ -42,7 +42,7 @@ aspect Init
     eq ConstS.init() = getLabel();
     eq IfS.init() = getLabeledExpr().getLabel();
     eq PrintS.init() = getLabel();
-    eq ProcS.init() = getLabel();
+    eq ProcS.init() = getBlock().init();
     eq ReadS.init() = getLabel();
     eq SanitizeS.init() = getLabel();
     eq VarS.init() = getLabel();

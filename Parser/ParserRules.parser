@@ -14,7 +14,7 @@ ProgramBlock block =
 ;
 
 ProcS proc =
-    PROCEDURE IDENTIFIER SEMICOLON block SEMICOLON   {: return new ProcS(new NumLabel(LabelUtility.nextLabel()), IDENTIFIER, block); :}
+    PROCEDURE IDENTIFIER SEMICOLON block SEMICOLON   {: return new ProcS(IDENTIFIER, block); :}
 ;
 
 List procList =

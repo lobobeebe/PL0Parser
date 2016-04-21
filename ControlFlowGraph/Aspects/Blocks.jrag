@@ -21,10 +21,7 @@ aspect Blocks
         {
             ret.add(var);
         }
-        for (ProcS proc : getProcList())
-        {
-            ret.add(proc);
-        }
+        
         ret.addAll(getS().blocks());
         return ret;
     }
@@ -53,7 +50,7 @@ aspect Blocks
         return ret;
     }
     eq PrintS.blocks() = SetRepUtility.singleton(this);
-    eq ProcS.blocks() = SetRepUtility.singleton(getLabel());
+    eq ProcS.blocks() = getBlock().blocks();
     eq ReadS.blocks() = SetRepUtility.singleton(this);
     eq SanitizeS.blocks() = SetRepUtility.singleton(this);
     eq VarS.blocks() = SetRepUtility.singleton(getLabel());

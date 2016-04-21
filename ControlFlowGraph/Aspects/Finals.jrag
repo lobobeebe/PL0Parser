@@ -37,7 +37,7 @@ aspect Finals
     eq IfS.finals() = getS().finals();
     eq PrintS.finals() = SetRepUtility.singleton(getLabel());
     eq ReadS.finals() = SetRepUtility.singleton(getLabel());
-    eq ProcS.finals() = SetRepUtility.singleton(getLabel());
+    eq ProcS.finals() = getBlock().finals();
     eq SanitizeS.finals() = SetRepUtility.singleton(getLabel());
     eq VarS.finals() = SetRepUtility.singleton(getLabel());
     eq WhileS.finals() = SetRepUtility.singleton(getLabeledExpr().getLabel());

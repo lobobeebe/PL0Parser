@@ -124,12 +124,12 @@ aspect Unparse
 
     eq PrintS.unparse()
     {
-        return "[print " + getAExpr().unparse() + "]^" + getLabel().unparse();
+        return "[print " + getAExpr() + "]^" + getLabel();
     }
 
     eq ProcS.unparse()
     {
-        return "[procedure " + getName() + "]^" + getLabel() + ";";
+        return "procedure " + getName() + ";";
     }
 
     syn String ProcS.unparseBlock();
@@ -140,12 +140,12 @@ aspect Unparse
 
     eq ReadS.unparse()
     {
-        return "[read " + getVar() + "]^" + getLabel().unparse();
+        return "[read " + getVar() + "]^" + getLabel();
     }
 
     eq SanitizeS.unparse()
     {
-        return "[sanitize " + getVar() + "]^" + getLabel().unparse();
+        return "[sanitize " + getVar() + "]^" + getLabel();
     }
 
     eq VarS.unparse()
