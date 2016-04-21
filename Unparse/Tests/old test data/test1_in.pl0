@@ -1,0 +1,6 @@
+var x;
+begin
+    x := 45;
+    x := (45 + x)
+    
+end.
