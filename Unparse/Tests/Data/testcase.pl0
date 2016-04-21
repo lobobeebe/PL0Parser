@@ -1,0 +1,17 @@
+const y = 5;
+var x, sum;
+
+procedure increment;
+var a;
+
+begin
+    a := y;
+    sum := sum + a;
+end;
+
+begin
+    sum := 0;
+    if x > 4 then
+      sum := 1;
+    call increment
+end.
