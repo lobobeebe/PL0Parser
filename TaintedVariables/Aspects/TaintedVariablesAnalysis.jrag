@@ -56,7 +56,7 @@ aspect TaintedVariablesAnalysis
                         return b.TVexit();
                     }
                 }, inFlows());
-            ret = SetRepUtility.intersect(inputs);
+            ret = SetRepUtility.addAll(inputs);
         }
         return ret;
     }
