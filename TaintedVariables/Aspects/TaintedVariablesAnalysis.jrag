@@ -41,7 +41,7 @@ aspect TaintedVariablesAnalysis
     eq ElementaryBlock.TVentry()
     {
         Set<String> ret = SetRepUtility.emptySet();
-        
+
         if (getLabel().equals(progInitLabel()))
         {
             ret = SetRepUtility.emptySet();
@@ -57,7 +57,10 @@ aspect TaintedVariablesAnalysis
                         return b.TVexit();
                     }
                 }, inFlows());
-            //ret = SetRepUtility.addAll(inputs);
+                
+            For(Set<String> a_set : inputs){
+                ret.addAll(a_set);
+            }
         }
         return ret;
     }
