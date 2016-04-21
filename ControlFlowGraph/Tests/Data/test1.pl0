@@ -2,23 +2,23 @@ const y = 5, z = 0;
 var x, sum;
 
 procedure addition;
-var a, b;
+    var a, b;
 
-begin
     procedure hello;
+        begin
+            x := 20;
+            sum := (sum + x)
+        end;
+
     begin
-        x := 20;
-        sum := (sum + x)
+        a := x;
+        b := y;
+        if x <= 5 then print x;
+        read x;
+        sanitize x;
+        print x;
+        sum := (a + b)
     end;
-    a := x;
-    b := y;
-    if x <= 5 then 
-        print x
-    read x;
-    sanitize x;
-    print x;
-    sum := (a + b)
-end;
 
 begin
     x := 2;
@@ -31,6 +31,6 @@ begin
             sum := (y - 20) + (5 * 2)
         end;
         sum := 0
-    end
-    call hello;
+    end;
+    call hello
 end.

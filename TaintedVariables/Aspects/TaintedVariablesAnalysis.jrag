@@ -4,7 +4,7 @@ import AST.*;
 
 /**
  * The Tainted Variables Analysis.
- * For each program point, which variables must have been assigned from user input.
+ * For each program point, which variables may have been assigned from user input.
  * Note: This analysis is not transitive for variable assignments
  */
 aspect TaintedVariablesAnalysis
@@ -36,7 +36,7 @@ aspect TaintedVariablesAnalysis
     eq LabeledExpr.genTV() = SetRepUtility.emptySet();
 
     /** Compute the entry information for the TV analysis. */
-    syn Set<String> ElementaryBlock.TVentry() circular [VarStar()];
+    syn Set<String> ElementaryBlock.TVentry() circular [SetRepUtility.emptySet()];
 
     eq ElementaryBlock.TVentry()
     {
@@ -57,8 +57,8 @@ aspect TaintedVariablesAnalysis
                         return b.TVexit();
                     }
                 }, inFlows());
-                
-            For(Set<String> a_set : inputs){
+
+            for(Set<String> a_set : inputs){
                 ret.addAll(a_set);
             }
         }
@@ -66,7 +66,7 @@ aspect TaintedVariablesAnalysis
     }
 
     /** Compute the exit information for the TV analysis. */
-    syn Set<String> ElementaryBlock.TVexit() circular [VarStar()];
+    syn Set<String> ElementaryBlock.TVexit() circular [SetRepUtility.emptySet()];
     eq ElementaryBlock.TVexit()
     {
         Set<String> ret = SetRepUtility.emptySet();
