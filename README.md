@@ -16,7 +16,7 @@ ant test
 
 # Analysis Questions
 (i) Tainted Variables(TV): For each program point, which variables may have been assigned from user input.
-(ii) Available Expressions(AE): For each program point, which expressions may be available.
+(ii) Available Expressions(AE): For each program point, which expressions must have already been computed, and not later modified, on all paths to the program point. 
 (iii) Sanitized Variables(SV): For each program point, which variables must have been sanitized.
 
 # Modules
