@@ -23,7 +23,7 @@ aspect TaintedExpressionsAnalysis
     eq PrintS.killTE(Set<String> current) = SetRepUtility.emptySet();
     eq LabeledExpr.killTE(Set<String> current) = SetRepUtility.emptySet();
 
-    /** The gen function for tainted variables. */
+    /** The gen function for tainted expressions. */
     syn Set<String> ElementaryBlock.genTE();
 
     eq ConstS.genTE() = SetRepUtility.emptySet();
