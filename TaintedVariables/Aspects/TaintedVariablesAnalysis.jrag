@@ -1,0 +1,76 @@
+import java.util.Set;
+import Utility.SetRepUtility;
+import AST.*;
+
+/**
+ * The Tainted Variables Analysis.
+ * For each program point, which variables must have been assigned from user input.
+ * Note: This analysis is not transitive for variable assignments
+ */
+aspect TaintedVariablesAnalysis
+{
+    /** The kill function for tainted variables. */
+    syn Set<String> ElementaryBlock.killTV(Set<String> current);
+
+    eq ConstS.killTV(Set<String> current) = SetRepUtility.emptySet();
+    eq VarS.killTV(Set<String> current) = SetRepUtility.emptySet();
+
+    eq AssignS.killTV(Set<String> current) = SetRepUtility.singleton(getVar());
+    eq CallS.killTV(Set<String> current) = SetRepUtility.emptySet();
+    eq ReadS.killTV(Set<String> current) = SetRepUtility.emptySet();
+    eq SanitizeS.killTV(Set<String> current) = SetRepUtility.singleton(getVar());
+    eq PrintS.killTV(Set<String> current) = SetRepUtility.emptySet();
+    eq LabeledExpr.killTV(Set<String> current) = SetRepUtility.emptySet();
+
+    /** The gen function for tainted variables. */
+    syn Set<String> ElementaryBlock.genTV();
+
+    eq ConstS.genTV() = SetRepUtility.emptySet();
+    eq VarS.genTV() = SetRepUtility.emptySet();
+
+    eq AssignS.genTV() = SetRepUtility.emptySet();
+    eq CallS.genTV() = SetRepUtility.emptySet();
+    eq ReadS.genTV() = SetRepUtility.singleton(getVar());
+    eq SanitizeS.genTV() = SetRepUtility.emptySet();
+    eq PrintS.genTV() = SetRepUtility.emptySet();
+    eq LabeledExpr.genTV() = SetRepUtility.emptySet();
+
+    /** Compute the entry information for the TV analysis. */
+    syn Set<String> ElementaryBlock.TVentry() circular [VarStar()];
+
+    eq ElementaryBlock.TVentry()
+    {
+        Set<String> ret = SetRepUtility.emptySet();
+        
+        if (getLabel().equals(progInitLabel()))
+        {
+            ret = SetRepUtility.emptySet();
+        }
+        else
+        {
+            Set<Set<String>> inputs = SetRepUtility.map(
+                new SetRepUtility.Fun<Label, Set<String>>()
+                {
+                    public Set<String> run(Label l)
+                    {
+                        ElementaryBlock b = l.itsBlock();
+                        return b.TVexit();
+                    }
+                }, inFlows());
+            //ret = SetRepUtility.addAll(inputs);
+        }
+        return ret;
+    }
+
+    /** Compute the exit information for the TV analysis. */
+    syn Set<String> ElementaryBlock.TVexit() circular [VarStar()];
+    eq ElementaryBlock.TVexit()
+    {
+        Set<String> ret = SetRepUtility.emptySet();
+        ret.addAll(this.TVentry());
+        ret.removeAll(this.killTV(ret));
+        ret.addAll(this.genTV());
+        return ret;
+    }
+
+}

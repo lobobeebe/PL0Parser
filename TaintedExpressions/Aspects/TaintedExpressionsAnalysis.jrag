@@ -1,0 +1,76 @@
+import java.util.Set;
+import Utility.SetRepUtility;
+import AST.*;
+
+/**
+ * The Tainted Expressions Analysis.
+ * For each program point, which expressions may use variables that were assigned from user input.
+
+ * Note: This analysis is not transitive for variable assignments
+ */
+aspect TaintedExpressionsAnalysis
+{
+    /** The kill function for tainted variables. */
+    syn Set<String> ElementaryBlock.killTE(Set<String> current);
+
+    eq ConstS.killTE(Set<String> current) = SetRepUtility.emptySet();
+    eq VarS.killTE(Set<String> current) = SetRepUtility.emptySet();
+
+    eq AssignS.killTE(Set<String> current) = SetRepUtility.singleton(getVar());
+    eq CallS.killTE(Set<String> current) = SetRepUtility.emptySet();
+    eq ReadS.killTE(Set<String> current) = SetRepUtility.emptySet();
+    eq SanitizeS.killTE(Set<String> current) = SetRepUtility.singleton(getVar());
+    eq PrintS.killTE(Set<String> current) = SetRepUtility.emptySet();
+    eq LabeledExpr.killTE(Set<String> current) = SetRepUtility.emptySet();
+
+    /** The gen function for tainted variables. */
+    syn Set<String> ElementaryBlock.genTE();
+
+    eq ConstS.genTE() = SetRepUtility.emptySet();
+    eq VarS.genTE() = SetRepUtility.emptySet();
+
+    eq AssignS.genTE() = SetRepUtility.emptySet();
+    eq CallS.genTE() = SetRepUtility.emptySet();
+    eq ReadS.genTE() = SetRepUtility.singleton(getVar());
+    eq SanitizeS.genTE() = SetRepUtility.emptySet();
+    eq PrintS.genTE() = SetRepUtility.emptySet();
+    eq LabeledExpr.genTE() = SetRepUtility.emptySet();
+
+    /** Compute the entry information for the TE analysis. */
+    syn Set<String> ElementaryBlock.TEentry() circular [VarStar()];
+
+    eq ElementaryBlock.TEentry()
+    {
+        Set<String> ret;
+        if (getLabel().equals(progInitLabel()))
+        {
+            ret = SetRepUtility.emptySet();
+        }
+        else
+        {
+            Set<Set<String>> inputs = SetRepUtility.map(
+                new SetRepUtility.Fun<Label, Set<String>>()
+                {
+                    public Set<String> run(Label l)
+                    {
+                        ElementaryBlock b = l.itsBlock();
+                        return b.TEexit();
+                    }
+                }, inFlows());
+            ret = SetRepUtility.intersect(inputs);
+        }
+        return ret;
+    }
+
+    /** Compute the exit information for the TE analysis. */
+    syn Set<String> ElementaryBlock.TEexit() circular [VarStar()];
+    eq ElementaryBlock.TEexit()
+    {
+        Set<String> ret = SetRepUtility.emptySet();
+        ret.addAll(this.TEentry());
+        ret.removeAll(this.killTE(ret));
+        ret.addAll(this.genTE());
+        return ret;
+    }
+
+}
