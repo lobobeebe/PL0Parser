@@ -10,16 +10,16 @@ public class SetRepUtility {
 
         /** Return a new singleton set. */
         @SuppressWarnings({ "rawtypes", "unchecked" })
-        public static Set singleton(Object o) { 
+        public static Set singleton(Object o) {
             HashSet h = new HashSet();
             h.add(o);
-            return h; 
+            return h;
         }
-        
+
         /** Return a new empty set */
         @SuppressWarnings("rawtypes")
         public static Set emptySet() { return new HashSet(); }
-        
+
         /** Form the set of Map.Entry pairs that is the cross product of the given key with the set of values. */
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public static Set<Map.Entry> crossWith(Object key, Set vals) {
@@ -30,7 +30,7 @@ public class SetRepUtility {
             }
             return ret;
         }
-        
+
         /** Form the set of Map.Entry pairs that is the cross product of keys with the given value. */
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public static Set<Map.Entry> crossWith(Set keys, Object val) {
@@ -41,7 +41,7 @@ public class SetRepUtility {
             }
             return ret;
         }
-        
+
         /** Form the set of Map.Entry pairs that is the cross product of keys and vals. */
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public static Set<Map.Entry> cross(Set keys, Set vals) {
@@ -56,8 +56,8 @@ public class SetRepUtility {
         public interface Fun<L,T> {
             T run(L x);
         }
-        
-        /** Map a computation over a set to produce another set. 
+
+        /** Map a computation over a set to produce another set.
          * @param <L> the element type of args
          * @param <T> the type of the result
          * @param f the function to apply
@@ -69,7 +69,7 @@ public class SetRepUtility {
             }
             return ret;
         }
-        
+
         /** Intersect all sets in a set of sets. */
         public static <T> Set<T> intersect(Set<Set<T>> sets) {
             Set<T> ret = new HashSet<T>();
@@ -82,6 +82,18 @@ public class SetRepUtility {
                     ret.retainAll(s);
                 }
             }
+            return ret;
+        }
+
+        /** Unions all sets in a set of sets. */
+        public static <T> Set<T> union(Set<Set<T>> sets)
+        {
+            Set<T> ret = new HashSet<T>();
+            for (Set<T> s : sets)
+            {
+                ret.addAll(s);
+            }
+
             return ret;
         }
 }

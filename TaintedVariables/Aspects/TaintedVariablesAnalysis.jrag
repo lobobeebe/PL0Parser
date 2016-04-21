@@ -27,7 +27,6 @@ aspect TaintedVariablesAnalysis
 
     eq ConstS.genTV() = SetRepUtility.emptySet();
     eq VarS.genTV() = SetRepUtility.emptySet();
-
     eq AssignS.genTV() = SetRepUtility.emptySet();
     eq CallS.genTV() = SetRepUtility.emptySet();
     eq ReadS.genTV() = SetRepUtility.singleton(getVar());
@@ -36,15 +35,21 @@ aspect TaintedVariablesAnalysis
     eq LabeledExpr.genTV() = SetRepUtility.emptySet();
 
     /** Compute the entry information for the TV analysis. */
-    syn Set<String> ElementaryBlock.TVentry() circular [SetRepUtility.emptySet()];
+    syn Set<String> ElementaryBlock.TVentry(boolean assumeAll) circular [SetRepUtility.emptySet()];
 
-    eq ElementaryBlock.TVentry()
+    eq ElementaryBlock.TVentry(boolean assumeAll)
     {
-        Set<String> ret = SetRepUtility.emptySet();
-
-        if (getLabel().equals(progInitLabel()))
+        Set<String> ret;
+        if (inFlows().size() == 0)
         {
-            ret = SetRepUtility.emptySet();
+            if (assumeAll)
+            {
+                ret = VarStar();
+            }
+            else
+            {
+                ret = SetRepUtility.emptySet();
+            }
         }
         else
         {
@@ -54,26 +59,28 @@ aspect TaintedVariablesAnalysis
                     public Set<String> run(Label l)
                     {
                         ElementaryBlock b = l.itsBlock();
-                        return b.TVexit();
+                        return b.SVexit(assumeAll);
                     }
                 }, inFlows());
-
-            for(Set<String> a_set : inputs){
-                ret.addAll(a_set);
-            }
+            ret = SetRepUtility.union(inputs);
         }
         return ret;
     }
 
+    syn Set<String> ElementaryBlock.TVentry() = TVentry(false);
+
     /** Compute the exit information for the TV analysis. */
-    syn Set<String> ElementaryBlock.TVexit() circular [SetRepUtility.emptySet()];
-    eq ElementaryBlock.TVexit()
+    syn Set<String> ElementaryBlock.TVexit(boolean assumeAll) circular [SetRepUtility.emptySet()];
+    eq ElementaryBlock.TVexit(boolean assumeAll)
     {
         Set<String> ret = SetRepUtility.emptySet();
-        ret.addAll(this.TVentry());
+        ret.addAll(this.TVentry(assumeAll));
         ret.removeAll(this.killTV(ret));
         ret.addAll(this.genTV());
         return ret;
     }
+
+    syn Set<String> ElementaryBlock.TVexit() = TVexit(false);
+
 
 }
