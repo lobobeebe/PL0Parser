@@ -16,7 +16,7 @@ aspect TaintedVariablesAnalysis
     eq VarS.killTV(Set<String> current) = SetRepUtility.emptySet();
 
     eq AssignS.killTV(Set<String> current) = SetRepUtility.singleton(getVar());
-    eq CallS.killTV(Set<String> current) = SetRepUtility.emptySet();
+    eq CallS.killTV(Set<String> current) = findProcKillSummaryTV();
     eq ReadS.killTV(Set<String> current) = SetRepUtility.emptySet();
     eq SanitizeS.killTV(Set<String> current) = SetRepUtility.singleton(getVar());
     eq PrintS.killTV(Set<String> current) = SetRepUtility.emptySet();
@@ -28,28 +28,21 @@ aspect TaintedVariablesAnalysis
     eq ConstS.genTV() = SetRepUtility.emptySet();
     eq VarS.genTV() = SetRepUtility.emptySet();
     eq AssignS.genTV() = SetRepUtility.emptySet();
-    eq CallS.genTV() = SetRepUtility.emptySet();
+    eq CallS.genTV() = findProcGenSummaryTV();
     eq ReadS.genTV() = SetRepUtility.singleton(getVar());
     eq SanitizeS.genTV() = SetRepUtility.emptySet();
     eq PrintS.genTV() = SetRepUtility.emptySet();
     eq LabeledExpr.genTV() = SetRepUtility.emptySet();
 
     /** Compute the entry information for the TV analysis. */
-    syn Set<String> ElementaryBlock.TVentry(boolean assumeAll) circular [SetRepUtility.emptySet()];
+    syn Set<String> ElementaryBlock.TVentry(Set<String> bottom) circular [SetRepUtility.emptySet()];
 
-    eq ElementaryBlock.TVentry(boolean assumeAll)
+    eq ElementaryBlock.TVentry(Set<String> bottom)
     {
         Set<String> ret;
         if (inFlows().size() == 0)
         {
-            if (assumeAll)
-            {
-                ret = VarStar();
-            }
-            else
-            {
-                ret = SetRepUtility.emptySet();
-            }
+            ret = bottom;
         }
         else
         {
@@ -59,7 +52,7 @@ aspect TaintedVariablesAnalysis
                     public Set<String> run(Label l)
                     {
                         ElementaryBlock b = l.itsBlock();
-                        return b.SVexit(assumeAll);
+                        return b.TVexit(bottom);
                     }
                 }, inFlows());
             ret = SetRepUtility.union(inputs);
@@ -67,20 +60,91 @@ aspect TaintedVariablesAnalysis
         return ret;
     }
 
-    syn Set<String> ElementaryBlock.TVentry() = TVentry(false);
+    syn Set<String> ElementaryBlock.TVentry() = TVentry(SetRepUtility.emptySet());
 
     /** Compute the exit information for the TV analysis. */
-    syn Set<String> ElementaryBlock.TVexit(boolean assumeAll) circular [SetRepUtility.emptySet()];
-    eq ElementaryBlock.TVexit(boolean assumeAll)
+    syn Set<String> ElementaryBlock.TVexit(Set<String> bottom) circular [SetRepUtility.emptySet()];
+    eq ElementaryBlock.TVexit(Set<String> bottom)
     {
         Set<String> ret = SetRepUtility.emptySet();
-        ret.addAll(this.TVentry(assumeAll));
+        ret.addAll(this.TVentry(bottom));
         ret.removeAll(this.killTV(ret));
         ret.addAll(this.genTV());
         return ret;
     }
 
-    syn Set<String> ElementaryBlock.TVexit() = TVexit(false);
+    syn Set<String> ElementaryBlock.TVexit() = TVexit(SetRepUtility.emptySet());
 
+    //=========================================================================**
+    // CallS Find Procedure Summaries
+    //=========================================================================**
+
+    syn Set<String> CallS.findProcGenSummaryTV();
+    eq CallS.findProcGenSummaryTV()
+    {
+        for(ProcS proc : ProcStar())
+        {
+            if (proc.getName().equals(getProcName()))
+            {
+                return proc.genSummaryTV();
+            }
+        }
+
+        return SetRepUtility.emptySet();
+    }
+
+    syn Set<String> CallS.findProcKillSummaryTV();
+    eq CallS.findProcKillSummaryTV()
+    {
+        for(ProcS proc : ProcStar())
+        {
+            if (proc.getName().equals(getProcName()))
+            {
+                return proc.killSummaryTV();
+            }
+        }
+
+        return SetRepUtility.emptySet();
+    }
+
+
+    //=========================================================================**
+    // Procedure Summaries
+    //=========================================================================**
+
+    syn Set<String> ProcS.genSummaryTV();
+    eq ProcS.genSummaryTV()
+    {
+        Set<Set<String>> finalsAnalyses = SetRepUtility.map(
+            new SetRepUtility.Fun<Label, Set<String>>()
+            {
+                public Set<String> run(Label l)
+                {
+                    ElementaryBlock b = l.itsBlock();
+                    return b.TVexit(SetRepUtility.emptySet());
+                }
+            }, finals());
+
+        return SetRepUtility.union(finalsAnalyses);
+    }
+
+    syn Set<String> ProcS.killSummaryTV();
+    eq ProcS.killSummaryTV()
+    {
+        Set<Set<String>> finalsAnalyses = SetRepUtility.map(
+            new SetRepUtility.Fun<Label, Set<String>>()
+            {
+                public Set<String> run(Label l)
+                {
+                    ElementaryBlock b = l.itsBlock();
+                    Set<String> exitInfo = VarStar();
+                    // Assume VarStar at entry to Procedure in order to determine which variables are killed.
+                    exitInfo.removeAll(b.TVexit(VarStar()));
+                    return exitInfo;
+                }
+            }, finals());
+
+        return SetRepUtility.union(finalsAnalyses);
+    }
 
 }

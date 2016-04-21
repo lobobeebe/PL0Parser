@@ -34,22 +34,14 @@ aspect SanitizedVariablesAnalysis
     eq LabeledExpr.genSV() = SetRepUtility.emptySet();
 
     /** Compute the entry information for the SV analysis. */
-    syn Set<String> ElementaryBlock.SVentry(boolean assumeAll) circular [VarStar()];
-    syn Set<String> ElementaryBlock.SVentry();
+    syn Set<String> ElementaryBlock.SVentry(Set<String> bottom) circular [VarStar()];
 
-    eq ElementaryBlock.SVentry(boolean assumeAll)
+    eq ElementaryBlock.SVentry(Set<String> bottom)
     {
         Set<String> ret;
         if (inFlows().size() == 0)
         {
-            if (assumeAll)
-            {
-                ret = VarStar();
-            }
-            else
-            {
-                ret = SetRepUtility.emptySet();
-            }
+            ret = bottom;
         }
         else
         {
@@ -59,7 +51,7 @@ aspect SanitizedVariablesAnalysis
                     public Set<String> run(Label l)
                     {
                         ElementaryBlock b = l.itsBlock();
-                        return b.SVexit(assumeAll);
+                        return b.SVexit(bottom);
                     }
                 }, inFlows());
             ret = SetRepUtility.intersect(inputs);
@@ -67,22 +59,21 @@ aspect SanitizedVariablesAnalysis
         return ret;
     }
 
-    eq ElementaryBlock.SVentry() = SVentry(false);
+    syn Set<String> ElementaryBlock.SVentry() = SVentry(SetRepUtility.emptySet());
 
     /** Compute the exit information for the SV analysis. */
-    syn Set<String> ElementaryBlock.SVexit(boolean assumeAll) circular [VarStar()];
-    syn Set<String> ElementaryBlock.SVexit();
+    syn Set<String> ElementaryBlock.SVexit(Set<String> bottom) circular [VarStar()];
 
-    eq ElementaryBlock.SVexit(boolean assumeAll)
+    eq ElementaryBlock.SVexit(Set<String> bottom)
     {
         Set<String> ret = SetRepUtility.emptySet();
-        ret.addAll(this.SVentry(assumeAll));
+        ret.addAll(this.SVentry(bottom));
         ret.removeAll(this.killSV(ret));
         ret.addAll(this.genSV());
         return ret;
     }
 
-    eq ElementaryBlock.SVexit() = SVexit(false);
+    syn Set<String> ElementaryBlock.SVexit() = SVexit(SetRepUtility.emptySet());
 
     //=========================================================================**
     // CallS Find Procedure Summaries
@@ -130,7 +121,7 @@ aspect SanitizedVariablesAnalysis
                 public Set<String> run(Label l)
                 {
                     ElementaryBlock b = l.itsBlock();
-                    return b.SVexit(false);
+                    return b.SVexit(SetRepUtility.emptySet());
                 }
             }, finals());
 
@@ -148,7 +139,7 @@ aspect SanitizedVariablesAnalysis
                     ElementaryBlock b = l.itsBlock();
                     Set<String> exitInfo = VarStar();
                     // Assume VarStar at entry to Procedure in order to determine which variables are killed.
-                    exitInfo.removeAll(b.SVexit(true));
+                    exitInfo.removeAll(b.SVexit(VarStar()));
                     return exitInfo;
                 }
             }, finals());

@@ -9,10 +9,10 @@ import AST.*;
 public class SVTests extends PL0TestCase
 {
 
-	/** tests based on the file Tests/Data/TestSV.pl0 */
-	public void testSVentry1() throws IOException, Exception
+	/** tests based on the file Tests/Data/AnalysisTest1.pl0 */
+	public void testSV() throws IOException, Exception
     {
-		Program p = parseFromFile("Tests/Data/TestSV.pl0");
+		Program p = parseFromFile("Tests/Data/AnalysisTest1.pl0");
 		ProgramBlock pb = p.getProgramBlock();
         assertEquals("Var* size", 5, pb.VarStar().size());
 
