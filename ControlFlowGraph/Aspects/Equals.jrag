@@ -64,4 +64,24 @@ aspect Equals
     {
         return toString().hashCode();
     }
+
+    //=========================================================================**
+    // Expr
+    //=========================================================================**
+
+    public boolean Expr.equals(Object o)
+    {
+        if(o == null || !(o instanceof Expr))
+        {
+            return false;
+        }
+
+        Expr b = (Expr) o;
+        return toString().equals(b.toString());
+    }
+
+    public int Expr.hashCode()
+    {
+        return toString().hashCode();
+    }
 }

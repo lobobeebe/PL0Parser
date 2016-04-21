@@ -1,0 +1,191 @@
+import java.util.Set;
+import Utility.SetRepUtility;
+import AST.*;
+
+/**
+ * The Available Expressions Analysis.
+ * For each program point, which expressions must be available.
+ * Note: This analysis is not transitive for variable assignments
+ */
+aspect AvailableExpressionsAnalysis
+{
+    /** The kill function for sanitized variables. */
+    syn Set<ABinaryExpr> ElementaryBlock.killAE(Set<ABinaryExpr> current);
+
+    eq ConstS.killAE(Set<ABinaryExpr> current) = SetRepUtility.emptySet();
+    eq VarS.killAE(Set<ABinaryExpr> current) = SetRepUtility.emptySet();
+    eq AssignS.killAE(Set<ABinaryExpr> current)
+    {
+        Set<ABinaryExpr> ret = SetRepUtility.emptySet();
+
+        VarRefExpr var = new VarRefExpr(getVar());
+        for (ABinaryExpr aExpr : current)
+        {
+            if(aExpr.freeVars(var))
+            {
+                ret.add(aExpr);
+            }
+        }
+
+        return ret;
+    }
+    eq CallS.killAE(Set<ABinaryExpr> current) = findProcKillSummaryAE();
+    eq ReadS.killAE(Set<ABinaryExpr> current)
+    {
+        Set<ABinaryExpr> ret = SetRepUtility.emptySet();
+
+        VarRefExpr var = new VarRefExpr(getVar());
+        for (ABinaryExpr aExpr : current)
+        {
+            if(aExpr.freeVars(var))
+            {
+                ret.add(aExpr);
+            }
+        }
+
+        return ret;
+    }
+    eq SanitizeS.killAE(Set<ABinaryExpr> current) = SetRepUtility.emptySet();
+    eq PrintS.killAE(Set<ABinaryExpr> current) = SetRepUtility.emptySet();
+    eq LabeledExpr.killAE(Set<ABinaryExpr> current) = SetRepUtility.emptySet();
+
+    /** The gen function for sanitized variables. */
+    syn Set<ABinaryExpr> ElementaryBlock.genAE();
+
+    eq ConstS.genAE() = SetRepUtility.emptySet();
+    eq VarS.genAE() = SetRepUtility.emptySet();
+    eq AssignS.genAE()
+    {
+        Set<ABinaryExpr> ret = SetRepUtility.emptySet();
+        VarRefExpr var = new VarRefExpr(getVar());
+
+        for(ABinaryExpr expr : AExprs())
+        {
+            if(!expr.freeVars(var))
+            {
+                ret.add(expr);
+            }
+        }
+
+        return ret;
+    }
+    eq CallS.genAE() = findProcGenSummaryAE();
+    eq ReadS.genAE() = SetRepUtility.emptySet();
+    eq SanitizeS.genAE() = SetRepUtility.singleton(getVar());
+    eq PrintS.genAE() = AExprs();
+    eq LabeledExpr.genAE() = AExprs();
+
+    /** Compute the entry information for the AE analysis. */
+    syn Set<ABinaryExpr> ElementaryBlock.AEentry(Set<ABinaryExpr> bottom) circular [AExprStar()];
+
+    eq ElementaryBlock.AEentry(Set<ABinaryExpr> bottom)
+    {
+        Set<ABinaryExpr> ret;
+        if (inFlows().size() == 0)
+        {
+            ret = bottom;
+        }
+        else
+        {
+            Set<Set<ABinaryExpr>> inputs = SetRepUtility.map(
+                new SetRepUtility.Fun<Label, Set<ABinaryExpr>>()
+                {
+                    public Set<ABinaryExpr> run(Label l)
+                    {
+                        ElementaryBlock b = l.itsBlock();
+                        return b.AEexit(bottom);
+                    }
+                }, inFlows());
+            ret = SetRepUtility.intersect(inputs);
+        }
+        return ret;
+    }
+
+    syn Set<ABinaryExpr> ElementaryBlock.AEentry() = AEentry(SetRepUtility.emptySet());
+
+    /** Compute the exit information for the AE analysis. */
+    syn Set<ABinaryExpr> ElementaryBlock.AEexit(Set<ABinaryExpr> bottom) circular [AExprStar()];
+
+    eq ElementaryBlock.AEexit(Set<ABinaryExpr> bottom)
+    {
+        Set<ABinaryExpr> ret = SetRepUtility.emptySet();
+        ret.addAll(this.AEentry(bottom));
+        ret.removeAll(this.killAE(ret));
+        ret.addAll(this.genAE());
+        return ret;
+    }
+
+    syn Set<ABinaryExpr> ElementaryBlock.AEexit() = AEexit(SetRepUtility.emptySet());
+
+    //=========================================================================**
+    // CallS Find Procedure Summaries
+    //=========================================================================**
+
+    syn Set<ABinaryExpr> CallS.findProcGenSummaryAE();
+    eq CallS.findProcGenSummaryAE()
+    {
+        for(ProcS proc : ProcStar())
+        {
+            if (proc.getName().equals(getProcName()))
+            {
+                return proc.genSummaryAE();
+            }
+        }
+
+        return SetRepUtility.emptySet();
+    }
+
+    syn Set<ABinaryExpr> CallS.findProcKillSummaryAE();
+    eq CallS.findProcKillSummaryAE()
+    {
+        for(ProcS proc : ProcStar())
+        {
+            if (proc.getName().equals(getProcName()))
+            {
+                return proc.killSummaryAE();
+            }
+        }
+
+        return SetRepUtility.emptySet();
+    }
+
+
+    //=========================================================================**
+    // Procedure Summaries
+    //=========================================================================**
+
+    syn Set<ABinaryExpr> ProcS.genSummaryAE();
+    eq ProcS.genSummaryAE()
+    {
+        Set<Set<ABinaryExpr>> finalsAnalyses = SetRepUtility.map(
+            new SetRepUtility.Fun<Label, Set<ABinaryExpr>>()
+            {
+                public Set<ABinaryExpr> run(Label l)
+                {
+                    ElementaryBlock b = l.itsBlock();
+                    return b.AEexit(SetRepUtility.emptySet());
+                }
+            }, finals());
+
+        return SetRepUtility.intersect(finalsAnalyses);
+    }
+
+    syn Set<ABinaryExpr> ProcS.killSummaryAE();
+    eq ProcS.killSummaryAE()
+    {
+        Set<Set<ABinaryExpr>> finalsAnalyses = SetRepUtility.map(
+            new SetRepUtility.Fun<Label, Set<ABinaryExpr>>()
+            {
+                public Set<ABinaryExpr> run(Label l)
+                {
+                    ElementaryBlock b = l.itsBlock();
+                    Set<ABinaryExpr> exitInfo = AExprStar();
+                    // Assume AExprStar at entry to Procedure in order to determine which variables are killed.
+                    exitInfo.removeAll(b.AEexit(AExprStar()));
+                    return exitInfo;
+                }
+            }, finals());
+
+        return SetRepUtility.intersect(finalsAnalyses);
+    }
+}

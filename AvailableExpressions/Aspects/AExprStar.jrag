@@ -1,0 +1,118 @@
+import java.util.Set;
+import Utility.SetRepUtility;
+import AST.*;
+
+//=========================================================================**
+// AExprStar aspect
+//=========================================================================**
+
+aspect AExprStar
+{
+    //=========================================================================**
+    // Program()
+    //=========================================================================**
+
+    syn Set<ABinaryExpr> ProgramBlock.AExprStar();
+
+    //=========================================================================**
+    // Statements
+    //=========================================================================**
+
+    inh Set<ABinaryExpr> S.AExprStar();
+    eq IfS.getS().AExprStar() = AExprStar();
+    eq IfS.getLabeledExpr().AExprStar() = AExprStar();
+
+    eq ProgramBlock.AExprStar() = AExprs();
+    eq ProgramBlock.getConst(int index).AExprStar() = AExprStar();
+    eq ProgramBlock.getVar(int index).AExprStar() = AExprStar();
+    eq ProgramBlock.getProc(int index).AExprStar() = AExprStar();
+    eq ProgramBlock.getS().AExprStar() = AExprStar();
+
+    //=========================================================================**
+    // LabeledExpr
+    //=========================================================================**
+
+    inh Set<ABinaryExpr> LabeledExpr.AExprStar();
+
+    //=========================================================================**
+    // AExprs
+    //=========================================================================**
+
+    syn Set<ABinaryExpr> ProgramBlock.AExprs();
+    eq ProgramBlock.AExprs()
+    {
+        Set<ABinaryExpr> ret = getS().AExprs();
+
+        for(ProcS proc : getProcList())
+        {
+            ret.addAll(proc.AExprs());
+        }
+
+        return ret;
+    }
+
+    syn Set<ABinaryExpr> S.AExprs();
+    eq ConstS.AExprs() = SetRepUtility.emptySet();
+    eq VarS.AExprs() = SetRepUtility.emptySet();
+    eq AssignS.AExprs() = getAExpr().AExprs();
+    eq CallS.AExprs() = SetRepUtility.emptySet();
+    eq ProcS.AExprs() = getBlock().AExprs();
+    eq ReadS.AExprs() = SetRepUtility.emptySet();
+    eq SanitizeS.AExprs() = SetRepUtility.emptySet();
+    eq PrintS.AExprs() = getAExpr().AExprs();
+    eq BeginEndS.AExprs()
+    {
+        Set<ABinaryExpr> ret = SetRepUtility.emptySet();
+
+        for(S statement : getSList())
+        {
+            ret.addAll(statement.AExprs());
+        }
+        return ret;
+    }
+    eq IfS.AExprs()
+    {
+        Set<ABinaryExpr> ret = SetRepUtility.emptySet();
+
+        ret.addAll(getLabeledExpr().AExprs());
+        ret.addAll(getS().AExprs());
+
+        return ret;
+    }
+    eq WhileS.AExprs()
+    {
+        Set<ABinaryExpr> ret = SetRepUtility.emptySet();
+
+        ret.addAll(getLabeledExpr().AExprs());
+        ret.addAll(getS().AExprs());
+
+        return ret;
+    }
+
+    syn Set<ABinaryExpr> Expr.AExprs();
+    eq VarRefExpr.AExprs() = SetRepUtility.emptySet();
+    eq NumLitExpr.AExprs() = SetRepUtility.emptySet();
+    eq ABinaryExpr.AExprs()
+    {
+        Set<ABinaryExpr> ret = SetRepUtility.singleton(this);
+
+        ret.addAll(getLeft().AExprs());
+        ret.addAll(getRight().AExprs());
+
+        return ret;
+    }
+    eq BBinaryExpr.AExprs()
+    {
+        Set<ABinaryExpr> ret = SetRepUtility.emptySet();
+
+        ret.addAll(getLeft().AExprs());
+        ret.addAll(getRight().AExprs());
+
+        return ret;
+    }
+    eq OddExpr.AExprs() = getAExpr().AExprs();
+
+    syn Set<ABinaryExpr> LabeledExpr.AExprs();
+    eq LabeledExpr.AExprs() = getBExpr().AExprs();
+
+}

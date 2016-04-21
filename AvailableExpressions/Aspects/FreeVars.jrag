@@ -1,0 +1,17 @@
+import java.util.Set;
+import Utility.SetRepUtility;
+import AST.*;
+
+//=========================================================================**
+// FreeVars aspect
+//=========================================================================**
+
+aspect FreeVars
+{
+    syn boolean Expr.freeVars(VarRefExpr var);
+    eq VarRefExpr.freeVars(VarRefExpr var) = equals(var);
+    eq NumLitExpr.freeVars(VarRefExpr var) = false;
+    eq ABinaryExpr.freeVars(VarRefExpr var) = getLeft().freeVars(var) || getRight().freeVars(var);
+    eq BBinaryExpr.freeVars(VarRefExpr var) = getLeft().freeVars(var) || getRight().freeVars(var);
+    eq OddExpr.freeVars(VarRefExpr var) = getAExpr().freeVars(var);
+}
